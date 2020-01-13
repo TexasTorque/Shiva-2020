@@ -45,6 +45,14 @@ public class Input {
         DB_rightSpeed = 0;
     } // set speeds to 0
 
+    public double getDBLeft(){
+        return DB_leftSpeed;
+    } // return left speed
+
+    public double getDBRight(){
+        return DB_rightSpeed;
+    } // return right speed
+
     // =========== Input =============
 
     public static Input getInstance() {
