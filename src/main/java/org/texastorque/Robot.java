@@ -5,120 +5,80 @@ import org.texastorque.subsystems.*;
 import org.texastorque.inputs.*;
 
 import org.texastorque.torquelib.base.TorqueIterative;
-import org.texastorque.torquelib.util.GenericController;
-import org.texastorque.torquelib.component.TorqueMotor;
-
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.VictorSP;
 
 import java.util.ArrayList;
 
-// ===================================== Robot ===============================
+// =============================== Robot ===============================
 
 public class Robot extends TorqueIterative {
 
-  // private ArrayList<Subsystem> subsystems;
-  // private Subsystem driveBase = DriveBase.getInstance();
-  // private Subsystem rotary = Rotary.getInstance();
-  double position = 0;
-
-  TalonSRX talon = new TalonSRX(1);
-
-  private GenericController driver;
+  // make instances of subsystems to later place into arraylist 
+  private ArrayList<Subsystem> subsystems;
+  private Subsystem driveBase = DriveBase.getInstance();
+  private Subsystem shooter = Shooter.getInstance();
   
-  // private TorqueMotor left1;
-  // private TorqueMotor left2;
-  // private TorqueMotor left3;
-  // private TorqueMotor right1;
-  // private TorqueMotor right2;
-  // private TorqueMotor right3;
+  // make instances of other useful classes 
+  private State state = State.getInstance();
+  private Input input = Input.getInstance();
+  private Feedback feedback = Feedback.getInstance();
 
-  // private double leftSpeed = 0.0;
-  // private double rightSpeed = 0.0;
-
-  // private boolean clockwise = true;
-
+  
   // ======= initialize ============
   public void robotInit() {
-    driver = new GenericController(0,0.1);
-    talon.selectProfileSlot(0, 0);
-    talon.set(ControlMode.Position, 0);
-    
-
-    // left1 = new TorqueMotor(new VictorSP(0), !clockwise);
-    // left2 = new TorqueMotor(new VictorSP(1), !clockwise);
-    // left3 = new TorqueMotor(new VictorSP(2), !clockwise);
-    
-    // right1 = new TorqueMotor(new VictorSP(3), clockwise);
-    // right2 = new TorqueMotor(new VictorSP(4), clockwise);
-    // right3 = new TorqueMotor(new VictorSP(5), clockwise);
+    initSubsystems();    
   } // initialize robot
 
   public void initSubsystems(){
-    // leftSpeed = 0;
-    // rightSpeed = 0;
+    subsystems = new ArrayList<Subsystem>();
+    subsystems.add(driveBase);
+    subsystems.add(shooter);
   } // initialize subsystems 
 
   @Override
   public void autoInit(){
-    // leftSpeed = 0;
-    // rightSpeed = 0;
   } // initialize in auto
 
   @Override
   public void teleopInit(){
-    talon.set(ControlMode.Position, 0);
-    // leftSpeed = 0;
-    // rightSpeed = 0;
   } // initialize in teleop
 
   @Override
   public void disabledInit(){
-    // leftSpeed = 0;
-    // rightSpeed = 0;
   } // initialize when disabled
 
   // ======== continous ==============
   public void autoContinous(){
-    // leftSpeed = 0;
-    // rightSpeed = 0;
+    for (Subsystem system : subsystems){
+      system.run(state.getRobotState());
+    }
   } // do continously in autonomous
 
   @Override
   public void teleopContinuous(){
-    if (driver.getDPADDown()){
-      position = 2500;
+    input.updateControllers();
+    for (Subsystem system : subsystems){
+      system.run(state.getRobotState());
     }
-    if (driver.getDPADUp()){
-      position = 0;
-    }
-    if (driver.getDPADRight()){
-    position = 1000;
-    }
-    // position = (int)(-2500 * driver.getRightYAxis());
-    talon.set(ControlMode.Position, position);
-
-    // leftSpeed = - driver.getLeftYAxis() + 0.4*Math.pow(driver.getRightXAxis(),2)*Math.signum(driver.getRightXAxis());
-    // rightSpeed = - driver.getLeftYAxis() - 0.4*Math.pow(driver.getRightXAxis(),2)*Math.signum(driver.getRightXAxis());
-
-    // left1.set(leftSpeed);
-    // left2.set(leftSpeed);
-    // left3.set(leftSpeed);
-    // right1.set(rightSpeed);
-    // right2.set(rightSpeed);
-    // right3.set(rightSpeed);
   } // do continuously in teleop
 
   @Override
   public void disabledContinuous(){
+    for (Subsystem system : subsystems){
+      system.disabledContinuous();
+    }
   } // do continuously when disabled 
 
   @Override
   public void alwaysContinuous(){
+    feedback.update();
+    feedback.smartDashboard();
+
+    for (Subsystem system : subsystems){
+      system.disabledContinuous();
+    }
   } // do continously always
 
   // ========== others ===========

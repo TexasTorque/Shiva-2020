@@ -53,6 +53,27 @@ public class Input {
         return DB_rightSpeed;
     } // return right speed
 
+    // ============= Shooter ==============
+
+    private volatile double flywheelSpeed = 0;
+
+    public void updateShooter(){
+        // for now this is controlling the rotary on Ray by position
+        if (driver.getDPADDown()){
+            flywheelSpeed = 2500;
+        }
+        if (driver.getDPADUp()){
+            flywheelSpeed = 0;
+        }
+        if (driver.getDPADRight()){
+          flywheelSpeed = 1000;
+        }
+    }
+
+    public double getFlywheel(){
+        return flywheelSpeed;
+    }
+
     // =========== Input =============
 
     public static Input getInstance() {

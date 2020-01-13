@@ -10,5 +10,6 @@ public class Ports {
     public static final int DB_RIGHT_2 = 4;
     public static final int DB_RIGHT_3 = 5;
 
-    
+    // talon CAN id
+    public static final int FLYWHEEL = 1;
 } // ports 
