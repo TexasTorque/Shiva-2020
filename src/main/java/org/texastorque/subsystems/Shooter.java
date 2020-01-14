@@ -10,16 +10,19 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;;
 
 // ========= Shooter ==========
-public class Shooter extends Subsystem{
+public class Shooter extends Subsystem {
     private static volatile Shooter instance;
 
     double flywheelSpeed = 0;
-    TalonSRX talon;
+    TalonSRX talonA;
+    TalonSRX talonB;
 
-    private void Shooter(){
-        talon = new TalonSRX(Ports.FLYWHEEL);
-        talon.selectProfileSlot(0, 0);
-        talon.set(ControlMode.Position, 0);
+    private void Shooter() {
+        talonA = new TalonSRX(Ports.FLYWHEEL_A);
+        talonB = new TalonSRX(Ports.FLYWHEEL_B);
+        talonA.set(ControlMode.Follower, Ports.FLYWHEEL_B);
+        talonB.selectProfileSlot(0, 0);
+        talonB.set(ControlMode.Velocity, 0);
     } // constructor
 
     // ============= initialization ==========
@@ -44,11 +47,13 @@ public class Shooter extends Subsystem{
         if (state == RobotState.TELEOP){
             flywheelSpeed = input.getFlywheel();
         } // if in teleop 
+        output();
     } // run at all times 
 
     @Override 
     public void output(){
-        talon.set(ControlMode.Position, flywheelSpeed);
+        talonA.set(ControlMode.Velocity, 1);
+        talonB.set(ControlMode.Velocity, flywheelSpeed);
     } // output 
 
     // =========== continuous ==========
