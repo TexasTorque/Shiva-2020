@@ -18,11 +18,12 @@ public class Shooter extends Subsystem {
     TalonSRX talonB;
 
     private void Shooter() {
+        SmartDashboard.putNumber("ShooterInstantiated", 1);
         talonA = new TalonSRX(Ports.FLYWHEEL_A);
         talonB = new TalonSRX(Ports.FLYWHEEL_B);
-        talonA.set(ControlMode.Follower, Ports.FLYWHEEL_B);
         talonB.selectProfileSlot(0, 0);
-        talonB.set(ControlMode.Velocity, 0);
+        talonB.set(ControlMode.Velocity, 0);  
+        talonA.set(ControlMode.Follower,Ports.FLYWHEEL_B);
     } // constructor
 
     // ============= initialization ==========
@@ -44,6 +45,7 @@ public class Shooter extends Subsystem {
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
+        SmartDashboard.putNumber("Shooter_Run", 1);
         if (state == RobotState.TELEOP){
             flywheelSpeed = input.getFlywheel();
         } // if in teleop 
@@ -52,8 +54,8 @@ public class Shooter extends Subsystem {
 
     @Override 
     public void output(){
-        talonA.set(ControlMode.Velocity, 1);
-        talonB.set(ControlMode.Velocity, flywheelSpeed);
+        talonB.set(ControlMode.Velocity, 7000*Constants.conversion_Shooter);
+        talonA.set(ControlMode.Follower, 1);
     } // output 
 
     // =========== continuous ==========

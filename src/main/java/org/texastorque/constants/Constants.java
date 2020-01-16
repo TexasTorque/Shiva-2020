@@ -11,4 +11,6 @@ package org.texastorque.constants;
  * Add your docs here.
  */
 public class Constants {
+    public static final double conversion_Shooter = 20;
+//15.6
 }

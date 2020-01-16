@@ -35,17 +35,17 @@ public class Robot extends TorqueIterative {
   // ======= initialize ============
   public void robotInit() {
     initSubsystems();  
-    talonA = new TalonSRX(Ports.FLYWHEEL_A);
-    talonB = new TalonSRX(Ports.FLYWHEEL_B);
-    talonB.selectProfileSlot(0, 0);
-    talonB.set(ControlMode.Velocity, 0);  
-    talonA.set(ControlMode.Follower,Ports.FLYWHEEL_B);
+    // talonA = new TalonSRX(Ports.FLYWHEEL_A);
+    // talonB = new TalonSRX(Ports.FLYWHEEL_B);
+    // talonB.selectProfileSlot(0, 0);
+    // talonB.set(ControlMode.Velocity, 0);  
+    // talonA.set(ControlMode.Follower,Ports.FLYWHEEL_B);
   } // initialize robot
 
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
     // subsystems.add(driveBase);
-    // subsystems.add(shooter);
+    subsystems.add(shooter);
   } // initialize subsystems 
 
   @Override
@@ -58,9 +58,9 @@ public class Robot extends TorqueIterative {
   @Override
   public void teleopInit(){
     state.setRobotState(RobotState.TELEOP);
-    // for (Subsystem system : subsystems){
-    //   system.teleopInit();
-    // }
+    for (Subsystem system : subsystems){
+      system.teleopInit();
+    }
   } // initialize in teleop
 
   @Override
@@ -72,20 +72,20 @@ public class Robot extends TorqueIterative {
 
   // ======== continous ==============
   public void autoContinous(){
-    // for (Subsystem system : subsystems){
-    //   system.run(state.getRobotState());
-    // }
+    for (Subsystem system : subsystems){
+      system.run(state.getRobotState());
+    }
   } // do continously in autonomous
 
   @Override
   public void teleopContinuous(){
-    // input.updateControllers();
-    // for (Subsystem system : subsystems){
-    //   system.run(state.getRobotState());
-    // }
+    input.updateControllers();
+    for (Subsystem system : subsystems){
+      system.run(state.getRobotState());
+    }
 //trench 47800, 44800
-    talonB.set(ControlMode.Velocity, 3300*8.696);
-    talonA.set(ControlMode.Follower, 1);
+    // talonB.set(ControlMode.Velocity, 7000*Constants.conversion_Shooter);
+    // talonA.set(ControlMode.Follower, 1);
   } // do continuously in teleop
 
   @Override
