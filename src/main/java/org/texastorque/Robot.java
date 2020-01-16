@@ -3,11 +3,12 @@ package org.texastorque;
 // ========= imports ======== 
 import org.texastorque.subsystems.*;
 import org.texastorque.inputs.*;
-
+import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.base.TorqueIterative;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ public class Robot extends TorqueIterative {
 
   // make instances of subsystems to later place into arraylist 
   private ArrayList<Subsystem> subsystems;
-  private Subsystem driveBase = DriveBase.getInstance();
+  // private Subsystem driveBase = DriveBase.getInstance();
   private Subsystem shooter = Shooter.getInstance();
   
   // make instances of other useful classes 
@@ -25,16 +26,15 @@ public class Robot extends TorqueIterative {
   private Input input = Input.getInstance();
   private Feedback feedback = Feedback.getInstance();
 
-  
   // ======= initialize ============
   public void robotInit() {
-    initSubsystems();    
+    // initSubsystems();    
   } // initialize robot
 
   public void initSubsystems(){
-    subsystems = new ArrayList<Subsystem>();
-    subsystems.add(driveBase);
-    subsystems.add(shooter);
+    // subsystems = new ArrayList<Subsystem>();
+    // subsystems.add(driveBase);
+    // subsystems.add(shooter);
   } // initialize subsystems 
 
   @Override
@@ -43,6 +43,9 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void teleopInit(){
+    state.setRobotState(RobotState.TELEOP);
+    shooter.teleopInit();
+    SmartDashboard.putBoolean("ReachesRobotTeleopInit", true);
   } // initialize in teleop
 
   @Override
@@ -51,34 +54,38 @@ public class Robot extends TorqueIterative {
 
   // ======== continous ==============
   public void autoContinous(){
-    for (Subsystem system : subsystems){
-      system.run(state.getRobotState());
-    }
+    // for (Subsystem system : subsystems){
+    //   system.run(state.getRobotState());
+    // }
+    SmartDashboard.putBoolean("ReachesRobotAutoContinuous", true);
   } // do continously in autonomous
 
   @Override
   public void teleopContinuous(){
+    SmartDashboard.putBoolean("ReachesRobotTeleopContinuous", true);
     input.updateControllers();
-    for (Subsystem system : subsystems){
-      system.run(state.getRobotState());
-    }
+    shooter.run(RobotState.TELEOP);
+    
+    // for (Subsystem system : subsystems){
+    //   system.run(RobotState.TELEOP);
+    // }
   } // do continuously in teleop
 
   @Override
   public void disabledContinuous(){
-    for (Subsystem system : subsystems){
-      system.disabledContinuous();
-    }
+    // for (Subsystem system : subsystems){
+    //   system.disabledContinuous();
+    // }
   } // do continuously when disabled 
 
   @Override
   public void alwaysContinuous(){
     feedback.update();
     feedback.smartDashboard();
-
-    for (Subsystem system : subsystems){
-      system.disabledContinuous();
-    }
+    SmartDashboard.putBoolean("ReachesRobotAutoContinuous", true);
+    // for (Subsystem system : subsystems){
+    //   system.disabledContinuous();
+    // }
   } // do continously always
 
   // ========== others ===========

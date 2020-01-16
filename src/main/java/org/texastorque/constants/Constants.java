@@ -11,4 +11,5 @@ package org.texastorque.constants;
  * Add your docs here.
  */
 public class Constants {
+    public static final double RPM_VICTORSPX_CONVERSION = 8.696;
 }

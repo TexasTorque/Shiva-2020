@@ -7,48 +7,53 @@ import org.texastorque.constants.*;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // ========= Shooter ==========
 public class Shooter extends Subsystem{
     private static volatile Shooter instance;
 
-    double flywheelSpeed = 0;
-    TalonSRX talon;
+    double flywheelSpeed = 5000;
+    TalonSRX talonLead;
+    TalonSRX talonFollower;
 
     private void Shooter(){
-        talon = new TalonSRX(Ports.FLYWHEEL);
-        talon.selectProfileSlot(0, 0);
-        talon.set(ControlMode.Position, 0);
+        talonLead = new TalonSRX(Ports.FLYWHEEL_LEAD);
+        talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
+        talonLead.selectProfileSlot(0, 0);
+        talonLead.set(ControlMode.Velocity, 0);
+        talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+        SmartDashboard.putBoolean("ReachesShooterConstructor", true);
     } // constructor
 
     // ============= initialization ==========
     @Override 
-    public void autoInit(){
-        
-    }
+    public void autoInit(){}
 
     @Override
     public void teleopInit(){
-
-    }
+        flywheelSpeed=5000;
+    } // teleopInit
 
     @Override 
-    public void disabledInit(){
-
-    }
+    public void disabledInit(){}
 
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
-        if (state == RobotState.TELEOP){
-            flywheelSpeed = input.getFlywheel();
-        } // if in teleop 
+        flywheelSpeed += input.getFlywheel();
+        // if (state == RobotState.TELEOP){
+        //     flywheelSpeed += input.getFlywheel();
+        // } // if in teleop 
+        output();
     } // run at all times 
 
     @Override 
     public void output(){
-        talon.set(ControlMode.Position, flywheelSpeed);
+        // talonLead.set(ControlMode.Velocity, flywheelSpeed*Constants.RPM_VICTORSPX_CONVERSION);
+        talonLead.set(ControlMode.Velocity, flywheelSpeed);
+        talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+        SmartDashboard.putBoolean("ReachesOutput", true);
     } // output 
 
     // =========== continuous ==========

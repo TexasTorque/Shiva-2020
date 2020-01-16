@@ -11,5 +11,6 @@ public class Ports {
     public static final int DB_RIGHT_3 = 5;
 
     // talon CAN id
-    public static final int FLYWHEEL = 1;
+    public static final int FLYWHEEL_LEAD = 1;
+    public static final int FLYWHEEL_FOLLOW = 0;
 } // ports 

@@ -20,6 +20,7 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
+            updateShooter();
         } // update driver things
 
         if (operator != null){
@@ -60,13 +61,10 @@ public class Input {
     public void updateShooter(){
         // for now this is controlling the rotary on Ray by position
         if (driver.getDPADDown()){
-            flywheelSpeed = 2500;
+            flywheelSpeed = -50;
         }
         if (driver.getDPADUp()){
-            flywheelSpeed = 0;
-        }
-        if (driver.getDPADRight()){
-          flywheelSpeed = 1000;
+            flywheelSpeed = 50;
         }
     }
 
