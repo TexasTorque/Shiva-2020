@@ -28,13 +28,13 @@ public class Robot extends TorqueIterative {
 
   // ======= initialize ============
   public void robotInit() {
-    // initSubsystems();    
+    initSubsystems();    
   } // initialize robot
 
   public void initSubsystems(){
-    // subsystems = new ArrayList<Subsystem>();
+    subsystems = new ArrayList<Subsystem>();
     // subsystems.add(driveBase);
-    // subsystems.add(shooter);
+    subsystems.add(shooter);
   } // initialize subsystems 
 
   @Override
@@ -45,7 +45,6 @@ public class Robot extends TorqueIterative {
   public void teleopInit(){
     state.setRobotState(RobotState.TELEOP);
     shooter.teleopInit();
-    SmartDashboard.putBoolean("ReachesRobotTeleopInit", true);
   } // initialize in teleop
 
   @Override
@@ -54,38 +53,33 @@ public class Robot extends TorqueIterative {
 
   // ======== continous ==============
   public void autoContinous(){
-    // for (Subsystem system : subsystems){
-    //   system.run(state.getRobotState());
-    // }
-    SmartDashboard.putBoolean("ReachesRobotAutoContinuous", true);
+    for (Subsystem system : subsystems){
+      system.run(state.getRobotState());
+    }
   } // do continously in autonomous
 
   @Override
   public void teleopContinuous(){
-    SmartDashboard.putBoolean("ReachesRobotTeleopContinuous", true);
     input.updateControllers();
-    shooter.run(RobotState.TELEOP);
-    
-    // for (Subsystem system : subsystems){
-    //   system.run(RobotState.TELEOP);
-    // }
+    for (Subsystem system : subsystems){
+      system.run(RobotState.TELEOP);
+    }
   } // do continuously in teleop
 
   @Override
   public void disabledContinuous(){
-    // for (Subsystem system : subsystems){
-    //   system.disabledContinuous();
-    // }
+    for (Subsystem system : subsystems){
+      system.disabledContinuous();
+    }
   } // do continuously when disabled 
 
   @Override
   public void alwaysContinuous(){
     feedback.update();
     feedback.smartDashboard();
-    SmartDashboard.putBoolean("ReachesRobotAutoContinuous", true);
-    // for (Subsystem system : subsystems){
-    //   system.disabledContinuous();
-    // }
+    for (Subsystem system : subsystems){
+      system.disabledContinuous();
+    }
   } // do continously always
 
   // ========== others ===========

@@ -13,17 +13,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter extends Subsystem{
     private static volatile Shooter instance;
 
-    double flywheelSpeed = 5000;
-    TalonSRX talonLead;
-    TalonSRX talonFollower;
+    double flywheelSpeed = 50000;
+    double flywheelPercent = 0;
+    TalonSRX talonLead = new TalonSRX(Ports.FLYWHEEL_LEAD);
+    TalonSRX talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
 
     private void Shooter(){
-        talonLead = new TalonSRX(Ports.FLYWHEEL_LEAD);
-        talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
         talonLead.selectProfileSlot(0, 0);
         talonLead.set(ControlMode.Velocity, 0);
         talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-        SmartDashboard.putBoolean("ReachesShooterConstructor", true);
     } // constructor
 
     // ============= initialization ==========
@@ -32,7 +30,8 @@ public class Shooter extends Subsystem{
 
     @Override
     public void teleopInit(){
-        flywheelSpeed=5000;
+        flywheelSpeed = 50000;
+        flywheelPercent = 0;
     } // teleopInit
 
     @Override 
@@ -41,19 +40,22 @@ public class Shooter extends Subsystem{
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
-        flywheelSpeed += input.getFlywheel();
-        // if (state == RobotState.TELEOP){
-        //     flywheelSpeed += input.getFlywheel();
-        // } // if in teleop 
+        if (state == RobotState.TELEOP){
+            flywheelSpeed += input.getFlywheelSpeed();
+            flywheelPercent += input.getFlywheelPercent();
+        } // if in teleop 
         output();
     } // run at all times 
 
     @Override 
     public void output(){
         // talonLead.set(ControlMode.Velocity, flywheelSpeed*Constants.RPM_VICTORSPX_CONVERSION);
+        // SmartDashboard.putNumber("FlywheelPercent", flywheelPercent);
+        // talonLead.set(ControlMode.PercentOutput, flywheelPercent);
+        // talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+        SmartDashboard.putNumber("FlywheelVelocity",flywheelSpeed);
         talonLead.set(ControlMode.Velocity, flywheelSpeed);
         talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-        SmartDashboard.putBoolean("ReachesOutput", true);
     } // output 
 
     // =========== continuous ==========

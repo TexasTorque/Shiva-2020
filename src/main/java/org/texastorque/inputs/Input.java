@@ -57,19 +57,37 @@ public class Input {
     // ============= Shooter ==============
 
     private volatile double flywheelSpeed = 0;
+    private volatile double flywheelPercent = 0;
 
     public void updateShooter(){
         // for now this is controlling the rotary on Ray by position
-        if (driver.getDPADDown()){
-            flywheelSpeed = -50;
+        if (driver.getYButtonReleased()){
+            flywheelPercent = 0.05;
+        } 
+        else if (driver.getAButtonReleased()){
+            flywheelPercent = -0.05;
         }
-        if (driver.getDPADUp()){
-            flywheelSpeed = 50;
+        else {
+            flywheelPercent = 0;
         }
+        if (driver.getBButtonReleased()){
+            flywheelSpeed = 5000;
+        } 
+        else if (driver.getXButtonReleased()){
+            flywheelSpeed = -5000;
+        }
+        else {
+            flywheelSpeed = 0;
+        }
+
     }
 
-    public double getFlywheel(){
+    public double getFlywheelSpeed(){
         return flywheelSpeed;
+    }
+
+    public double getFlywheelPercent(){
+        return flywheelPercent;
     }
 
     // =========== Input =============
