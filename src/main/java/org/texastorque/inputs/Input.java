@@ -1,5 +1,6 @@
 package org.texastorque.inputs;
 
+import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
@@ -90,10 +91,10 @@ public class Input {
             flywheelPercent = 0;
         }
         if (driver.getBButtonReleased()){
-            flywheelSpeed = 10000;
+            flywheelSpeed = 100*Constants.RPM_VICTORSPX_CONVERSION;
         } 
         else if (driver.getXButtonReleased()){
-            flywheelSpeed = -10000;
+            flywheelSpeed = -100*Constants.RPM_VICTORSPX_CONVERSION;
         }
         else {
             flywheelSpeed = 0;
