@@ -51,7 +51,7 @@ public class Climber extends Subsystem{
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
             SmartDashboard.putNumber("input", input.getClimberSpeed());
-            // climber.set();
+            climber.set(0.0);
             // climberPID.setReference(-10000, ControlType.kVelocity, 0);
             SmartDashboard.putNumber("neo encoder", climberEncoder.getVelocity());
             SmartDashboard.putNumber("neo current", climber.getOutputCurrent());
