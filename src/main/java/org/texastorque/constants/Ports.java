@@ -13,4 +13,8 @@ public class Ports {
     // talon CAN id
     public static final int FLYWHEEL_LEAD = 1;
     public static final int FLYWHEEL_FOLLOW = 0;
+
+    // neo CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
+    public static final int CLIMBER = 1;
+    
 } // ports 

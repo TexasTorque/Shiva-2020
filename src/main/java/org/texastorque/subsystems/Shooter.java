@@ -4,6 +4,8 @@ package org.texastorque.subsystems;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
@@ -13,8 +15,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter extends Subsystem{
     private static volatile Shooter instance;
 
-    double flywheelSpeed = 50000;
-    double flywheelPercent = 0;
+    // ======== variables ==========
+    double flywheelSpeed = 100000;
+    double flywheelPercent = 1;
+
+    // =========== motors ============
     TalonSRX talonLead = new TalonSRX(Ports.FLYWHEEL_LEAD);
     TalonSRX talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
 
@@ -25,13 +30,14 @@ public class Shooter extends Subsystem{
     } // constructor
 
     // ============= initialization ==========
+
     @Override 
     public void autoInit(){}
 
     @Override
     public void teleopInit(){
-        flywheelSpeed = 50000;
-        flywheelPercent = 0;
+        flywheelSpeed = 100000;
+        flywheelPercent = 1;
     } // teleopInit
 
     @Override 

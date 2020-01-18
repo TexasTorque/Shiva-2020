@@ -20,7 +20,8 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
-            updateShooter();
+            // updateShooter();
+            updateClimber();
         } // update driver things
 
         if (operator != null){
@@ -54,6 +55,24 @@ public class Input {
         return DB_rightSpeed;
     } // return right speed
 
+    // ============= Climber ==============
+    private volatile double climberSpeed = 0;
+    
+    public void updateClimber(){
+        if (driver.getYButtonReleased()){
+            climberSpeed = .500;
+        }
+        else if (driver.getXButtonReleased()){
+            climberSpeed = 0;
+        }
+        else if (driver.getAButtonReleased()){
+            climberSpeed = -.500;
+        }
+    } // update Climber 
+
+    public double getClimberSpeed(){
+        return climberSpeed;
+    }
     // ============= Shooter ==============
 
     private volatile double flywheelSpeed = 0;
@@ -62,25 +81,25 @@ public class Input {
     public void updateShooter(){
         // for now this is controlling the rotary on Ray by position
         if (driver.getYButtonReleased()){
-            flywheelPercent = 0.05;
+            flywheelPercent = 0.5;
         } 
         else if (driver.getAButtonReleased()){
-            flywheelPercent = -0.05;
+            flywheelPercent = -0.5;
         }
         else {
             flywheelPercent = 0;
         }
         if (driver.getBButtonReleased()){
-            flywheelSpeed = 5000;
+            flywheelSpeed = 10000;
         } 
         else if (driver.getXButtonReleased()){
-            flywheelSpeed = -5000;
+            flywheelSpeed = -10000;
         }
         else {
             flywheelSpeed = 0;
         }
 
-    }
+    } // update Shooter 
 
     public double getFlywheelSpeed(){
         return flywheelSpeed;
