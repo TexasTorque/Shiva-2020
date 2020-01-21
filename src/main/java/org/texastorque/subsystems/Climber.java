@@ -24,15 +24,16 @@ public class Climber extends Subsystem{
     private static volatile Climber instance;
 
     // ============ variables =============
+    // pid Values = kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM
+    private double[] pidValues = new double[] {0.01,0,0,0,0,0,-1,1}; 
 
     // ============ motors ==============
     private CANSparkMax climber = new CANSparkMax(Ports.CLIMBER, MotorType.kBrushless);
-    // private CANPIDController climberPID = climber.getPIDController();
+    private CANPIDController climberPID = climber.getPIDController();
     private CANEncoder climberEncoder = climber.getEncoder(EncoderType.kHallSensor, 4096);
 
     // =================== methods ==================
     private void Climber(){
-        
     } // constructor 
 
     @Override
@@ -40,7 +41,10 @@ public class Climber extends Subsystem{
 
     @Override
     public void teleopInit(){
-
+        climberPID.setP(pidValues[0]);
+        climberPID.setI(pidValues[1]);
+        climberPID.setD(pidValues[2]);
+        climberPID.setOutputRange(pidValues[6], pidValues[7]);
     } // teleop init
 
     @Override 
@@ -51,9 +55,9 @@ public class Climber extends Subsystem{
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
             SmartDashboard.putNumber("input", input.getClimberSpeed());
-            climber.set(input.getClimberSpeed());
-            // climberPID.setReference(-1000, ControlType.kVelocity, 0);
-            SmartDashboard.putNumber("neo encoder", climberEncoder.getVelocity());
+            // climber.set(input.getClimberSpeed());
+            climberPID.setReference(-300, ControlType.kPosition);
+            SmartDashboard.putNumber("neo encoder", climberEncoder.getPosition());
             SmartDashboard.putNumber("neo current", climber.getOutputCurrent());
         }
     } // run at all times 
