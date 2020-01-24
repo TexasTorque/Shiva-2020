@@ -1,17 +1,31 @@
 package org.texastorque.inputs;
 
 import org.texastorque.constants.*;
+import edu.wpi.first.networktables.*;
 
 public class Feedback {
 
     private static volatile Feedback instance;
+    private double targetArea;
+    private double hOffset;
+    private double vOffset;
 
     private Feedback(){
 
     } // constructor
 
-    public void update(){
+    public void shooterMode(){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+    }
+    
+    public void intakeMode(){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
+    }
 
+    public void update(){
+        targetArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+        hOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+        vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     } // update 
 
     public void smartDashboard(){
