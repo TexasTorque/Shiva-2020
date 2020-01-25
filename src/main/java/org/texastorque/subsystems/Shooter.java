@@ -14,16 +14,14 @@ public class Shooter extends Subsystem {
     private static volatile Shooter instance;
 
     double flywheelSpeed = 0;
-    TalonSRX talonA;
-    TalonSRX talonB;
+    TalonSRX talonA = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
+    TalonSRX talonB = new TalonSRX(Ports.FLYWHEEL_LEAD);
 
     private void Shooter() {
         SmartDashboard.putNumber("ShooterInstantiated", 1);
-        talonA = new TalonSRX(Ports.FLYWHEEL_A);
-        talonB = new TalonSRX(Ports.FLYWHEEL_B);
         talonB.selectProfileSlot(0, 0);
         talonB.set(ControlMode.Velocity, 0);  
-        talonA.set(ControlMode.Follower,Ports.FLYWHEEL_B);
+        talonA.set(ControlMode.Follower,Ports.FLYWHEEL_LEAD);
     } // constructor
 
     // ============= initialization ==========
@@ -47,14 +45,14 @@ public class Shooter extends Subsystem {
     public void run(RobotState state){
         SmartDashboard.putNumber("Shooter_Run", 1);
         if (state == RobotState.TELEOP){
-            flywheelSpeed = input.getFlywheel();
+            flywheelSpeed = input.getFlywheelSpeed();
         } // if in teleop 
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        talonB.set(ControlMode.Velocity, 7000*Constants.conversion_Shooter);
+        talonB.set(ControlMode.Velocity, 5000*Constants.RPM_VICTORSPX_CONVERSION);
         talonA.set(ControlMode.Follower, 1);
     } // output 
 

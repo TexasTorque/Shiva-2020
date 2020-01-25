@@ -1,5 +1,6 @@
 package org.texastorque.inputs;
 
+import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
@@ -20,7 +21,8 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
-            updateShooter();
+            // updateShooter();
+            updateClimber();
         } // update driver things
 
         if (operator != null){
@@ -54,25 +56,58 @@ public class Input {
         return DB_rightSpeed;
     } // return right speed
 
+    // ============= Climber ==============
+    private volatile double climberSpeed = 0;
+    
+    public void updateClimber(){
+        if (driver.getYButtonReleased()){
+            climberSpeed = .500;
+        }
+        else if (driver.getXButtonReleased()){
+            climberSpeed = 0;
+        }
+        else if (driver.getAButtonReleased()){
+            climberSpeed = -.500;
+        }
+    } // update Climber 
+
+    public double getClimberSpeed(){
+        return climberSpeed;
+    }
     // ============= Shooter ==============
 
     private volatile double flywheelSpeed = 0;
+    private volatile double flywheelPercent = 0;
 
     public void updateShooter(){
         // for now this is controlling the rotary on Ray by position
-        if (driver.getDPADDown()){
-            flywheelSpeed = 100;
+        if (driver.getYButtonReleased()){
+            flywheelPercent = 0.5;
+        } 
+        else if (driver.getAButtonReleased()){
+            flywheelPercent = -0.5;
         }
-        if (driver.getDPADUp()){
+        else {
+            flywheelPercent = 0;
+        }
+        if (driver.getBButtonReleased()){
+            flywheelSpeed = 100*Constants.RPM_VICTORSPX_CONVERSION;
+        } 
+        else if (driver.getXButtonReleased()){
+            flywheelSpeed = -100*Constants.RPM_VICTORSPX_CONVERSION;
+        }
+        else {
             flywheelSpeed = 0;
         }
-        if (driver.getDPADRight()){
-          flywheelSpeed = 50;
-        }
+
+    } // update Shooter 
+
+    public double getFlywheelSpeed(){
+        return flywheelSpeed;
     }
 
-    public double getFlywheel(){
-        return flywheelSpeed;
+    public double getFlywheelPercent(){
+        return flywheelPercent;
     }
 
     // =========== Input =============

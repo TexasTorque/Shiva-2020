@@ -22,8 +22,9 @@ public class Robot extends TorqueIterative {
 
   // make instances of subsystems to later place into arraylist 
   private ArrayList<Subsystem> subsystems;
-  private Subsystem driveBase = DriveBase.getInstance();
-  private Subsystem shooter = Shooter.getInstance();
+  // private Subsystem driveBase = DriveBase.getInstance();
+  // private Subsystem shooter = Shooter.getInstance();
+  private Subsystem climber = Climber.getInstance();
   
   // make instances of other useful classes 
   private State state = State.getInstance();
@@ -34,18 +35,14 @@ public class Robot extends TorqueIterative {
   TalonSRX talonB;
   // ======= initialize ============
   public void robotInit() {
-    initSubsystems();  
-    talonA = new TalonSRX(Ports.FLYWHEEL_A);
-    talonB = new TalonSRX(Ports.FLYWHEEL_B);
-    talonB.selectProfileSlot(0, 0);
-    talonB.set(ControlMode.Velocity, 0);  
-    talonA.set(ControlMode.Follower,Ports.FLYWHEEL_B);
+    initSubsystems();    
   } // initialize robot
 
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
     // subsystems.add(driveBase);
     // subsystems.add(shooter);
+    subsystems.add(climber);
   } // initialize subsystems 
 
   @Override
@@ -81,11 +78,8 @@ public class Robot extends TorqueIterative {
   public void teleopContinuous(){
     input.updateControllers();
     for (Subsystem system : subsystems){
-      system.run(state.getRobotState());
+      system.run(RobotState.TELEOP);
     }
-//trench 47800, 44800
-    talonB.set(ControlMode.Velocity, 7000*Constants.conversion_Shooter);
-    talonA.set(ControlMode.Follower, 1);
   } // do continuously in teleop
 
   @Override
@@ -99,7 +93,6 @@ public class Robot extends TorqueIterative {
   public void alwaysContinuous(){
     feedback.update();
     feedback.smartDashboard();
-
     for (Subsystem system : subsystems){
       system.disabledContinuous();
     }
