@@ -16,8 +16,10 @@ public class Shooter extends Subsystem{
     private static volatile Shooter instance;
 
     // ======== variables ==========
-    double flywheelSpeed = 6500*Constants.RPM_VICTORSPX_CONVERSION;
+    double flywheelSpeed = 7750*Constants.RPM_VICTORSPX_CONVERSION;
+    // double flywheelSpeed = 4000*Constants.RPM_VICTORSPX_CONVERSION;
     double flywheelPercent = 1;
+    // P, I, D, k 
     double[] pidHigh = new double[] {0.2401, 0, 5, 0.00902};
     double[] pidLow = new double[] {.08, 0, 8, 0.00902};
     private double flywheelVelocity = 0;
@@ -27,10 +29,11 @@ public class Shooter extends Subsystem{
     TalonSRX talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
     
     private void Shooter(){
-        // // PID STUFF 
-        // talonLead.selectProfileSlot(0,0);
-        // talonLead.set(ControlMode.Velocity, 0);
-        // talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+
+        // PID STUFF 
+        talonLead.selectProfileSlot(0,0);
+        talonLead.set(ControlMode.Velocity, 0);
+        talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
     } // constructor
 
     // ============= initialization ==========
@@ -51,23 +54,23 @@ public class Shooter extends Subsystem{
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
 
-            // Bang Bang 
-            flywheelVelocity = talonLead.getSelectedSensorVelocity() / Constants.RPM_VICTORSPX_CONVERSION;
-            if (flywheelVelocity >= 6500){
-                talonLead.set(ControlMode.PercentOutput, 0);
-                talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-            } 
-            else {
-                talonLead.set(ControlMode.PercentOutput, .9);
-                talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-            }
+            // // Bang Bang 
+            // flywheelVelocity = talonLead.getSelectedSensorVelocity() / Constants.RPM_VICTORSPX_CONVERSION;
+            // if (flywheelVelocity >= 6500){
+            //     talonLead.set(ControlMode.PercentOutput, 0);
+            //     talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+            // } 
+            // else {
+            //     talonLead.set(ControlMode.PercentOutput, .9);
+            //     talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+            // }
             SmartDashboard.putNumber("Velocity", flywheelVelocity);
-            // // PID STUFF
-            // talonLead.config_kP(0, pidHigh[0]);
-            // talonLead.config_kD(0, pidHigh[2]);
-            // talonLead.config_kF(0, pidHigh[3]);
-            // flywheelSpeed += input.getFlywheelSpeed();
-            // flywheelPercent += input.getFlywheelPercent();
+            // PID STUFF
+            talonLead.config_kP(0, pidHigh[0]);
+            talonLead.config_kD(0, pidHigh[2]);
+            talonLead.config_kF(0, pidHigh[3]);
+            flywheelSpeed += input.getFlywheelSpeed();
+            flywheelPercent += input.getFlywheelPercent();
         } // if in teleop 
         output();
     } // run at all times 
@@ -78,10 +81,11 @@ public class Shooter extends Subsystem{
         // SmartDashboard.putNumber("FlywheelPercent", flywheelPercent);
         // talonLead.set(ControlMode.PercentOutput, flywheelPercent);
         // talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-        // // PID STUFF
-        // SmartDashboard.putNumber("FlywheelVelocity",flywheelSpeed);
-        // talonLead.set(ControlMode.Velocity, flywheelSpeed);
-        // talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+        // PID STUFF
+        SmartDashboard.putNumber("FlywheelVelocity",flywheelSpeed);
+        // SmartDashboard.putNumber("Flywheel Encoder ", )
+        talonLead.set(ControlMode.Velocity, flywheelSpeed);
+        talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
     } // output 
 
     // =========== continuous ==========
