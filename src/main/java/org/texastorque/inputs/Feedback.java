@@ -3,37 +3,64 @@ package org.texastorque.inputs;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import org.texastorque.constants.*;
 import org.texastorque.util.TCS34725ColorSensor;
+import org.texastorque.util.TCS34725_I2C;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Feedback {
 
     private static volatile Feedback instance;
 
-    TCS34725ColorSensor colorSensor = new TCS34725ColorSensor();
+    // TCS34725ColorSensor colorSensor = new TCS34725ColorSensor();
+    // TCS34725_I2C colorSensor;
 
     int init;
 
     private Feedback(){
-        init = colorSensor.init();
+        // colorSensor  = new TCS34725_I2C(false);
+        // try{
+        //     colorSensor.enable();
+        // } catch (Exception e) {}
     } // constructor
 
     public void update(){
-        colorSensorUpdate();
+        // colorSensorUpdate();
     } // update 
 
     // ======== color sensor ========
-    int red = 0;
-    int green = 0;
-    int blue = 0;
-    int readTest;
 
-    public void colorSensorUpdate(){
-        SmartDashboard.putBoolean("initialized", colorSensor.sensorInitialized());
-        readTest = colorSensor.readColors();
-        // red = colorSensor.getRedVal();
-        // green = colorSensor.getGreenVal();
-        // blue = colorSensor.getBlueVal();
-    }
+    // public void colorSensorUpdate(){
+    //     SmartDashboard.putNumber("yellow", 0);
+    //     SmartDashboard.putNumber("red", 0);
+    //     SmartDashboard.putNumber("green", 0);
+    //     SmartDashboard.putNumber("blue", 0);
+    //     try{
+    //         var values = colorSensor.getRawData();
+    //         if(values.getR() >= 2000 & values.getB() <= 1000 & values.getG() > 1000){
+    //           SmartDashboard.putNumber("yellow", 1);
+    //         }
+    //         else if(values.getR() >= 1300 & values.getR() <= 2000 & 
+    //                 values.getB() <= 1000 & 
+    //                 values.getG() <= 1000){
+    //           SmartDashboard.putNumber("red", 1);
+    //         }
+    //         else if(values.getR() >= 800 & values.getR() <= 1500 & 
+    //                 values.getB() >= 500 & values.getB() <= 1000 & 
+    //                 values.getG() >= 800 & values.getG() <= 1500){
+    //           SmartDashboard.putNumber("green", 1);
+    //         }
+    //         else if(values.getR() >= 900 & values.getR() <= 2000 & 
+    //                 values.getB() >= 1000 & values.getB() <= 2000 & 
+    //                 values.getG() >= 900 & values.getG() <= 1800){
+    //           SmartDashboard.putNumber("blue", 1);
+    //         }
+    //         else{
+    //           SmartDashboard.putNumber("stop it rip", 1);
+    //         }
+            
+    //         System.out.println(colorSensor.getRawData());
+    //       }
+    //       catch(Exception e){}
+    // }
 
     // ======== color sensor arduino =========
 
@@ -67,12 +94,12 @@ public class Feedback {
     // ======== Other stuff =========
     
     public void smartDashboard(){
-        SmartDashboard.putNumber("red", red);
-        SmartDashboard.putNumber("green", green);
-        SmartDashboard.putNumber("blue", blue);
-        SmartDashboard.putNumber("read", readTest);
-        SmartDashboard.putNumber("init", init);
-        SmartDashboard.putString("Color", color.toString());
+        // SmartDashboard.putNumber("red", red);
+        // SmartDashboard.putNumber("green", green);
+        // SmartDashboard.putNumber("blue", blue);
+        // SmartDashboard.putNumber("read", readTest);
+        // SmartDashboard.putNumber("init", init);
+        // SmartDashboard.putString("Color", color.toString());
         
     } // stuff to put in smart dashboard
 
