@@ -184,12 +184,13 @@ public class TCS34725ColorSensor {
 
         byte[] enable_test_buf = {0};
 
-        // Don't bother doing anything if the sensor isn't initialized
-        if (!sensor_initalized) {
-            System.out.println("Error: Attempt to read from color sensor, but it's not initalized!");
-            return -1;
-        }
-
+        // // Don't bother doing anything if the sensor isn't initialized
+        // // if (!sensor_initalized) {
+        // //     System.out.println("Error: Attempt to read from color sensor, but it's not initalized!");
+        // //     return -1;
+        // // }
+        //  ME I DID THIS ^^^
+        
         // Call the read bad if the enable register isn't set properly
         // (this gets reset to a different value if the sensor is power-cycled)
         color_sen.read(I2C_constants.TCS34725_ENABLE, 1, enable_test_buf);
