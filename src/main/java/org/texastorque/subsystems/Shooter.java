@@ -16,12 +16,13 @@ public class Shooter extends Subsystem{
     private static volatile Shooter instance;
 
     // ======== variables ==========
-    double flywheelSpeed = 7750*Constants.RPM_VICTORSPX_CONVERSION;
+    double flywheelSpeed = 6000*Constants.RPM_VICTORSPX_CONVERSION;
     // double flywheelSpeed = 4000*Constants.RPM_VICTORSPX_CONVERSION;
     double flywheelPercent = 1;
     // P, I, D, k 
     double[] pidHigh = new double[] {0.2401, 0, 5, 0.00902};
     double[] pidLow = new double[] {.08, 0, 8, 0.00902};
+    boolean isHigh = true;
     private double flywheelVelocity = 0;
 
     // =========== motors ============
@@ -29,7 +30,6 @@ public class Shooter extends Subsystem{
     TalonSRX talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
     
     private void Shooter(){
-
         // PID STUFF 
         talonLead.selectProfileSlot(0,0);
         talonLead.set(ControlMode.Velocity, 0);
@@ -39,15 +39,13 @@ public class Shooter extends Subsystem{
     // ============= initialization ==========
 
     @Override 
-    public void autoInit(){}
+    public void autoInit(){} // autoInit
 
     @Override
-    public void teleopInit(){
-        // talonLead.selectProfileSlot(1, 0);
-    } // teleopInit
+    public void teleopInit(){} // teleopInit
 
     @Override 
-    public void disabledInit(){}
+    public void disabledInit(){} // disabledInit
 
     // ============ actually doing stuff ==========
     @Override 
@@ -64,13 +62,22 @@ public class Shooter extends Subsystem{
             //     talonLead.set(ControlMode.PercentOutput, .9);
             //     talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
             // }
-            SmartDashboard.putNumber("Velocity", flywheelVelocity);
+            if (flywheelSpeed < 5000){
+                isHigh = false;
+            }
             // PID STUFF
-            talonLead.config_kP(0, pidHigh[0]);
-            talonLead.config_kD(0, pidHigh[2]);
-            talonLead.config_kF(0, pidHigh[3]);
+            if (isHigh){
+                talonLead.config_kP(0, pidHigh[0]);
+                talonLead.config_kD(0, pidHigh[2]);
+                talonLead.config_kF(0, pidHigh[3]);
+            } else {
+                talonLead.config_kP(0, pidLow[0]);
+                talonLead.config_kD(0, pidLow[2]);
+                talonLead.config_kF(0, pidLow[3]);
+            }
             flywheelSpeed += input.getFlywheelSpeed();
             flywheelPercent += input.getFlywheelPercent();
+            isHigh = true;
         } // if in teleop 
         output();
     } // run at all times 
