@@ -17,5 +17,10 @@ public class Ports {
     // neo CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
     public static final int CLIMBER1 = 1;
     public static final int CLIMBER2 = 2;
+
+    // neo 550 CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
+    public static final int INTAKE1 = 0;
+    public static final int INTAKE2 = 0;
+    public static final int INTAKE3 = 0;
     
 } // ports 
