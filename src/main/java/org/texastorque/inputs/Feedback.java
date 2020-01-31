@@ -7,7 +7,7 @@ public class Feedback {
 
     private static volatile Feedback instance;
     private double targetArea;
-    private double hOffset;
+    private static double hOffset;
     private double vOffset;
 
     private Feedback(){
@@ -27,6 +27,10 @@ public class Feedback {
         hOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     } // update 
+
+    public static double getHOffset(){
+        return hOffset;
+    }
 
     public void smartDashboard(){
 

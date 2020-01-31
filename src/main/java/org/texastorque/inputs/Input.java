@@ -3,6 +3,7 @@ package org.texastorque.inputs;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
+import org.texastorque.inputs.Feedback;
 
 public class Input {
     private static volatile Input instance;
@@ -24,11 +25,16 @@ public class Input {
 
         if (operator != null){
         } // update operator things 
+
+
     } // update controllers
 
     public void resetAll(){
     } // reset all the things
 
+    public boolean getY(){
+        return driver.getYButtonPressed();
+    }
     // ============= Drivebase ============
 
     private volatile double DB_leftSpeed = 0;

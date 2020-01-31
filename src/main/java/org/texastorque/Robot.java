@@ -62,6 +62,7 @@ public class Robot extends TorqueIterative {
     for (Subsystem system : subsystems){
       system.run(state.getRobotState());
     }
+    feedback.update();
   } // do continuously in teleop
 
   @Override
