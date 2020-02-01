@@ -56,6 +56,14 @@ public class Input {
         return DB_rightSpeed;
     } // return right speed
 
+    public void setDBLeftSpeed(double leftSpeed){
+        DB_leftSpeed = leftSpeed;
+    } // TO BE USED IN AUTO ONLY
+
+    public void setDBRightSpeed(double rightSpeed){
+        DB_rightSpeed = rightSpeed;
+    } // TO BE USED IN AUTO ONLY
+
     // ============= Climber ==============
     private volatile double climberSpeed = 0;
     
@@ -99,7 +107,6 @@ public class Input {
         else {
             flywheelSpeed = 0;
         }
-
     } // update Shooter 
 
     public double getFlywheelSpeed(){

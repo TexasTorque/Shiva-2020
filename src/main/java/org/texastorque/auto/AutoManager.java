@@ -18,9 +18,10 @@ public class AutoManager {
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
-        // autoSequences.add(new SequenceName());
+        autoSequences.add(new CrossLine());
         
-        // autoSelector.setDefaultOption("CrossLine ", "CrossLine");
+        autoSelector.setDefaultOption("CrossLine ", "CrossLine");
+
         SmartDashboard.putData(autoSelector);
         System.out.println("All auto sequences loaded.");
     } // constructor
@@ -33,11 +34,13 @@ public class AutoManager {
         String autoChoice = autoSelector.getSelected();
         System.out.println(autoChoice);
 
-        // switch(autoChoice){
-        //     // case "CrossLine":
-        //     //     currentSequence = autoSequences.get(0);
-        //     //     break;
-        // }
+        switch(autoChoice){
+            case "CrossLine":
+                currentSequence = autoSequences.get(0);
+                break;
+            default:
+                break;
+        } // select the autonomous program to run
 
         currentSequence.reset();
         sequenceEnded = false;
