@@ -21,6 +21,7 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
+            updateDrive();
         } // update driver things
 
         if (operator != null){
@@ -32,18 +33,23 @@ public class Input {
     public void resetAll(){
     } // reset all the things
 
-    public boolean getY(){
-        return driver.getYButtonPressed();
-    }
     // ============= Drivebase ============
 
-    private volatile double DB_leftSpeed = 0;
-    private volatile double DB_rightSpeed = 0;
+    private double DB_leftSpeed = 0;
+    private double DB_rightSpeed = 0;
 
     public void updateDrive(){
         double leftRight = driver.getRightXAxis();
         DB_leftSpeed = -driver.getLeftYAxis() + 0.4 * Math.pow(leftRight, 2) * Math.signum(leftRight);
         DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 2) * Math.signum(leftRight);
+        if (driver.getYButtonPressed()){
+            if (state.getRobotState() == RobotState.TELEOP) {
+                state.setRobotState(RobotState.VISION);
+            }
+            else {
+                state.setRobotState(RobotState.TELEOP);
+            }
+        }
     } // update the drivebase
 
     public void resetDrive(){

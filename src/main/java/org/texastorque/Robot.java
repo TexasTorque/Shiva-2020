@@ -18,7 +18,7 @@ public class Robot extends TorqueIterative {
   // make instances of subsystems to later place into arraylist 
   private ArrayList<Subsystem> subsystems;
   private Subsystem driveBase = DriveBase.getInstance();
-  private Subsystem shooter = Shooter.getInstance();
+  // private Subsystem shooter = Shooter.getInstance();
   
   // make instances of other useful classes 
   private State state = State.getInstance();
@@ -34,7 +34,7 @@ public class Robot extends TorqueIterative {
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
     subsystems.add(driveBase);
-    subsystems.add(shooter);
+    // subsystems.add(shooter);
   } // initialize subsystems 
 
   @Override
@@ -43,6 +43,9 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void teleopInit(){
+    for(Subsystem system: subsystems){
+      system.teleopInit();
+    }
   } // initialize in teleop
 
   @Override

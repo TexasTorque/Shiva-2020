@@ -15,7 +15,7 @@ public class Feedback {
     } // constructor
 
     public void shooterMode(){
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
     }
     
     public void intakeMode(){
