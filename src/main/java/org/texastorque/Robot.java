@@ -22,17 +22,15 @@ public class Robot extends TorqueIterative {
 
   // make instances of subsystems to later place into arraylist 
   private ArrayList<Subsystem> subsystems;
-  // private Subsystem driveBase = DriveBase.getInstance();
+  private Subsystem driveBase = DriveBase.getInstance();
   // private Subsystem shooter = Shooter.getInstance();
-  private Subsystem climber = Climber.getInstance();
+  //private Subsystem climber = Climber.getInstance();
   
   // make instances of other useful classes 
   private State state = State.getInstance();
   private Input input = Input.getInstance();
   private Feedback feedback = Feedback.getInstance();
 
-  TalonSRX talonA;
-  TalonSRX talonB;
   // ======= initialize ============
   public void robotInit() {
     initSubsystems();    
@@ -40,9 +38,9 @@ public class Robot extends TorqueIterative {
 
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
-    // subsystems.add(driveBase);
+    subsystems.add(driveBase);
     // subsystems.add(shooter);
-    subsystems.add(climber);
+    //subsystems.add(climber);
   } // initialize subsystems 
 
   @Override
@@ -54,6 +52,7 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void teleopInit(){
+    feedback.update();
     state.setRobotState(RobotState.TELEOP);
     for (Subsystem system : subsystems){
       system.teleopInit();
