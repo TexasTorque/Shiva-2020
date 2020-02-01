@@ -5,6 +5,15 @@ import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueMotor;
 
+import com.revrobotics.CANError;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.VictorSP;
 
@@ -12,33 +21,28 @@ import edu.wpi.first.wpilibj.VictorSP;
 public class DriveBase extends Subsystem{
     private static volatile DriveBase instance;
 
-    private TorqueMotor left1;
-    private TorqueMotor left2;
-    private TorqueMotor left3;
-    private TorqueMotor right1;
-    private TorqueMotor right2;
-    private TorqueMotor right3;
-  
+    private CANSparkMax left1 = new CANSparkMax(Ports.DB_LEFT_1, MotorType.kBrushless);
+    private CANSparkMax left2 = new CANSparkMax(Ports.DB_LEFT_2, MotorType.kBrushless);
+    private CANSparkMax right1 = new CANSparkMax(Ports.DB_RIGHT_1, MotorType.kBrushless);
+    private CANSparkMax right2 = new CANSparkMax(Ports.DB_RIGHT_2, MotorType.kBrushless);
+
+    private CANEncoder left1_encoder = left1.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder left2_encoder = left2.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder right1_encoder = right1.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder right2_encoder = right2.getEncoder(EncoderType.kHallSensor, 4096);
+
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
   
     private boolean clockwise = true;
 
     private void DriveBase(){
-        left1 = new TorqueMotor(new VictorSP(Ports.DB_LEFT_1), !clockwise);
-        left2 = new TorqueMotor(new VictorSP(Ports.DB_LEFT_2), !clockwise);
-        left3 = new TorqueMotor(new VictorSP(Ports.DB_LEFT_3), !clockwise);
-        
-        right1 = new TorqueMotor(new VictorSP(Ports.DB_RIGHT_1), clockwise);
-        right2 = new TorqueMotor(new VictorSP(Ports.DB_RIGHT_1), clockwise);
-        right3 = new TorqueMotor(new VictorSP(Ports.DB_RIGHT_3), clockwise);
+
     } // constructor 
 
     // ============= initialization ==========
     @Override 
-    public void autoInit(){
-        
-    }
+    public void autoInit(){}
 
     @Override
     public void teleopInit(){
@@ -47,28 +51,28 @@ public class DriveBase extends Subsystem{
     }
 
     @Override 
-    public void disabledInit(){
-
-    }
+    public void disabledInit(){}
 
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
+        if (state == RobotState.AUTO){
+            leftSpeed = input.getDBLeft();
+            rightSpeed = input.getDBRight();
+        }
         if (state == RobotState.TELEOP){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
         output();
-    }
+    } // run
 
     @Override 
     public void output(){
         left1.set(leftSpeed);
         left2.set(leftSpeed);
-        left3.set(leftSpeed);
         right1.set(rightSpeed);
         right2.set(rightSpeed);
-        right3.set(rightSpeed);
     }
 
     // =========== continuous ==========

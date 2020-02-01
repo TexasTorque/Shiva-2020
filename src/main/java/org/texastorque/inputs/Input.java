@@ -21,7 +21,8 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
-            // updateShooter();
+            updateDrive();
+            updateShooter();
             updateClimber();
         } // update driver things
 
