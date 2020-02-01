@@ -20,7 +20,7 @@ public class Robot extends TorqueIterative {
   private ArrayList<Subsystem> subsystems;
   // private Subsystem driveBase = DriveBase.getInstance();
   private Subsystem shooter = Shooter.getInstance();
-  // private Subsystem climber = Climber.getInstance();
+  private Subsystem climber = Climber.getInstance();
   // private Subsystem intake = Intake.getInstance();
   
   // make instances of other useful classes 

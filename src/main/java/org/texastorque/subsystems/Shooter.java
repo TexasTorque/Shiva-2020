@@ -10,6 +10,7 @@ import org.texastorque.constants.*;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
+import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
@@ -83,7 +84,8 @@ public class Shooter extends Subsystem {
         // talonLead.set(ControlMode.PercentOutput, flywheelPercent);
         // talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
         // PID STUFF
-        SmartDashboard.putNumber("FlywheelVelocity", flywheelSpeed);
+        double measuredSpeed = talonLead.getSelectedSensorVelocity() / Constants.RPM_VICTORSPX_CONVERSION;
+        SmartDashboard.putNumber("FlywheelVelocityRPM", measuredSpeed);
         // SmartDashboard.putNumber("Flywheel Encoder ", )
 
         configurator.setTarget(flywheelSpeed);
@@ -121,6 +123,8 @@ public class Shooter extends Subsystem {
         private final TalonSRX lead;
         private final TalonSRX follower;
 
+        private boolean didGoBelowSetpoint = false;
+
         public ShooterConfiguratorPlugin(int profileSlot, TalonSRX lead, TalonSRX follower) {
             this.leadProfileSlot = profileSlot;
             this.lead = lead;
@@ -136,6 +140,9 @@ public class Shooter extends Subsystem {
             lead.selectProfileSlot(this.leadProfileSlot, 0);
             lead.set(ControlMode.Velocity, 0);
             follower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+            
+            lead.setNeutralMode(NeutralMode.Coast);
+            follower.setNeutralMode(NeutralMode.Coast);
         }
 
         @Override
@@ -144,12 +151,25 @@ public class Shooter extends Subsystem {
             lead.config_kP(this.leadProfileSlot, gains.p);
             lead.config_kI(this.leadProfileSlot, gains.i);
             lead.config_kD(this.leadProfileSlot, gains.d);
+
+            didGoBelowSetpoint = false;
         }
 
         @Override
         public void setOutputTarget(double speed) {
-            lead.set(ControlMode.Velocity, speed);
-            lead.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+            boolean shouldCoast = lead.getSelectedSensorVelocity() > speed;            
+            SmartDashboard.putBoolean("Coasting", shouldCoast); 
+            
+            if (shouldCoast && !didGoBelowSetpoint) {
+                // lead.set(ControlMode.Velocity, 0);
+                lead.neutralOutput();
+                // lead.setNeutralMode(NeutralMode.Coast);
+                // follower.setNeutralMode(NeutralMode.Coast);
+            } else if (!shouldCoast) {
+                didGoBelowSetpoint = true;
+                lead.set(ControlMode.Velocity, speed);
+            }
+            follower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
         }
     }
 
@@ -163,7 +183,7 @@ public class Shooter extends Subsystem {
     
         @Override
         public KPIDGains provide(double setpoint) {
-            final var isHigh = setpoint > 5000;
+            final var isHigh = setpoint > 5000 * Constants.RPM_VICTORSPX_CONVERSION;
             return isHigh ? pidHigh : pidLow;
         }
     };
