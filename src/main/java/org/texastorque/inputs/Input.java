@@ -65,6 +65,12 @@ public class Input {
         DB_rightSpeed = rightSpeed;
     } // TO BE USED IN AUTO ONLY
 
+    // ============= Intake ==============
+
+    private volatile double intake_setpoint = 0;
+
+    public void updateIntake(){}
+
     // ============= Climber ==============
     private volatile double climberSpeed = 0;
     
@@ -83,6 +89,7 @@ public class Input {
     public double getClimberSpeed(){
         return climberSpeed;
     }
+
     // ============= Shooter ==============
 
     private volatile double flywheelSpeed = 0;

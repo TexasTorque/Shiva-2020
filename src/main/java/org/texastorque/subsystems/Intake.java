@@ -29,13 +29,13 @@ public class Intake extends Subsystem{
         private double[] pidValues = new double[] {0.001,0,0,0,0,0,-.5,.5}; 
 
     // =========== motors ===========
-    private CANSparkMax intake1 = new CANSparkMax(Ports.INTAKE1, MotorType.kBrushless);
-    private CANSparkMax intake2 = new CANSparkMax(Ports.INTAKE2, MotorType.kBrushless);
-    private CANSparkMax intake3 = new CANSparkMax(Ports.INTAKE3, MotorType.kBrushless);
+    private CANSparkMax rotaryLeft = new CANSparkMax(Ports.INTAKE_ROTARY_LEFT, MotorType.kBrushless);
+    private CANSparkMax rotaryRight = new CANSparkMax(Ports.INTAKE_ROTARY_RIGHT, MotorType.kBrushless);
+    private CANSparkMax intakeWheels = new CANSparkMax(Ports.INTAKE_WHEELS, MotorType.kBrushless);
     
-    private CANEncoder intakeEncoder1 = intake1.getEncoder(EncoderType.kHallSensor, 4096);
-    private CANEncoder intakeEncoder2 = intake2.getEncoder(EncoderType.kHallSensor, 4096);
-    private CANEncoder intakeEncoder3 = intake3.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder rotaryLeftEncoder = rotaryLeft.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder rotaryRightEncoder = rotaryRight.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder intakeWheelsEncoder = intakeWheels.getEncoder(EncoderType.kHallSensor, 4096);
 
     // ============ others =============
     // === PID ===
