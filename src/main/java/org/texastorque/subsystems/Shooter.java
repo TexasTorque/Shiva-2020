@@ -22,7 +22,6 @@ public class Shooter extends Subsystem {
 
     // ======== variables ==========
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
-    // double flywheelSpeed = 4000*Constants.RPM_VICTORSPX_CONVERSION;
     double flywheelPercent = 1;
 
     // =========== motors ============
