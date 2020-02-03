@@ -21,7 +21,8 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
-            // updateShooter();
+            updateDrive();
+            updateShooter();
             updateClimber();
         } // update driver things
 
@@ -56,6 +57,20 @@ public class Input {
         return DB_rightSpeed;
     } // return right speed
 
+    public void setDBLeftSpeed(double leftSpeed){
+        DB_leftSpeed = leftSpeed;
+    } // TO BE USED IN AUTO ONLY
+
+    public void setDBRightSpeed(double rightSpeed){
+        DB_rightSpeed = rightSpeed;
+    } // TO BE USED IN AUTO ONLY
+
+    // ============= Intake ==============
+
+    private volatile double intake_setpoint = 0;
+
+    public void updateIntake(){}
+
     // ============= Climber ==============
     private volatile double climberSpeed = 0;
     
@@ -74,6 +89,7 @@ public class Input {
     public double getClimberSpeed(){
         return climberSpeed;
     }
+
     // ============= Shooter ==============
 
     private volatile double flywheelSpeed = 0;
@@ -99,7 +115,6 @@ public class Input {
         else {
             flywheelSpeed = 0;
         }
-
     } // update Shooter 
 
     public double getFlywheelSpeed(){

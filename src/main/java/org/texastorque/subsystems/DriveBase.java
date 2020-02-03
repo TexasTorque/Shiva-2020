@@ -11,6 +11,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueMotor;
 
+import com.revrobotics.CANError;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.EncoderType;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.VictorSP;
 
@@ -18,9 +27,15 @@ import edu.wpi.first.wpilibj.VictorSP;
 public class DriveBase extends Subsystem{
     private static volatile DriveBase instance;
 
-    private CANSparkMax sparkLeft1 = new CANSparkMax(1, MotorType.kBrushless);
-    private CANSparkMax sparkLeft2 = new CANSparkMax(2, MotorType.kBrushless);
-    private CANEncoder leftGearbox = new CANEncoder(sparkLeft1);
+    private CANSparkMax left1 = new CANSparkMax(Ports.DB_LEFT_1, MotorType.kBrushless);
+    private CANSparkMax left2 = new CANSparkMax(Ports.DB_LEFT_2, MotorType.kBrushless);
+    private CANSparkMax right1 = new CANSparkMax(Ports.DB_RIGHT_1, MotorType.kBrushless);
+    private CANSparkMax right2 = new CANSparkMax(Ports.DB_RIGHT_2, MotorType.kBrushless);
+
+    private CANEncoder left1_encoder = left1.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder left2_encoder = left2.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder right1_encoder = right1.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder right2_encoder = right2.getEncoder(EncoderType.kHallSensor, 4096);
 
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
@@ -28,14 +43,11 @@ public class DriveBase extends Subsystem{
     private boolean clockwise = true;
 
     private void DriveBase(){
-        leftGearbox.setPositionConversionFactor(Constants.DRIVE_TRAIN_CONVERSION);
     } // constructor 
 
     // ============= initialization ==========
     @Override 
-    public void autoInit(){
-        
-    }
+    public void autoInit(){}
 
     @Override
     public void teleopInit(){
@@ -44,25 +56,28 @@ public class DriveBase extends Subsystem{
     }
 
     @Override 
-    public void disabledInit(){
-
-    }
+    public void disabledInit(){}
 
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
+        if (state == RobotState.AUTO){
+            leftSpeed = input.getDBLeft();
+            rightSpeed = input.getDBRight();
+        }
         if (state == RobotState.TELEOP){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
         output();
-    }
+    } // run
 
     @Override 
     public void output(){
-        sparkLeft1.set(0);
-        sparkLeft2.set(0);
-   
+        left1.set(leftSpeed);
+        left2.set(leftSpeed);
+        right1.set(rightSpeed);
+        right2.set(rightSpeed);
     }
 
     // =========== continuous ==========
@@ -78,7 +93,7 @@ public class DriveBase extends Subsystem{
     // =========== others ===========
     @Override 
     public void smartDashboard(){
-        SmartDashboard.putNumber("DT Encoder", leftGearbox.getPosition());
+        
     } // display all this to smart dashboard
 
     public static DriveBase getInstance(){
