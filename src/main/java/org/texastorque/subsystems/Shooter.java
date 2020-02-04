@@ -7,6 +7,7 @@ import org.texastorque.constants.*;
 import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;;
 
 // ========= Shooter ==========
@@ -26,6 +27,7 @@ public class Shooter extends Subsystem {
     // =========== motors ============
     TalonSRX talonLead = new TalonSRX(Ports.FLYWHEEL_LEAD);
     TalonSRX talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
+
     
     private void Shooter(){
         // PID STUFF 

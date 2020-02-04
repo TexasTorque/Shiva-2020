@@ -52,8 +52,9 @@ public class Climber extends Subsystem{
     } // teleop init
 
     @Override 
-    public void disabledInit(){}
+    public void disabledInit(){
 
+    }
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
