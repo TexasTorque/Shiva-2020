@@ -20,13 +20,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import java.util.ArrayList;
+
 // =========== Intake =============
 public class Intake extends Subsystem{
     private static volatile Intake instance;
 
     // =========== variables ===========
-        // pid Values = kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM
-        private double[] pidValues = new double[] {0.001,0,0,0,0,0,-.5,.5}; 
+    // pid Values = kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM
+    
 
     // =========== motors ===========
     private CANSparkMax rotaryLeft = new CANSparkMax(Ports.INTAKE_ROTARY_LEFT, MotorType.kBrushless);
@@ -69,7 +71,7 @@ public class Intake extends Subsystem{
 
     @Override 
     public void output(){
-
+        // rotaryLeft.set()
     } // output
 
     // ============= continuous =============

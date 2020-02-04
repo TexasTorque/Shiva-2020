@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  * motor controllers. Talons, Jaguars, and Victor SP's are basically perfect and
  * do not need linearization.
  */
+
 public class TorqueMotor {
 
 	private SpeedController controller;
