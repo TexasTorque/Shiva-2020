@@ -142,11 +142,32 @@ public class TorqueMotor {
 	public double getVelocity(){
 		switch(type){
 			case TALONSRX:
-				return talon.getSelectedSensorVelocity();
+				try{
+					return talon.getSelectedSensorVelocity();
+				} catch (Exception e){
+					System.out.println(e);
+					System.out.println("There is no encoder present, you need to put one in");
+				}
 			case SPARKMAX:
 				return sparkEncoder.getVelocity();
 		}
 		return 0;
 	} // get velocity
-	
+
+	public double getPosition(){
+		switch(type){
+			case TALONSRX:
+				try{
+					return talon.getSelectedSensorPosition();
+				} catch (Exception e){
+					System.out.println(e);
+					System.out.println("There is no encoder present, you need to put one in");
+				}
+				
+			case SPARKMAX:
+				return sparkEncoder.getPosition();
+		}
+		return 0;
+	} // get position
+
 } // TorqueMotor 

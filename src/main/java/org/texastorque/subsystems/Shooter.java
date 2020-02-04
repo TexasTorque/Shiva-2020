@@ -59,6 +59,7 @@ public class Shooter extends Subsystem {
     public void output() {
         double measuredSpeed = talonLead.getVelocity() / Constants.RPM_VICTORSPX_CONVERSION;
         SmartDashboard.putNumber("FlywheelVelocityRPM", measuredSpeed);
+        SmartDashboard.putNumber("FlywheelPosition", talonLead.getPosition());
         talonLead.set(flywheelSpeed, ControlMode.Velocity);
         talonFollow.set(Ports.FLYWHEEL_LEAD, ControlMode.Follower);
     } // output
