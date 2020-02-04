@@ -107,10 +107,10 @@ public class Input {
             flywheelPercent = 0;
         }
         if (driver.getBButtonReleased()){
-            flywheelSpeed = 3000*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
         } 
         else if (driver.getXButtonReleased()){
-            flywheelSpeed = -3000*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
         }
         else {
             flywheelSpeed = 0;

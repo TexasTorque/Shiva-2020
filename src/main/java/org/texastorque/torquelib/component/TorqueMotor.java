@@ -1,145 +1,152 @@
 package org.texastorque.torquelib.component;
 
-//import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import org.texastorque.util.KPID;
 
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.VictorSP;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
-/**
- * Generic Motor class that also provides linearization for IFI/Vex Pro 88x
- * motor controllers. Talons, Jaguars, and Victor SP's are basically perfect and
- * do not need linearization.
- */
+
 
 public class TorqueMotor {
+	private ControllerType type;
 
-	private SpeedController controller;
-	private boolean reverse;
-
-	private LinearizationType linearizer;
-
-	private double previousSpeed;
-
-	/**
-	 * Create a new motor.
-	 *
-	 * @param sc
-	 *            The SpeedController object.
-	 * @param rev
-	 *            Whether or not the motor is reversed.
-	 *            <p/>
-	 *            SpeedController is an interface implemented by Victor, Talon,
-	 *            Jaguar.
-	 * @see edu.wpi.first.wpilibj.SpeedController
-	 */
-	public TorqueMotor(SpeedController sc, boolean rev) {
-		this(sc, rev, LinearizationType.kNone);
+	public enum ControllerType {
+		VICTOR, TALONSRX, SPARKMAX;
 	}
 
-	/**
-	 * Create a new motor.
-	 *
-	 * @param sc
-	 *            The SpeedController object.
-	 * @param rev
-	 *            Whether or not the motor is reversed.
-	 * @param linType
-	 *            The linearization method to be used.
-	 *            <p/>
-	 *            SpeedController is an interface implemented by Victor, Talon,
-	 *            Jaguar.
-	 * @see edu.wpi.first.wpilibj.SpeedController
-	 */
-	public TorqueMotor(SpeedController sc, boolean rev, LinearizationType linType) {
-		controller = sc;
-		reverse = rev;
+	private SpeedController victor;
+	private TalonSRX talon;
+	private CANSparkMax spark;
 
-		linearizer = linType;
-	}
+	private CANEncoder sparkEncoder;
 
-	/**
-	 * Set the speed of the motor.
-	 *
-	 * @param speed
-	 *            The speed to be set to the output.
-	 */
-	public void set(double speed) {
+	private double minOutput;
+	private double maxOutput;
+	private boolean currentLimit;
 
-		if (speed > 1) {
-			speed = 1;
-		} else if (speed < -1) {
-			speed = -1;
+	// ----------------- Constructor -----------------
+	public TorqueMotor(ControllerType type, int port) {
+		this.type = type;
+		switch (type) {
+		case VICTOR:
+			victor = new VictorSP(port);
+			break;
+		case TALONSRX:
+			talon = new TalonSRX(port);
+			break;
+		case SPARKMAX:
+			spark = new CANSparkMax(port, MotorType.kBrushless);
+			sparkEncoder = spark.getEncoder();
+			break;
 		}
+	} // constructor 
 
-		speed = linearizer.linearize(speed);
-
-		if (speed != previousSpeed) {
-
-			if (reverse) {
-				speed *= -1;
-			}
-			controller.set(speed);
-
-			previousSpeed = speed;
+	// ------------------ Set Methods ------------------
+	//for setting raw outputs to all kinds of motors
+	public void set(double output){
+		switch (type) {
+			case VICTOR:
+				victor.set(output);
+				break;
+			case TALONSRX:
+				talon.set(ControlMode.PercentOutput, output);
+				break;
+			case SPARKMAX:
+				spark.set(output);
+				break;
 		}
-	}
+	} // generic set method 
 
-	/**
-	 * Specifies the logistic fits used for linearization. This data was
-	 * obtained experimentally using some old controllers I had laying around.
-	 * The results are not perfect but it's a lot closer to linear than the
-	 * normal behaviour.
-	 *
-	 */
-	public enum LinearizationType {
+	//for setting a talonsrx to a control mode and output (Position, Velocity, Lead/Follower)
+	public void set(double output, ControlMode mode){
+		switch (type) {
+			case TALONSRX:
+				if (mode == ControlMode.Follower){
+					output = (int)output;
+				} // if follower 
+				talon.set(mode, output);
+				break;
+		} // outside switch statement 
+	} // set with control mode for talon 
 
-		k888(1.000720771, 6.395094471, -24.892191226, 12.465463138, 1.25, true), k884(1.130283678, -10.497754480,
-				24.996120969, -12.608256373, 5.5, true), kNone(0, 0, 0, 0, 0, false);
-
-		double m_A;
-		double m_B;
-		double m_C;
-		double m_D;
-
-		double m_deadband;
-
-		boolean doLinearize;
-
-		private LinearizationType(double A, double B, double C, double D, double deadband, boolean linearize) {
-			m_A = A;
-			m_B = B;
-			m_C = C;
-			m_D = D;
-
-			doLinearize = linearize;
-
-			m_deadband = deadband;
-		}
-
-		public double linearize(double in) {
-
-			if (doLinearize) {
-				if (Math.abs(in) < 0.01) {
-					// Dont bother for really small inputs.
-					return 0.0;
-				} else if (in > 0.0) {
-					in = (1 - m_deadband) * in + m_deadband;
-				} else if (in < 0.0) {
-					in = (1 - m_deadband) * in - m_deadband;
+	public void set(double output, ControlType ctrlType){
+		switch(type){
+			case SPARKMAX:
+				try{
+					sparkPID.setReference(output, ctrlType);
+				} catch (Exception e){
+					System.out.println(e);
+					System.out.println("You need to configure the PID");
 				}
-
-				// Uses the inverse of the logistic fit we did on raw data to
-				// find
-				// the signal value needed to ouput the desired voltage.
-				double out = m_C / (12.8 * in - m_D);
-				out = out - 1;
-				out = out / m_A;
-				out = Math.log(out);
-				out = out / m_B;
-
-				return out;
-			} else {
-				return in;
-			}
+				break;
 		}
-	}
-}
+	} // set with control type for spark max 
+	
+	// ----------------------------- PID Stuff ----------------------------
+	private PIDController talonPID;
+	private CANPIDController sparkPID;
+	public void configurePID(KPID kPID){
+		switch (type) {
+			case TALONSRX:
+				// talonPID = new PIDController(kPID.p(), kPID.i(), kPID.d());
+				// talonPID.enable()
+				talon.config_kP(0, kPID.p());
+				talon.config_kI(0, kPID.i());
+				talon.config_kD(0, kPID.d());
+				talon.config_kF(0, kPID.f());
+				talon.configPeakOutputForward(kPID.max());
+				talon.configPeakOutputReverse(kPID.min());
+				break;
+			//need to figure out control modes for sparkmax
+			case SPARKMAX:
+				sparkPID = spark.getPIDController();
+				sparkPID.setP(kPID.p());
+				sparkPID.setI(kPID.i());
+				sparkPID.setD(kPID.d());
+				sparkPID.setFF(kPID.f());
+				sparkPID.setOutputRange(kPID.min(), kPID.max());
+				break;
+		} // type switch
+	} // configure PID
+
+	public void updatePID(KPID kPID){
+		switch (type) {
+			case TALONSRX:
+				talon.config_kP(0, kPID.p());
+				talon.config_kI(0, kPID.i());
+				talon.config_kD(0, kPID.d());
+				talon.config_kF(0, kPID.f());
+				break;
+			//need to figure out control modes for sparkmax
+			case SPARKMAX:
+				sparkPID.setP(kPID.p());
+				sparkPID.setI(kPID.i());
+				sparkPID.setD(kPID.d());
+				sparkPID.setFF(kPID.f());
+				sparkPID.setOutputRange(kPID.min(), kPID.max());
+				break;
+		} // type switch
+	} // update PID
+
+	// ----------------------- Encoder Stuff ---------------------
+
+	public double getVelocity(){
+		switch(type){
+			case TALONSRX:
+				return talon.getSelectedSensorVelocity();
+			case SPARKMAX:
+				return sparkEncoder.getVelocity();
+		}
+		return 0;
+	} // get velocity
+	
+} // TorqueMotor 
