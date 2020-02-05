@@ -1,36 +1,30 @@
 package org.texastorque.subsystems;
 
-// ============ imports ===========
+// ============ inputs ===========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueMotor;
 import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 import org.texastorque.util.KPID;
+import org.texastorque.util.pid.KPIDGains;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.revrobotics.ControlType;
+// ================== Climber ==================
+public class Magazine extends Subsystem{
+    private static volatile Magazine instance;
 
-import java.util.ArrayList;
+    // ============ variables =============
+    private KPID beltPID = new KPID(0, 0, 0, 0, -1, 1);
+    private double beltSpeed = 0;
 
-// =========== Intake =============
-public class Intake extends Subsystem{
-    private static volatile Intake instance;
-
-    // =========== variables ===========
-    // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
-    KPID kPIDRotary = new KPID(0, 0, 0, 0, 0, 0);
-    private double rotaryPosition = 0;
-
-    // =========== motors ===========
-    private TorqueMotor rotary = new TorqueMotor(ControllerType.SPARKMAX, Ports.INTAKE_ROTARY_LEAD);
-    private TorqueMotor rollers = new TorqueMotor(ControllerType.SPARKMAX, Ports.INTAKE_ROLLERS);
+    // ============ motors ==============
+    private TorqueMotor belt = new TorqueMotor(ControllerType.TALONSRX, Ports.BELT_LEAD);
 
     // =================== methods ==================
-    private void Intake(){
-        rotary.addFollower(Ports.INTAKE_ROTARY_FOLLOW);
-        rotary.configurePID(kPIDRotary);
+    private void Climber(){
+        belt.addFollower(Ports.BELT_FOLLOW);
     } // constructor 
 
     @Override
@@ -46,17 +40,16 @@ public class Intake extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.AUTO){
-
         }
         if (state == RobotState.TELEOP){
-            rotaryPosition += input.getRotaryPosition();
+            beltSpeed = input.getMag();
         }
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        rotary.set(rotaryPosition, ControlType.kPosition);
+        belt.set(beltSpeed); // running raw output rn (maybe add pid later?)
     } // output
 
     // ============= continuous =============
@@ -76,13 +69,14 @@ public class Intake extends Subsystem{
 
     } // display all this to smart dashboard
 
-    public static Intake getInstance(){
+    public static Magazine getInstance(){
         if (instance == null){
-            synchronized(Intake.class){
+            synchronized(Magazine.class){
                 if (instance == null)
-                    instance = new Intake();
+                    instance = new Magazine();
             }
         }
         return instance;
     } // getInstance
-} // Intake
+
+} // Climber 

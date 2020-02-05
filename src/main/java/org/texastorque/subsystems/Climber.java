@@ -24,8 +24,6 @@ public class Climber extends Subsystem{
     private static volatile Climber instance;
 
     // ============ variables =============
-    // pid Values = kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM
-    private double[] pidValues = new double[] {0.001,0,0,0,0,0,-.5,.5}; 
 
     // ============ motors ==============
     private CANSparkMax climber1 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
@@ -61,7 +59,7 @@ public class Climber extends Subsystem{
             
             // SmartDashboard.putNumber("input", input.getClimberSpeed());
             // ==== Raw Output ====
-            climber1.set(0.30*input.getMagDirection());
+            climber1.set(input.getMag());
             // climber2.set(0.5);
             // 5805 units = 770 rpm
             // ==== PID ====

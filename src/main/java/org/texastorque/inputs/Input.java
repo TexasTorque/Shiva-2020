@@ -28,6 +28,7 @@ public class Input {
         } // update driver things
 
         if (operator != null){
+            updateMagazine();
         } // update operator things 
     } // update controllers
 
@@ -83,22 +84,28 @@ public class Input {
         return rotaryPosition;
     }
 
-    double magDirection = 0;
+    // ============ Magazine ============
+    double magVelocity = 0;
+    double magSpeed = .3; // keep this number positive
 
-    public double getMagDirection(){
-        return magDirection;
-    }
+    public void updateMagazine(){
+        magVelocity = 0;
+        if (operator.getLeftBumper()){
+            magVelocity = -magSpeed;
+        }
+        else if(operator.getRightBumper()){
+            magVelocity = magSpeed;
+        }
+    } // update Magazine 
+
+    public double getMag(){
+        return magVelocity;
+    } // get Mag Direction
+
     // ============= Climber ==============
     private volatile double climberSpeed = 0;
     
     public void updateClimber(){
-        magDirection = 0;
-        if (operator.getLeftBumper()){
-            magDirection = -1;
-        }
-        else if(operator.getRightBumper()){
-            magDirection = 1;
-        }
     } // update Climber 
 
     // ============= Shooter ==============

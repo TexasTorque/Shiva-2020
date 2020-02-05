@@ -18,6 +18,8 @@ public class Ports {
     // neo 550 CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
     public static final int INTAKE_ROTARY_LEAD = 0;
     public static final int INTAKE_ROTARY_FOLLOW = 0;
-    public static final int INTAKE_WHEELS = 0;
+    public static final int INTAKE_ROLLERS = 0;
     
+    public static final int BELT_LEAD = 0;
+    public static final int BELT_FOLLOW = 0;
 } // ports 

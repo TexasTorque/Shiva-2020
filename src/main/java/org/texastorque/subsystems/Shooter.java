@@ -18,17 +18,21 @@ public class Shooter extends Subsystem {
     private static volatile Shooter instance;
 
     // ======== variables ==========
-    private ArrayList<Object> pidValues = new ArrayList<Object>();
+    private ArrayList<KPID> pidValues = new ArrayList<>();
+    KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
+    KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
+
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
-    double flywheelPercent = 1;
-    KPID kPIDLow = new KPID(0.2401, 0, 5, 0.00902, -.5, .5);
-
+    
     // =========== motors ============
-    private TorqueMotor talonLead = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_LEAD);
-    private TorqueMotor talonFollow = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_FOLLOW);
+    private TorqueMotor flywheel = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_LEAD);
 
+    // =========================================== methods ==============================================
     private Shooter() {
-        talonLead.configurePID(kPIDLow);
+        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        pidValues.add(kPIDLow);
+        pidValues.add(kPIDHigh);
+        flywheel.configurePID(pidValues.get(0));
     } // constructor
 
     // ============= initialization ==========
@@ -48,20 +52,23 @@ public class Shooter extends Subsystem {
     // ============ actually doing stuff ==========
     @Override
     public void run(RobotState state) {
+        if (state == RobotState.AUTO){
+        } // if in autonomous
         if (state == RobotState.TELEOP) {
             flywheelSpeed += input.getFlywheelSpeed();
-            flywheelPercent += input.getFlywheelPercent();
+            if (flywheelSpeed > 4500){
+                flywheel.updatePID(pidValues.get(1));
+            } // set to pid high
+            else {
+                flywheel.updatePID(pidValues.get(0));
+            } // set to pid low
         } // if in teleop
         output();
     } // run at all times
 
     @Override
     public void output() {
-        double measuredSpeed = talonLead.getVelocity() / Constants.RPM_VICTORSPX_CONVERSION;
-        SmartDashboard.putNumber("FlywheelVelocityRPM", measuredSpeed);
-        SmartDashboard.putNumber("FlywheelPosition", talonLead.getPosition());
-        talonLead.set(flywheelSpeed, ControlMode.Velocity);
-        talonFollow.set(Ports.FLYWHEEL_LEAD, ControlMode.Follower);
+        flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
     // =========== continuous ==========
@@ -77,7 +84,7 @@ public class Shooter extends Subsystem {
     // =========== others ===========
     @Override
     public void smartDashboard() {
-
+        SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
     } // display all this to smart dashboard
 
     public static synchronized Shooter getInstance() {
