@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
 
-
+import java.util.ArrayList;
 
 public class TorqueMotor {
 	private ControllerType type;
@@ -29,6 +29,7 @@ public class TorqueMotor {
 
 	private CANEncoder sparkEncoder;
 
+	private int port;
 	private double minOutput;
 	private double maxOutput;
 	private boolean currentLimit;
@@ -36,6 +37,7 @@ public class TorqueMotor {
 	// ----------------- Constructor -----------------
 	public TorqueMotor(ControllerType type, int port) {
 		this.type = type;
+		this.port = port;
 		switch (type) {
 		case VICTOR:
 			victor = new VictorSP(port);
@@ -59,30 +61,37 @@ public class TorqueMotor {
 				break;
 			case TALONSRX:
 				talon.set(ControlMode.PercentOutput, output);
+				for(TalonSRX talonSRX : talonFollowers){
+					talonSRX.set(ControlMode.PercentOutput, port);
+				}
 				break;
 			case SPARKMAX:
 				spark.set(output);
+				// for(CANSparkMax)
 				break;
 		}
 	} // generic set method 
 
 	//for setting a talonsrx to a control mode and output (Position, Velocity, Lead/Follower)
-	public void set(double output, ControlMode mode){
+	public void set(double output, ControlMode modeTalon){
 		switch (type) {
 			case TALONSRX:
-				if (mode == ControlMode.Follower){
+				if (modeTalon == ControlMode.Follower){
 					output = (int)output;
 				} // if follower 
-				talon.set(mode, output);
+				talon.set(modeTalon, output);
+				for(TalonSRX talonSRX : talonFollowers){
+					talonSRX.set(modeTalon, port);
+				}
 				break;
 		} // outside switch statement 
 	} // set with control mode for talon 
 
-	public void set(double output, ControlType ctrlType){
+	public void set(double output, ControlType ctrlTypeSparkMax){
 		switch(type){
 			case SPARKMAX:
 				try{
-					sparkPID.setReference(output, ctrlType);
+					sparkPID.setReference(output, ctrlTypeSparkMax);
 				} catch (Exception e){
 					System.out.println(e);
 					System.out.println("You need to configure the PID");
@@ -90,6 +99,20 @@ public class TorqueMotor {
 				break;
 		}
 	} // set with control type for spark max 
+
+	// ----------------------------- Followers --------------------------
+	private ArrayList<TalonSRX> talonFollowers = new ArrayList<>();
+	private ArrayList<CANSparkMax> sparkMaxFollowers = new ArrayList<>();
+
+	public void addFollower(int port){
+		switch(type) {
+			case TALONSRX:
+				talonFollowers.add(new TalonSRX(port));
+				break;
+			case SPARKMAX:
+				sparkMaxFollowers.add(new CANSparkMax(port, MotorType.kBrushless));
+		}
+	} // add follower 
 	
 	// ----------------------------- PID Stuff ----------------------------
 	private PIDController talonPID;

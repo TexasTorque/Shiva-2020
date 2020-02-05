@@ -4,21 +4,14 @@ package org.texastorque.subsystems;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
+import org.texastorque.torquelib.component.TorqueMotor;
+import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
+import org.texastorque.util.KPID;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import com.revrobotics.CANError;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import java.util.ArrayList;
 
@@ -27,24 +20,21 @@ public class Intake extends Subsystem{
     private static volatile Intake instance;
 
     // =========== variables ===========
-    // pid Values = kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM
-    
+    // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
+    KPID kPIDRotary = new KPID(0, 0, 0, 0, 0, 0);
+    private double rotaryPosition = 0;
 
     // =========== motors ===========
-    private CANSparkMax rotaryLeft = new CANSparkMax(Ports.INTAKE_ROTARY_LEFT, MotorType.kBrushless);
-    private CANSparkMax rotaryRight = new CANSparkMax(Ports.INTAKE_ROTARY_RIGHT, MotorType.kBrushless);
-    private CANSparkMax intakeWheels = new CANSparkMax(Ports.INTAKE_WHEELS, MotorType.kBrushless);
+    private TorqueMotor rotaryLead = new TorqueMotor(ControllerType.SPARKMAX, Ports.INTAKE_ROTARY_LEAD);
+    private TorqueMotor intakeWheels = new TorqueMotor(ControllerType.SPARKMAX, Ports.INTAKE_WHEELS);
     
-    private CANEncoder rotaryLeftEncoder = rotaryLeft.getEncoder(EncoderType.kHallSensor, 4096);
-    private CANEncoder rotaryRightEncoder = rotaryRight.getEncoder(EncoderType.kHallSensor, 4096);
-    private CANEncoder intakeWheelsEncoder = intakeWheels.getEncoder(EncoderType.kHallSensor, 4096);
-
     // ============ others =============
-    // === PID ===
-    // private CANPIDController intakePID = intake.getPIDController();
     
+
     // =================== methods ==================
     private void Intake(){
+        rotaryLead.configurePID(kPIDRotary);
+        rotaryLead.addFollower(Ports.INTAKE_ROTARY_FOLLOW);
     } // constructor 
 
     @Override
@@ -52,11 +42,7 @@ public class Intake extends Subsystem{
 
     @Override
     public void teleopInit(){
-        // === PID ===
-        // intakePID.setP(pidValues[0]);
-        // intakePID.setI(pidValues[1]);
-        // intakePID.setD(pidValues[2]);
-        // intakePID.setOutputRange(pidValues[6], pidValues[7]);
+        
     } // teleop init
 
     @Override 
@@ -66,12 +52,14 @@ public class Intake extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
+            rotaryPosition += input.getRotaryPosition();
         }
+        output();
     } // run at all times 
 
     @Override 
     public void output(){
-        // rotaryLeft.set()
+        rotaryLead.set(rotaryPosition, ControlType.kPosition);
     } // output
 
     // ============= continuous =============

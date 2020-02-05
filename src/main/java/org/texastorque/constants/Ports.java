@@ -16,8 +16,8 @@ public class Ports {
     public static final int CLIMBER2 = 2;
 
     // neo 550 CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
-    public static final int INTAKE_ROTARY_LEFT = 0;
-    public static final int INTAKE_ROTARY_RIGHT = 0;
+    public static final int INTAKE_ROTARY_LEAD = 0;
+    public static final int INTAKE_ROTARY_FOLLOW = 0;
     public static final int INTAKE_WHEELS = 0;
     
 } // ports 

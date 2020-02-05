@@ -28,12 +28,12 @@ public class Climber extends Subsystem{
     private double[] pidValues = new double[] {0.001,0,0,0,0,0,-.5,.5}; 
 
     // ============ motors ==============
-    private CANSparkMax climber1 = new CANSparkMax(Ports.CLIMBER1, MotorType.kBrushless);
-    private CANSparkMax climber2 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
+    private CANSparkMax climber1 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
+    // private CANSparkMax climber2 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
     // === PID ===
     // private CANPIDController climberPID = climber.getPIDController();
     private CANEncoder climberEncoder1 = climber1.getEncoder(EncoderType.kHallSensor, 4096);
-    private CANEncoder climberEncoder2 = climber2.getEncoder(EncoderType.kHallSensor, 4096);
+    // private CANEncoder climberEncoder2 = climber2.getEncoder(EncoderType.kHallSensor, 4096);
 
     // =================== methods ==================
     private void Climber(){
@@ -58,17 +58,18 @@ public class Climber extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
-            SmartDashboard.putNumber("input", input.getClimberSpeed());
+            
+            // SmartDashboard.putNumber("input", input.getClimberSpeed());
             // ==== Raw Output ====
-            climber1.set(1);
-            climber2.set(1);
+            climber1.set(0.30*input.getMagDirection());
+            // climber2.set(0.5);
             // 5805 units = 770 rpm
             // ==== PID ====
             // climberPID.setReference(-300, ControlType.kVelocity);
             SmartDashboard.putNumber("neo encoder1", climberEncoder1.getVelocity());
-            SmartDashboard.putNumber("neo encoder2", climberEncoder2.getVelocity());
+            // SmartDashboard.putNumber("neo encoder2", climberEncoder2.getVelocity());
             SmartDashboard.putNumber("neo current1", climber1.getOutputCurrent());
-            SmartDashboard.putNumber("neo current2", climber2.getOutputCurrent());
+            // SmartDashboard.putNumber("neo current2", climber2.getOutputCurrent());
         }
     } // run at all times 
 

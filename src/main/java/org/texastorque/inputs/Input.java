@@ -24,6 +24,7 @@ public class Input {
             updateDrive();
             updateShooter();
             updateClimber();
+            updateIntake();
         } // update driver things
 
         if (operator != null){
@@ -67,28 +68,38 @@ public class Input {
 
     // ============= Intake ==============
 
-    private volatile double intake_setpoint = 0;
+    private volatile double rotaryPosition = 0;
 
-    public void updateIntake(){}
+    public void updateIntake(){
+        if (driver.getYButtonReleased()){
+            rotaryPosition += 100;
+        }
+        else if (driver.getAButtonReleased()){
+            rotaryPosition -= 100;
+        }
+    } // update Intake 
 
+    public double getRotaryPosition(){
+        return rotaryPosition;
+    }
+
+    double magDirection = 0;
+
+    public double getMagDirection(){
+        return magDirection;
+    }
     // ============= Climber ==============
     private volatile double climberSpeed = 0;
     
     public void updateClimber(){
-        if (driver.getYButtonReleased()){
-            climberSpeed = .500;
+        magDirection = 0;
+        if (operator.getLeftBumper()){
+            magDirection = -1;
         }
-        else if (driver.getXButtonReleased()){
-            climberSpeed = 0;
-        }
-        else if (driver.getAButtonReleased()){
-            climberSpeed = -.500;
+        else if(operator.getRightBumper()){
+            magDirection = 1;
         }
     } // update Climber 
-
-    public double getClimberSpeed(){
-        return climberSpeed;
-    }
 
     // ============= Shooter ==============
 
@@ -96,16 +107,6 @@ public class Input {
     private volatile double flywheelPercent = 0;
 
     public void updateShooter(){
-        // for now this is controlling the rotary on Ray by position
-        if (driver.getYButtonReleased()){
-            flywheelPercent = 0.5;
-        } 
-        else if (driver.getAButtonReleased()){
-            flywheelPercent = -0.5;
-        }
-        else {
-            flywheelPercent = 0;
-        }
         if (driver.getBButtonReleased()){
             flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
         } 
