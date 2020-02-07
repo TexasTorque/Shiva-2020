@@ -22,4 +22,8 @@ public class Ports {
     
     public static final int BELT_LEAD = 0;
     public static final int BELT_FOLLOW = 0;
+
+    // testing individual motors 
+    public static final int TALON_PORT = 0;
+    public static final int SPARKMAX_PORT = 0;
 } // ports 
