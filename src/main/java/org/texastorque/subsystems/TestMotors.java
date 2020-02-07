@@ -9,27 +9,21 @@ import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-
-import com.revrobotics.CANError;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 // ================== TestMotors ==================
 public class TestMotors extends Subsystem{
     private static volatile TestMotors instance;
 
     // ============ variables =============
+    private double speed = 0;
+    private double position = 0; 
 
     // ============ motors ==============
-    private TorqueMotor testTalon = new TorqueMotor(ControllerType.VICTOR, Ports.TALON_PORT);
+    // private TorqueMotor testTalon = new TorqueMotor(ControllerType.VICTOR, Ports.TALON_PORT);
     private TorqueMotor testSparkMax = new TorqueMotor(ControllerType.SPARKMAX, Ports.SPARKMAX_PORT);
 
     // =================== methods ==================
-    private void TestMotors(){
+    private TestMotors(){
+        testSparkMax.addFollower(Ports.SPARKMAX_PORT_2);
     } // constructor 
 
     @Override
@@ -46,12 +40,15 @@ public class TestMotors extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
+            speed = input.getMag();
         }
+        output();
     } // run at all times 
 
     @Override 
     public void output(){
-
+        // testTalon.set(speed);
+        testSparkMax.set(speed);
     } // output
 
     // ============= continuous =============

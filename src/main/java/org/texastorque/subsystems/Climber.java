@@ -26,7 +26,7 @@ public class Climber extends Subsystem{
     // ============ variables =============
 
     // ============ motors ==============
-    private CANSparkMax climber1 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
+    private CANSparkMax climber1 = new CANSparkMax(Ports.CLIMBER1, MotorType.kBrushless);
     // private CANSparkMax climber2 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
     // === PID ===
     // private CANPIDController climberPID = climber.getPIDController();

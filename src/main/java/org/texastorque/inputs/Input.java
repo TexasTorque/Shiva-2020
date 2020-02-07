@@ -70,6 +70,7 @@ public class Input {
     // ============= Intake ==============
 
     private volatile double rotaryPosition = 0;
+    private double rotarySpeed = 0;
 
     public void updateIntake(){
         if (driver.getYButtonReleased()){
@@ -78,7 +79,17 @@ public class Input {
         else if (driver.getAButtonReleased()){
             rotaryPosition -= 100;
         }
+        if (operator.getRightBumper()){
+            rotarySpeed = 0.3;
+        }
+        else if (operator.getLeftBumper()){
+            rotarySpeed = - 0.3;
+        }
     } // update Intake 
+
+    public double getRotarySpeed(){
+        return rotarySpeed;
+    }
 
     public double getRotaryPosition(){
         return rotaryPosition;
@@ -86,7 +97,7 @@ public class Input {
 
     // ============ Magazine ============
     double magVelocity = 0;
-    double magSpeed = .3; // keep this number positive
+    double magSpeed = 1; // keep this number positive
 
     public void updateMagazine(){
         magVelocity = 0;

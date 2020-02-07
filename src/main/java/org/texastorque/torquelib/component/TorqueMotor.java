@@ -30,6 +30,7 @@ public class TorqueMotor {
 	private CANEncoder sparkEncoder;
 
 	private int port;
+	private boolean invert = false;
 	private double minOutput;
 	private double maxOutput;
 	private boolean currentLimit;
@@ -62,12 +63,14 @@ public class TorqueMotor {
 			case TALONSRX:
 				talon.set(ControlMode.PercentOutput, output);
 				for(TalonSRX talonSRX : talonFollowers){
-					talonSRX.set(ControlMode.PercentOutput, port);
-				}
+					talonSRX.set(ControlMode.Follower, port);
+				} // takes care of followers 
 				break;
 			case SPARKMAX:
 				spark.set(output);
-				// for(CANSparkMax)
+				for(CANSparkMax canSparkMax: sparkMaxFollowers){
+					canSparkMax.follow(spark);
+				} // takes care of followers 
 				break;
 		}
 	} // generic set method 
@@ -76,13 +79,10 @@ public class TorqueMotor {
 	public void set(double output, ControlMode modeTalon){
 		switch (type) {
 			case TALONSRX:
-				if (modeTalon == ControlMode.Follower){
-					output = (int)output;
-				} // if follower 
 				talon.set(modeTalon, output);
 				for(TalonSRX talonSRX : talonFollowers){
-					talonSRX.set(modeTalon, port);
-				}
+					talonSRX.set(ControlMode.Follower, port);
+				} // takes care of followers 
 				break;
 		} // outside switch statement 
 	} // set with control mode for talon 
@@ -92,6 +92,9 @@ public class TorqueMotor {
 			case SPARKMAX:
 				try{
 					sparkPID.setReference(output, ctrlTypeSparkMax);
+					for(CANSparkMax canSparkMax : sparkMaxFollowers){
+						canSparkMax.follow(spark, invert);
+					} // takes care of followers 
 				} catch (Exception e){
 					System.out.println(e);
 					System.out.println("You need to configure the PID");
@@ -108,11 +111,13 @@ public class TorqueMotor {
 		switch(type) {
 			case TALONSRX:
 				talonFollowers.add(new TalonSRX(port));
+				System.out.println("Added talon follower");
 				break;
 			case SPARKMAX:
 				sparkMaxFollowers.add(new CANSparkMax(port, MotorType.kBrushless));
+				System.out.println("Added spark max follower");
 		}
-	} // add follower 
+	} // adds a follower motor 
 	
 	// ----------------------------- PID Stuff ----------------------------
 	private PIDController talonPID;
@@ -192,5 +197,10 @@ public class TorqueMotor {
 		}
 		return 0;
 	} // get position
+
+	// ================ Other Stuff =====================
+	public void invertFollower(){
+		invert = !invert;
+	} // invert follower - flips the direction of the follower from what it was previously, default direction is same as leader 
 
 } // TorqueMotor 
