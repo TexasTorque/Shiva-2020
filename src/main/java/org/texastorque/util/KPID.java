@@ -12,7 +12,6 @@ public class KPID {
   
 
     public KPID(){
-        kGains = 0;
         pGains = 0;
         iGains = 0;
         dGains = 0;
