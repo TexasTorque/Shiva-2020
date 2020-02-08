@@ -4,7 +4,7 @@ package org.texastorque.subsystems;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
-import org.texastorque.torquelib.component.TorqueMotor;
+import org.texastorque.torquelib.component.TorqueSparkMax;
 import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,8 +18,7 @@ public class TestMotors extends Subsystem{
     private double position = 0; 
 
     // ============ motors ==============
-    // private TorqueMotor testTalon = new TorqueMotor(ControllerType.VICTOR, Ports.TALON_PORT);
-    private TorqueMotor testSparkMax = new TorqueMotor(ControllerType.SPARKMAX, Ports.SPARKMAX_PORT);
+    private TorqueSparkMax testSparkMax = new TorqueSparkMax(Ports.SPARKMAX_PORT);
 
     // =================== methods ==================
     private TestMotors(){
