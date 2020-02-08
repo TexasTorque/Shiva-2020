@@ -3,122 +3,93 @@ package org.texastorque.subsystems;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
+import org.texastorque.torquelib.component.TorqueMotor;
+import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
+import org.texastorque.util.KPID;
 
-import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.ArrayList;
 
 // ========= Shooter ==========
 public class Shooter extends Subsystem {
     private static volatile Shooter instance;
 
     // ======== variables ==========
-    double flywheelSpeed = 6000*Constants.RPM_VICTORSPX_CONVERSION;
-    // double flywheelSpeed = 4000*Constants.RPM_VICTORSPX_CONVERSION;
-    double flywheelPercent = 1;
-    // P, I, D, k 
-    double[] pidHigh = new double[] {0.2401, 0, 5, 0.00902};
-    double[] pidLow = new double[] {.08, 0, 8, 0.00902};
-    boolean isHigh = true;
-    private double flywheelVelocity = 0;
+    private ArrayList<KPID> pidValues = new ArrayList<>();
+    KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
+    KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
 
-    // =========== motors ============
-    TalonSRX talonLead = new TalonSRX(Ports.FLYWHEEL_LEAD);
-    TalonSRX talonFollower = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
-
+    double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
     
-    private void Shooter(){
-        // PID STUFF 
-        talonLead.selectProfileSlot(0,0);
-        talonLead.set(ControlMode.Velocity, 0);
-        talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
+    // =========== motors ============
+    private TorqueMotor flywheel = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_LEAD);
+
+    // =========================================== methods ==============================================
+    private Shooter() {
+        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        pidValues.add(kPIDLow);
+        pidValues.add(kPIDHigh);
+        flywheel.configurePID(pidValues.get(0));
     } // constructor
 
     // ============= initialization ==========
-    @Override 
-    public void autoInit(){} // autoInit
 
     @Override
-    public void teleopInit(){} // teleopInit
+    public void autoInit() {
+    } // autoInit
 
-    @Override 
-    public void disabledInit(){} // disabledInit
+    @Override
+    public void teleopInit() {
+    } // teleopInit
+
+    @Override
+    public void disabledInit() {
+    } // disabledInit
 
     // ============ actually doing stuff ==========
-    @Override 
-    public void run(RobotState state){
-        SmartDashboard.putNumber("Shooter_Run", 1);
-        if (state == RobotState.TELEOP){
-
-            // // Bang Bang 
-            // flywheelVelocity = talonLead.getSelectedSensorVelocity() / Constants.RPM_VICTORSPX_CONVERSION;
-            // if (flywheelVelocity >= 6500){
-            //     talonLead.set(ControlMode.PercentOutput, 0);
-            //     talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-            // } 
-            // else {
-            //     talonLead.set(ControlMode.PercentOutput, .9);
-            //     talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-            // }
-            if (flywheelSpeed < 5000){
-                isHigh = false;
-            }
-            // PID STUFF
-            if (isHigh){
-                talonLead.config_kP(0, pidHigh[0]);
-                talonLead.config_kD(0, pidHigh[2]);
-                talonLead.config_kF(0, pidHigh[3]);
-            } else {
-                talonLead.config_kP(0, pidLow[0]);
-                talonLead.config_kD(0, pidLow[2]);
-                talonLead.config_kF(0, pidLow[3]);
-            }
+    @Override
+    public void run(RobotState state) {
+        if (state == RobotState.AUTO){
+        } // if in autonomous
+        if (state == RobotState.TELEOP) {
             flywheelSpeed += input.getFlywheelSpeed();
-            flywheelPercent += input.getFlywheelPercent();
-            isHigh = true;
-        } // if in teleop 
+            if (flywheelSpeed > 4500){
+                flywheel.updatePID(pidValues.get(1));
+            } // set to pid high
+            else {
+                flywheel.updatePID(pidValues.get(0));
+            } // set to pid low
+        } // if in teleop
         output();
-    } // run at all times 
+    } // run at all times
 
-    @Override 
-    public void output(){
-        // talonLead.set(ControlMode.Velocity, flywheelSpeed*Constants.RPM_VICTORSPX_CONVERSION);
-        // SmartDashboard.putNumber("FlywheelPercent", flywheelPercent);
-        // talonLead.set(ControlMode.PercentOutput, flywheelPercent);
-        // talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-        // PID STUFF
-        SmartDashboard.putNumber("FlywheelVelocity",flywheelSpeed);
-        // SmartDashboard.putNumber("Flywheel Encoder ", )
-        talonLead.set(ControlMode.Velocity, flywheelSpeed);
-        talonFollower.set(ControlMode.Follower, Ports.FLYWHEEL_LEAD);
-    } // output 
+    @Override
+    public void output() {
+        flywheel.set(flywheelSpeed, ControlMode.Velocity);
+    } // output
 
     // =========== continuous ==========
     @Override
-    public void disabledContinuous(){}
-
-    @Override 
-    public void autoContinuous(){}
+    public void disabledContinuous() {}
 
     @Override
-    public void teleopContinuous(){}
+    public void autoContinuous() {}
+
+    @Override
+    public void teleopContinuous() {}
 
     // =========== others ===========
-    @Override 
-    public void smartDashboard(){
-
+    @Override
+    public void smartDashboard() {
+        SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
     } // display all this to smart dashboard
 
-    public static Shooter getInstance(){
-        if (instance == null){
-            synchronized(Shooter.class){
-                if (instance == null)
-                    instance = new Shooter();
-            }
-        }
-        return instance;
+    public static synchronized Shooter getInstance() {
+        return instance == null ? (instance = new Shooter()) : instance;
     } // getInstance
 
 } // Shooter 

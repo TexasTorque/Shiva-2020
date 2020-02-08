@@ -24,9 +24,11 @@ public class Input {
             updateDrive();
             updateShooter();
             updateClimber();
+            updateIntake();
         } // update driver things
 
         if (operator != null){
+            updateMagazine();
         } // update operator things 
     } // update controllers
 
@@ -67,28 +69,55 @@ public class Input {
 
     // ============= Intake ==============
 
-    private volatile double intake_setpoint = 0;
+    private volatile double rotaryPosition = 0;
+    private double rotarySpeed = 0;
 
-    public void updateIntake(){}
+    public void updateIntake(){
+        if (driver.getYButtonReleased()){
+            rotaryPosition += 100;
+        }
+        else if (driver.getAButtonReleased()){
+            rotaryPosition -= 100;
+        }
+        if (operator.getRightBumper()){
+            rotarySpeed = 0.3;
+        }
+        else if (operator.getLeftBumper()){
+            rotarySpeed = - 0.3;
+        }
+    } // update Intake 
+
+    public double getRotarySpeed(){
+        return rotarySpeed;
+    }
+
+    public double getRotaryPosition(){
+        return rotaryPosition;
+    }
+
+    // ============ Magazine ============
+    double magVelocity = 0;
+    double magSpeed = 1; // keep this number positive
+
+    public void updateMagazine(){
+        magVelocity = 0;
+        if (operator.getLeftBumper()){
+            magVelocity = -magSpeed;
+        }
+        else if(operator.getRightBumper()){
+            magVelocity = magSpeed;
+        }
+    } // update Magazine 
+
+    public double getMag(){
+        return magVelocity;
+    } // get Mag Direction
 
     // ============= Climber ==============
     private volatile double climberSpeed = 0;
     
     public void updateClimber(){
-        if (driver.getYButtonReleased()){
-            climberSpeed = .500;
-        }
-        else if (driver.getXButtonReleased()){
-            climberSpeed = 0;
-        }
-        else if (driver.getAButtonReleased()){
-            climberSpeed = -.500;
-        }
     } // update Climber 
-
-    public double getClimberSpeed(){
-        return climberSpeed;
-    }
 
     // ============= Shooter ==============
 
@@ -96,21 +125,11 @@ public class Input {
     private volatile double flywheelPercent = 0;
 
     public void updateShooter(){
-        // for now this is controlling the rotary on Ray by position
-        if (driver.getYButtonReleased()){
-            flywheelPercent = 0.5;
-        } 
-        else if (driver.getAButtonReleased()){
-            flywheelPercent = -0.5;
-        }
-        else {
-            flywheelPercent = 0;
-        }
         if (driver.getBButtonReleased()){
-            flywheelSpeed = 100*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
         } 
         else if (driver.getXButtonReleased()){
-            flywheelSpeed = -100*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
         }
         else {
             flywheelSpeed = 0;

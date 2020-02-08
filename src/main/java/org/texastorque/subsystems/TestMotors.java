@@ -1,43 +1,37 @@
 package org.texastorque.subsystems;
 
-// ============ imports ===========
+// ============ inputs ===========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueMotor;
 import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
-import org.texastorque.util.KPID;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.revrobotics.ControlType;
+// ================== TestMotors ==================
+public class TestMotors extends Subsystem{
+    private static volatile TestMotors instance;
 
-import java.util.ArrayList;
+    // ============ variables =============
+    private double speed = 0;
+    private double position = 0; 
 
-// =========== Intake =============
-public class Intake extends Subsystem{
-    private static volatile Intake instance;
-
-    // =========== variables ===========
-    // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
-    KPID kPIDRotary = new KPID(0, 0, 0, 0, 0, 0);
-    private double rotaryPosition = 0;
-
-    // =========== motors ===========
-    private TorqueMotor rotary = new TorqueMotor(ControllerType.SPARKMAX, Ports.INTAKE_ROTARY_LEAD);
-    private TorqueMotor rollers = new TorqueMotor(ControllerType.SPARKMAX, Ports.INTAKE_ROLLERS);
+    // ============ motors ==============
+    // private TorqueMotor testTalon = new TorqueMotor(ControllerType.VICTOR, Ports.TALON_PORT);
+    private TorqueMotor testSparkMax = new TorqueMotor(ControllerType.SPARKMAX, Ports.SPARKMAX_PORT);
 
     // =================== methods ==================
-    private void Intake(){
-        rotary.addFollower(Ports.INTAKE_ROTARY_FOLLOW);
-        rotary.configurePID(kPIDRotary);
+    private TestMotors(){
+        testSparkMax.addFollower(Ports.SPARKMAX_PORT_2);
     } // constructor 
 
     @Override
     public void autoInit(){}
 
     @Override
-    public void teleopInit(){} // teleop init
+    public void teleopInit(){
+    } // teleop init
 
     @Override 
     public void disabledInit(){}
@@ -45,18 +39,16 @@ public class Intake extends Subsystem{
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
-        if (state == RobotState.AUTO){
-
-        }
         if (state == RobotState.TELEOP){
-            rotaryPosition += input.getRotaryPosition();
+            speed = input.getMag();
         }
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        rotary.set(rotaryPosition, ControlType.kPosition);
+        // testTalon.set(speed);
+        testSparkMax.set(speed);
     } // output
 
     // ============= continuous =============
@@ -76,13 +68,14 @@ public class Intake extends Subsystem{
 
     } // display all this to smart dashboard
 
-    public static Intake getInstance(){
+    public static TestMotors getInstance(){
         if (instance == null){
-            synchronized(Intake.class){
+            synchronized(TestMotors.class){
                 if (instance == null)
-                    instance = new Intake();
+                    instance = new TestMotors();
             }
         }
         return instance;
     } // getInstance
-} // Intake
+
+} // TestMotors  
