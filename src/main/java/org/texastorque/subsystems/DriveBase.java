@@ -3,33 +3,20 @@ package org.texastorque.subsystems;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
-import org.texastorque.torquelib.component.TorqueMotor;
-import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
+import org.texastorque.torquelib.component.TorqueSparkMax;
 import org.texastorque.util.KPID;
 
-import com.revrobotics.CANError;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.VictorSP;
 
 // ======== DriveBase =========
 public class DriveBase extends Subsystem{
     private static volatile DriveBase instance;
 
-    private TorqueMotor db_left = new TorqueMotor(ControllerType.SPARKMAX, Ports.DB_LEFT_1);
-    private TorqueMotor db_right = new TorqueMotor(ControllerType.SPARKMAX, Ports.DB_RIGHT_1);
+    private TorqueSparkMax db_left = new TorqueSparkMax(Ports.DB_LEFT_1);
+    private TorqueSparkMax db_right = new TorqueSparkMax(Ports.DB_RIGHT_1);
 
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
-  
-    private boolean clockwise = true;
 
     private DriveBase(){
         db_left.addFollower(Ports.DB_LEFT_2);
@@ -38,7 +25,9 @@ public class DriveBase extends Subsystem{
 
     // ============= initialization ==========
     @Override 
-    public void autoInit(){}
+    public void autoInit(){
+        // db_left. // reset drive encoder  HOW DO YOU DO THIS????
+    }
 
     @Override
     public void teleopInit(){

@@ -129,10 +129,20 @@ public class Input {
     } // get Mag Direction
 
     // ============= Climber ==============
-    private volatile double climberSpeed = 0;
+    private volatile double climberSpeed = .7;
     
     public void updateClimber(){
+        if (driver.getYButtonPressed()){
+            climberSpeed += .05;
+        }
+        else if (driver.getAButtonPressed()){
+            climberSpeed -= -.05;
+        }
     } // update Climber 
+
+    public double getTest(){
+        return climberSpeed;
+    }
 
     // ============= Shooter ==============
 

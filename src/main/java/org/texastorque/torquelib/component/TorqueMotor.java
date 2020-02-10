@@ -29,7 +29,7 @@ public abstract class TorqueMotor {
 
 	private CANEncoder sparkEncoder;
 
-	private int port;
+	public int port;
 	public boolean invert;
 	private double minOutput;
 	private double maxOutput;
@@ -39,8 +39,7 @@ public abstract class TorqueMotor {
 
 	// ------------------ Set Methods ------------------
 	//for setting raw outputs to all kinds of motors
-	public void set(double output){
-	} // generic set method 
+	public abstract void set(double output);
 
 	// add another method in each class that extends this that takes in the parameter of what control mode / type 
 

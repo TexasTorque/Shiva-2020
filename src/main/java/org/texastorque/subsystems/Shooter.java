@@ -25,14 +25,14 @@ public class Shooter extends Subsystem {
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
     
     // =========== motors ============
-    private TorqueMotor flywheel = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_LEAD);
+    // private TorqueMotor flywheel = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_LEAD);
 
     // =========================================== methods ==============================================
     private Shooter() {
-        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        pidValues.add(kPIDLow);
-        pidValues.add(kPIDHigh);
-        flywheel.configurePID(pidValues.get(0));
+        // flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        // pidValues.add(kPIDLow);
+        // pidValues.add(kPIDHigh);
+        // flywheel.configurePID(pidValues.get(0));
     } // constructor
 
     // ============= initialization ==========
@@ -55,20 +55,20 @@ public class Shooter extends Subsystem {
         if (state == RobotState.AUTO){
         } // if in autonomous
         if (state == RobotState.TELEOP) {
-            flywheelSpeed += input.getFlywheelSpeed();
-            if (flywheelSpeed > 4500){
-                flywheel.updatePID(pidValues.get(1));
-            } // set to pid high
-            else {
-                flywheel.updatePID(pidValues.get(0));
-            } // set to pid low
+            // flywheelSpeed += input.getFlywheelSpeed();
+            // if (flywheelSpeed > 4500){
+            //     flywheel.updatePID(pidValues.get(1));
+            // } // set to pid high
+            // else {
+            //     flywheel.updatePID(pidValues.get(0));
+            // } // set to pid low
         } // if in teleop
         output();
     } // run at all times
 
     @Override
     public void output() {
-        flywheel.set(flywheelSpeed, ControlMode.Velocity);
+        // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
     // =========== continuous ==========
@@ -84,7 +84,7 @@ public class Shooter extends Subsystem {
     // =========== others ===========
     @Override
     public void smartDashboard() {
-        SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
+        // SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
     } // display all this to smart dashboard
 
     public static synchronized Shooter getInstance() {

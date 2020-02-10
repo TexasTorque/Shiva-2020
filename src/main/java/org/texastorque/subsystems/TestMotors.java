@@ -18,11 +18,11 @@ public class TestMotors extends Subsystem{
     private double position = 0; 
 
     // ============ motors ==============
-    private TorqueSparkMax testSparkMax = new TorqueSparkMax(Ports.SPARKMAX_PORT);
+    private TorqueSparkMax testSparkMax = new TorqueSparkMax(Ports.SPARKMAX_PORT_2);
 
     // =================== methods ==================
     private TestMotors(){
-        testSparkMax.addFollower(Ports.SPARKMAX_PORT_2);
+        // testSparkMax.addFollower(Ports.SPARKMAX_PORT_2);
     } // constructor 
 
     @Override
@@ -39,7 +39,8 @@ public class TestMotors extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
-            speed = input.getMag();
+            // speed = input.getMag();
+            speed = -input.getTest();
         }
         output();
     } // run at all times 
@@ -48,6 +49,8 @@ public class TestMotors extends Subsystem{
     public void output(){
         // testTalon.set(speed);
         testSparkMax.set(speed);
+        SmartDashboard.putNumber("speed", speed);
+        SmartDashboard.putNumber("velocity", testSparkMax.getVelocity());
     } // output
 
     // ============= continuous =============
@@ -64,7 +67,8 @@ public class TestMotors extends Subsystem{
 
     @Override 
     public void smartDashboard(){
-
+        SmartDashboard.putNumber("speed", speed);
+        SmartDashboard.putNumber("velocity", testSparkMax.getVelocity());
     } // display all this to smart dashboard
 
     public static TestMotors getInstance(){
