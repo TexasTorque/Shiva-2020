@@ -2,6 +2,7 @@ package org.texastorque;
 
 // ========= imports ======== 
 import org.texastorque.subsystems.*;
+import org.texastorque.auto.AutoManager;
 import org.texastorque.inputs.*;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.base.TorqueIterative;
@@ -33,6 +34,7 @@ public class Robot extends TorqueIterative {
   private State state = State.getInstance();
   private Input input = Input.getInstance();
   private Feedback feedback = Feedback.getInstance();
+  private AutoManager autoManager = AutoManager.getInstance();
 
   // ======= initialize ============
   public void robotInit() {
@@ -46,12 +48,16 @@ public class Robot extends TorqueIterative {
     // subsystems.add(climber);
     // subsystems.add(intake);
     // subsystems.add(magazine);
-  subsystems.add(testMotors);
+    subsystems.add(testMotors);
   } // initialize subsystems 
 
   @Override
   public void autoInit(){
-    for (Subsystem system : subsystems){
+    state.setRobotState(RobotState.AUTO);
+    autoManager.chooseSequence();
+    input.resetAll();
+
+    for(Subsystem system : subsystems){
       system.autoInit();
     }
   } // initialize in auto

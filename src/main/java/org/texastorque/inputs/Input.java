@@ -71,19 +71,30 @@ public class Input {
 
     private volatile double rotaryPosition = 0;
     private double rotarySpeed = 0;
+    private int rollerStatus = 0;
 
     public void updateIntake(){
-        if (driver.getYButtonReleased()){
-            rotaryPosition += 100;
+        // if (driver.getYButtonReleased()){
+        //     rotaryPosition += 100;
+        // }
+        // else if (driver.getAButtonReleased()){
+        //     rotaryPosition -= 100;
+        // }
+        // if (operator.getRightBumper()){
+        //     rotarySpeed = 0.3;
+        // }
+        // else if (operator.getLeftBumper()){
+        //     rotarySpeed = - 0.3;
+        // }
+        rotaryPosition = -driver.getRightYAxis();
+        if (driver.getDPADUp()){
+            rollerStatus = 1;
         }
-        else if (driver.getAButtonReleased()){
-            rotaryPosition -= 100;
+        else if(driver.getDPADRight()){
+            rollerStatus = 0;
         }
-        if (operator.getRightBumper()){
-            rotarySpeed = 0.3;
-        }
-        else if (operator.getLeftBumper()){
-            rotarySpeed = - 0.3;
+        else if(driver.getDPADDown()){
+            rollerStatus = -1;
         }
     } // update Intake 
 
@@ -93,6 +104,10 @@ public class Input {
 
     public double getRotaryPosition(){
         return rotaryPosition;
+    }
+
+    public int getRollerStatus(){
+        return rollerStatus;
     }
 
     // ============ Magazine ============
@@ -114,10 +129,20 @@ public class Input {
     } // get Mag Direction
 
     // ============= Climber ==============
-    private volatile double climberSpeed = 0;
+    private volatile double climberSpeed = .7;
     
     public void updateClimber(){
+        if (driver.getYButtonPressed()){
+            climberSpeed += .05;
+        }
+        else if (driver.getAButtonPressed()){
+            climberSpeed -= -.05;
+        }
     } // update Climber 
+
+    public double getTest(){
+        return climberSpeed;
+    }
 
     // ============= Shooter ==============
 

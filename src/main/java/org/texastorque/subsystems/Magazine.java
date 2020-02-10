@@ -3,8 +3,11 @@ package org.texastorque.subsystems;
 // ============ inputs ===========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.*;
+
+import com.revrobotics.SparkMax;
+
 import org.texastorque.constants.*;
-import org.texastorque.torquelib.component.TorqueMotor;
+import org.texastorque.torquelib.component.TorqueSparkMax;
 import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 import org.texastorque.util.KPID;
 import org.texastorque.util.pid.KPIDGains;
@@ -20,7 +23,7 @@ public class Magazine extends Subsystem{
     private double beltSpeed = 0;
 
     // ============ motors ==============
-    private TorqueMotor belt = new TorqueMotor(ControllerType.TALONSRX, Ports.BELT_LEAD);
+    private TorqueSparkMax belt = new TorqueSparkMax(Ports.BELT_LEAD);
 
     // =================== methods ==================
     private void Climber(){
