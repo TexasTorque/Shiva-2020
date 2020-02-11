@@ -23,7 +23,7 @@ public class Robot extends TorqueIterative {
   // private Subsystem shooter = Shooter.getInstance();
   // private Subsystem climber = Climber.getInstance();
   private Subsystem intake = Intake.getInstance();
-  // private Subsystem magazine = Magazine.getInstance();
+  private Subsystem magazine = Magazine.getInstance();
   // private Subsystem testMotors = TestMotors.getInstance();
   
   // make instances of other useful classes 
@@ -43,7 +43,7 @@ public class Robot extends TorqueIterative {
     // subsystems.add(shooter);
     // subsystems.add(climber);
     subsystems.add(intake);
-    // subsystems.add(magazine);
+    subsystems.add(magazine);
     // subsystems.add(testMotors);
   } // initialize subsystems 
 

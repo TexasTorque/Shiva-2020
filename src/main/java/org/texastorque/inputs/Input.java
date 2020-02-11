@@ -73,28 +73,27 @@ public class Input {
     private volatile double rotaryPosition_right = -23.5;
     private double rotarySpeed = 0;
     private int rollerSpeed = 0;
-    private double[] rotarySetpoints_left = {24.857, 8.857, -13.571};
-    private double[] rotarySetpoints_right = {-38.785, -23.500, 1.167};
+    // start position ---- up position ----- down position 
+    private double[] rotarySetpoints_left = {40.333, 28.262, -0.571};
+    private double[] rotarySetpoints_right = {-42.857, -30.428, 0};
 
     public void updateIntake(){
         rollerSpeed = 0;
-        if (driver.getDPADDown()){
+        rotaryPosition_left = rotarySetpoints_left[1];
+        rotaryPosition_right = rotarySetpoints_right[1];
+        if (driver.getRightTrigger()){
             rotaryPosition_left = rotarySetpoints_left[2];
             rotaryPosition_right = rotarySetpoints_right[2];
+            rollerSpeed = 1;
         }
-        else if (driver.getDPADRight()){
-            rotaryPosition_left = rotarySetpoints_left[1];
-            rotaryPosition_right = rotarySetpoints_right[1];
+        else if (driver.getLeftTrigger()){
+            rotaryPosition_left = rotarySetpoints_left[2];
+            rotaryPosition_right = rotarySetpoints_right[2];
+            rollerSpeed = -1;
         }
         else if (driver.getDPADUp()){
             rotaryPosition_left = rotarySetpoints_left[0];
             rotaryPosition_right = rotarySetpoints_right[0];
-        }
-        if (driver.getRightTrigger()){
-            rollerSpeed= 1;
-        }
-        else if(driver.getLeftTrigger()){
-            rollerSpeed = -1;
         }
     } // update Intake 
 
@@ -155,13 +154,15 @@ public class Input {
 
     public void updateShooter(){
         if (driver.getBButtonReleased()){
-            flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
+            // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelPercent = .5;
         } 
         else if (driver.getXButtonReleased()){
-            flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
+            // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
         }
         else {
-            flywheelSpeed = 0;
+            // flywheelSpeed = 0;
+            flywheelPercent = 0;
         }
     } // update Shooter 
 

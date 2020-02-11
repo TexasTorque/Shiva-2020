@@ -4,6 +4,7 @@ package org.texastorque.subsystems;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueMotor;
+import org.texastorque.torquelib.component.TorqueTalon;
 import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 import org.texastorque.util.KPID;
 
@@ -25,11 +26,12 @@ public class Shooter extends Subsystem {
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
     
     // =========== motors ============
-    // private TorqueMotor flywheel = new TorqueMotor(ControllerType.TALONSRX, Ports.FLYWHEEL_LEAD);
+    private TorqueMotor flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
 
     // =========================================== methods ==============================================
     private Shooter() {
-        // flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        flywheel.invertFollower();
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
@@ -55,6 +57,7 @@ public class Shooter extends Subsystem {
         if (state == RobotState.AUTO){
         } // if in autonomous
         if (state == RobotState.TELEOP) {
+            flywheelSpeed = input.getFlywheelPercent();
             // flywheelSpeed += input.getFlywheelSpeed();
             // if (flywheelSpeed > 4500){
             //     flywheel.updatePID(pidValues.get(1));
@@ -68,6 +71,7 @@ public class Shooter extends Subsystem {
 
     @Override
     public void output() {
+        flywheel.set(flywheelSpeed);
         // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
