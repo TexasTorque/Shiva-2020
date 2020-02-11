@@ -3,8 +3,8 @@ package org.texastorque.constants;
 public class Ports {
 
     // talon CAN id
-    public static final int FLYWHEEL_LEAD = 1;
-    public static final int FLYWHEEL_FOLLOW = 0;
+    public static final int FLYWHEEL_LEAD = 1; // right 
+    public static final int FLYWHEEL_FOLLOW = 0; // left 
 
     // neo CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
     public static final int DB_LEFT_1 = 1;
@@ -20,8 +20,8 @@ public class Ports {
     public static final int INTAKE_ROTARY_RIGHT = 6; // right side spark max 
     public static final int INTAKE_ROLLERS = 7;
     
-    public static final int BELT_LEAD = 8;
-    public static final int BELT_FOLLOW = 9;
+    public static final int BELT_HIGH = 8;
+    public static final int BELT_LOW = 9;
 
     public static final int SHOOTER_HOOD = 10;
 

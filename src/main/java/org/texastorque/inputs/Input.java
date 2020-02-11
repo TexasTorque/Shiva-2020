@@ -114,22 +114,35 @@ public class Input {
     }
 
     // ============ Magazine ============
-    double magVelocity = 0;
-    double magSpeed = 1; // keep this number positive
+    double magVelocity_low = 0;
+    double magVelocity_high = 0;
+    double magSpeed_low = 1; // keep this number positive
+    double magSpeed_high = 1; // keep this number positive
 
     public void updateMagazine(){
-        magVelocity = 0;
-        if (operator.getLeftBumper()){
-            magVelocity = -magSpeed;
+        magVelocity_low = 0;
+        magVelocity_high = 0;
+        if (operator.getDPADUp()){
+            magVelocity_low = -magSpeed_low;
         }
-        else if(operator.getRightBumper()){
-            magVelocity = magSpeed;
+        else if(operator.getDPADDown()){
+            magVelocity_low = magSpeed_low;
+        }
+        if (operator.getYButton()){
+            magVelocity_high = -magSpeed_high;
+        }
+        else if (operator.getAButton()){
+            magVelocity_high = magSpeed_high;
         }
     } // update Magazine 
 
-    public double getMag(){
-        return magVelocity;
+    public double getMagHigh(){
+        return magVelocity_high;
     } // get Mag Direction
+
+    public double getMagLow(){
+        return magVelocity_low;
+    } // get low mag direction
 
     // ============= Climber ==============
     private volatile double climberSpeed = .7;
@@ -153,7 +166,7 @@ public class Input {
     private volatile double flywheelPercent = 0;
 
     public void updateShooter(){
-        if (driver.getBButtonReleased()){
+        if (driver.getBButton()){
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelPercent = .5;
         } 

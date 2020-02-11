@@ -59,7 +59,7 @@ public class Climber extends Subsystem{
             
             // SmartDashboard.putNumber("input", input.getClimberSpeed());
             // ==== Raw Output ====
-            climber1.set(input.getMag());
+            // climber1.set(input.getMag());
             // climber2.set(0.5);
             // 5805 units = 770 rpm
             // ==== PID ====

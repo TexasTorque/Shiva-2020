@@ -30,6 +30,7 @@ public class DriveBase extends Subsystem{
     private DriveBase(){
         db_left.addFollower(Ports.DB_LEFT_2);
         db_right.addFollower(Ports.DB_RIGHT_2);
+        db_right.setAlternateEncoder();
     } // constructor 
 
     // ============= initialization ==========
@@ -76,8 +77,9 @@ public class DriveBase extends Subsystem{
 
     @Override 
     public void output(){
-        SmartDashboard.setDefaultNumber("leftSpeed", leftSpeed);
-        SmartDashboard.setDefaultNumber("rightspeed", rightSpeed);
+        SmartDashboard.putNumber("leftSpeed", leftSpeed);
+        SmartDashboard.putNumber("rightspeed", rightSpeed);
+        SmartDashboard.putNumber("shooter speed", db_right.getAlternateVelocity());
         db_left.set(-leftSpeed);
         db_right.set(rightSpeed);
     }

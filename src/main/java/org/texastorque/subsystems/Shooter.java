@@ -72,6 +72,7 @@ public class Shooter extends Subsystem {
     @Override
     public void output() {
         flywheel.set(flywheelSpeed);
+        SmartDashboard.putNumber("flywheel velocity", flywheel.getVelocity());
         // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
