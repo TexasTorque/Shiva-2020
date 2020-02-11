@@ -85,5 +85,8 @@ public class TorqueSparkMax extends TorqueMotor {
     public double getPosition() {
         return sparkMaxEncoder.getPosition() * sparkMaxEncoder.getPositionConversionFactor();
     } // returns position of motor 
-
+    
+    public double getCurrent(){
+        return sparkMax.getOutputCurrent();
+    }
 }

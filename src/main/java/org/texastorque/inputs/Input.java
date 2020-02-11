@@ -42,8 +42,8 @@ public class Input {
 
     public void updateDrive(){
         double leftRight = driver.getRightXAxis();
-        DB_leftSpeed = -driver.getLeftYAxis() + 0.4 * Math.pow(leftRight, 2) * Math.signum(leftRight);
-        DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 2) * Math.signum(leftRight);
+        DB_leftSpeed = -driver.getLeftYAxis() + 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
+        DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
     } // update the drivebase
 
     public void resetDrive(){
@@ -69,32 +69,31 @@ public class Input {
 
     // ============= Intake ==============
 
-    private volatile double rotaryPosition = 0;
+    private volatile double rotaryPosition_left = 8.857;
+    private volatile double rotaryPosition_right = -23.5;
     private double rotarySpeed = 0;
-    private int rollerStatus = 0;
+    private int rollerSpeed = 0;
+    // start position ---- up position ----- down position 
+    private double[] rotarySetpoints_left = {40.333, 28.262, -0.571};
+    private double[] rotarySetpoints_right = {-42.857, -30.428, 0};
 
     public void updateIntake(){
-        // if (driver.getYButtonReleased()){
-        //     rotaryPosition += 100;
-        // }
-        // else if (driver.getAButtonReleased()){
-        //     rotaryPosition -= 100;
-        // }
-        // if (operator.getRightBumper()){
-        //     rotarySpeed = 0.3;
-        // }
-        // else if (operator.getLeftBumper()){
-        //     rotarySpeed = - 0.3;
-        // }
-        rotaryPosition = -driver.getRightYAxis();
-        if (driver.getDPADUp()){
-            rollerStatus = 1;
+        rollerSpeed = 0;
+        rotaryPosition_left = rotarySetpoints_left[1];
+        rotaryPosition_right = rotarySetpoints_right[1];
+        if (driver.getRightTrigger()){
+            rotaryPosition_left = rotarySetpoints_left[2];
+            rotaryPosition_right = rotarySetpoints_right[2];
+            rollerSpeed = 1;
         }
-        else if(driver.getDPADRight()){
-            rollerStatus = 0;
+        else if (driver.getLeftTrigger()){
+            rotaryPosition_left = rotarySetpoints_left[2];
+            rotaryPosition_right = rotarySetpoints_right[2];
+            rollerSpeed = -1;
         }
-        else if(driver.getDPADDown()){
-            rollerStatus = -1;
+        else if (driver.getDPADUp()){
+            rotaryPosition_left = rotarySetpoints_left[0];
+            rotaryPosition_right = rotarySetpoints_right[0];
         }
     } // update Intake 
 
@@ -102,12 +101,16 @@ public class Input {
         return rotarySpeed;
     }
 
-    public double getRotaryPosition(){
-        return rotaryPosition;
+    public double getRotaryPositionLeft(){
+        return rotaryPosition_left;
     }
 
-    public int getRollerStatus(){
-        return rollerStatus;
+    public double getRotaryPositionRight(){
+        return rotaryPosition_right;
+    }
+
+    public int getRollerSpeed(){
+        return rollerSpeed;
     }
 
     // ============ Magazine ============
@@ -151,13 +154,15 @@ public class Input {
 
     public void updateShooter(){
         if (driver.getBButtonReleased()){
-            flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
+            // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelPercent = .5;
         } 
         else if (driver.getXButtonReleased()){
-            flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
+            // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
         }
         else {
-            flywheelSpeed = 0;
+            // flywheelSpeed = 0;
+            flywheelPercent = 0;
         }
     } // update Shooter 
 
