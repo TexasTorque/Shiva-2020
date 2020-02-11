@@ -26,7 +26,7 @@ public class Shooter extends Subsystem {
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
     
     // =========== motors ============
-    private TorqueMotor flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
+    private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
 
     // =========================================== methods ==============================================
     private Shooter() {
