@@ -1,46 +1,41 @@
 package org.texastorque.subsystems;
 
+import org.texastorque.inputs.Feedback;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
-import org.texastorque.torquelib.component.TorqueMotor;
-import org.texastorque.inputs.*;
-import org.texastorque.torquelib.controlLoop.*;
+import org.texastorque.torquelib.component.TorqueSparkMax;
+import org.texastorque.torquelib.controlLoop.LowPassFilter;
+import org.texastorque.torquelib.controlLoop.ScheduledPID;
+import org.texastorque.util.KPID;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.VictorSP;
 
 // ======== DriveBase =========
 public class DriveBase extends Subsystem{
     private static volatile DriveBase instance;
 
-    private boolean clockwise = true;
+    private TorqueSparkMax db_left = new TorqueSparkMax(Ports.DB_LEFT_1);
+    private TorqueSparkMax db_right = new TorqueSparkMax(Ports.DB_RIGHT_1);
 
-    private TorqueMotor left1 = new TorqueMotor(new VictorSP(Ports.DB_LEFT_1), !clockwise);
-    private TorqueMotor left2 = new TorqueMotor(new VictorSP(Ports.DB_LEFT_2), !clockwise);
-    private TorqueMotor left3 = new TorqueMotor(new VictorSP(Ports.DB_LEFT_3), !clockwise);
-    
-    private TorqueMotor right1 = new TorqueMotor(new VictorSP(Ports.DB_RIGHT_1), clockwise);
-    private TorqueMotor right2 = new TorqueMotor(new VictorSP(Ports.DB_RIGHT_2), clockwise);
-    private TorqueMotor right3 = new TorqueMotor(new VictorSP(Ports.DB_RIGHT_3), clockwise);
-    
-    private Input input = Input.getInstance();
-  
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
-
 
     private ScheduledPID linePID;
     private LowPassFilter lowPass;
 
-    private void DriveBase(){
-
+    private double pidValue;
+    private double position;
+    
+    private DriveBase(){
+        db_left.addFollower(Ports.DB_LEFT_2);
+        db_right.addFollower(Ports.DB_RIGHT_2);
     } // constructor 
 
     // ============= initialization ==========
     @Override 
     public void autoInit(){
-        
+        // db_left. // reset drive encoder  HOW DO YOU DO THIS????
     }
 
     @Override
@@ -56,39 +51,35 @@ public class DriveBase extends Subsystem{
     }
 
     @Override 
-    public void disabledInit(){
+    public void disabledInit(){}
 
-    }
-    private double pidValue;
-    private double position;
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
+        if (state == RobotState.AUTO){
+            leftSpeed = input.getDBLeft();
+            rightSpeed = input.getDBRight();
+        }
         if (state == RobotState.TELEOP){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
-        SmartDashboard.putNumber("left", leftSpeed);
-        SmartDashboard.putNumber("right", rightSpeed);
         if (state == RobotState.VISION){
-            feedback.shooterMode();
-            SmartDashboard.putNumber("hOffset", Feedback.getHOffset());
-            position = lowPass.filter(-Feedback.getHOffset());
+            SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
+            position = lowPass.filter(-Feedback.getXOffset());
             pidValue = linePID.calculate(position);
             leftSpeed = pidValue;
-            rightSpeed = -pidValue;
+            rightSpeed = pidValue;
         }
         output();
-    }
+    } // run
 
     @Override 
     public void output(){
-        left1.set(leftSpeed);
-        left2.set(leftSpeed);
-        left3.set(leftSpeed);
-        right1.set(rightSpeed);
-        right2.set(rightSpeed);
-        right3.set(rightSpeed);
+        SmartDashboard.setDefaultNumber("leftSpeed", leftSpeed);
+        SmartDashboard.setDefaultNumber("rightspeed", rightSpeed);
+        db_left.set(-leftSpeed);
+        db_right.set(rightSpeed);
     }
 
     // =========== continuous ==========
@@ -97,6 +88,7 @@ public class DriveBase extends Subsystem{
 
     @Override 
     public void autoContinuous(){}
+
 
     @Override
     public void teleopContinuous(){}

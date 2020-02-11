@@ -1,7 +1,12 @@
 package org.texastorque.inputs;
 
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import org.texastorque.constants.*;
-import edu.wpi.first.networktables.*;
+import org.texastorque.util.TCS34725ColorSensor;
+import org.texastorque.util.TCS34725_I2C;
+
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Feedback {
 
@@ -9,31 +14,30 @@ public class Feedback {
     private double targetArea;
     private static double hOffset;
     private double vOffset;
-
+    
     private Feedback(){
-
     } // constructor
 
-    public void shooterMode(){
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
-    }
-    
-    public void intakeMode(){
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(1);
-    }
-
     public void update(){
+        limelightUpdate();
+    } // update 
+
+    // ======== limelight ========
+
+    public void limelightUpdate(){
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
         targetArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         hOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
-    } // update 
+    }
 
-    public static double getHOffset(){
+    public static double getXOffset(){
         return hOffset;
     }
 
+    // ======== Other stuff =========
+    
     public void smartDashboard(){
-
     } // stuff to put in smart dashboard
 
     public static Feedback getInstance() {
