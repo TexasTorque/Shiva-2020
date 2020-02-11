@@ -1,9 +1,12 @@
 package org.texastorque.subsystems;
 
+import org.texastorque.inputs.Feedback;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueSparkMax;
+import org.texastorque.torquelib.controlLoop.LowPassFilter;
+import org.texastorque.torquelib.controlLoop.ScheduledPID;
 import org.texastorque.util.KPID;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +21,12 @@ public class DriveBase extends Subsystem{
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
 
+    private ScheduledPID linePID;
+    private LowPassFilter lowPass;
+
+    private double pidValue;
+    private double position;
+    
     private DriveBase(){
         db_left.addFollower(Ports.DB_LEFT_2);
         db_right.addFollower(Ports.DB_RIGHT_2);
@@ -33,6 +42,12 @@ public class DriveBase extends Subsystem{
     public void teleopInit(){
         leftSpeed = 0;
         rightSpeed = 0;
+        linePID = new ScheduledPID.Builder(0, -1, 1, 1)
+            .setPGains(0.03)
+            .setIGains(0.005)
+            .setDGains(0.00008)
+            .build();
+        lowPass = new LowPassFilter(0.2);
     }
 
     @Override 
@@ -48,6 +63,13 @@ public class DriveBase extends Subsystem{
         if (state == RobotState.TELEOP){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
+        }
+        if (state == RobotState.VISION){
+            SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
+            position = lowPass.filter(-Feedback.getXOffset());
+            pidValue = linePID.calculate(position);
+            leftSpeed = pidValue;
+            rightSpeed = pidValue;
         }
         output();
     } // run
