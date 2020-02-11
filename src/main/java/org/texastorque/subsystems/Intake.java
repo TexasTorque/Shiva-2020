@@ -21,20 +21,21 @@ public class Intake extends Subsystem{
 
     // =========== variables ===========
     // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
-    KPID kPIDRotary = new KPID(0, 0, 0, 0, 0, 0);
-    private double rotaryPosition = 0;
-    private int rollerStatus = 0;
+    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.8, 0.8);
+    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, -1, 1);
+    private double rotaryPosition_left = 0;
+    private double rotaryPosition_right = 0;
     private double rollerSpeed = 0;
 
     // =========== motors ===========
-    private TorqueSparkMax rotary = new TorqueSparkMax(Ports.INTAKE_ROTARY_LEAD);
+    private TorqueSparkMax rotary_left = new TorqueSparkMax(Ports.INTAKE_ROTARY_LEFT);
+    private TorqueSparkMax rotary_right = new TorqueSparkMax(Ports.INTAKE_ROTARY_RIGHT);
     private TorqueSparkMax rollers = new TorqueSparkMax(Ports.INTAKE_ROLLERS);
 
     // =================== methods ==================
-    private void Intake(){
-        rotary.addFollower(Ports.INTAKE_ROTARY_FOLLOW);
-        // add once working 
-        // rotary.configurePID(kPIDRotary);
+    private Intake(){
+        rotary_left.configurePID(kPIDRotary_left);
+        rotary_right.configurePID(kPIDRotary_right);
     } // constructor 
 
     @Override
@@ -52,30 +53,24 @@ public class Intake extends Subsystem{
         if (state == RobotState.AUTO){
         } // auto 
         if (state == RobotState.TELEOP){
-            // rotaryPosition += input.getRotaryPosition(); // right now this is set so rotary position is actually a v small output
-            rotaryPosition = input.getRotaryPosition();
-            rollerStatus = input.getRollerStatus();
-            switch(rollerStatus){
-                case -1:
-                    rollerSpeed = -0.3;
-                    break;
-                case 0: 
-                    rollerSpeed = 0;
-                    break;
-                case 1: 
-                    rollerSpeed = 0.3;
-                    break;
-            } // direction of roller spin if spinning 
+            rollerSpeed = input.getRollerSpeed();
+            rotaryPosition_left = input.getRotaryPositionLeft();
+            rotaryPosition_right = input.getRotaryPositionRight();
+            SmartDashboard.putNumber("rotary_left_position", rotary_left.getPosition());
+            SmartDashboard.putNumber("rotary_right_position", rotary_right.getPosition());
+            SmartDashboard.putNumber("rotary_left_setpoint", rotaryPosition_left);
+            SmartDashboard.putNumber("rotary_right_setpoint", rotaryPosition_right);
         } // teleop
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        rotary.set(rotaryPosition);
         rollers.set(rollerSpeed);
-        // add once working 
-        // rotary.set(rotaryPosition, ControlType.kPosition);
+        SmartDashboard.putNumber("output_left", rotary_left.getCurrent());
+        SmartDashboard.putNumber("output_right", rotary_right.getCurrent());
+        rotary_left.set(rotaryPosition_left, ControlType.kPosition);
+        rotary_right.set(rotaryPosition_right, ControlType.kPosition);
     } // output
 
     // ============= continuous =============

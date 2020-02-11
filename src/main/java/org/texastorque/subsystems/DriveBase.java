@@ -54,7 +54,9 @@ public class DriveBase extends Subsystem{
 
     @Override 
     public void output(){
-        db_left.set(leftSpeed);
+        SmartDashboard.setDefaultNumber("leftSpeed", leftSpeed);
+        SmartDashboard.setDefaultNumber("rightspeed", rightSpeed);
+        db_left.set(-leftSpeed);
         db_right.set(rightSpeed);
     }
 
@@ -64,6 +66,7 @@ public class DriveBase extends Subsystem{
 
     @Override 
     public void autoContinuous(){}
+
 
     @Override
     public void teleopContinuous(){}

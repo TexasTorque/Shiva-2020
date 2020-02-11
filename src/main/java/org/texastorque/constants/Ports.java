@@ -16,8 +16,8 @@ public class Ports {
     public static final int CLIMBER2 = 2;
 
     // neo 550 CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
-    public static final int INTAKE_ROTARY_LEAD = 5; // left side spark max 
-    public static final int INTAKE_ROTARY_FOLLOW = 6; // right side spark max 
+    public static final int INTAKE_ROTARY_LEFT = 5; // left side spark max 
+    public static final int INTAKE_ROTARY_RIGHT = 6; // right side spark max 
     public static final int INTAKE_ROLLERS = 7;
     
     public static final int BELT_LEAD = 8;
