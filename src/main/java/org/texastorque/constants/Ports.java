@@ -12,8 +12,8 @@ public class Ports {
     public static final int DB_RIGHT_1 = 3;
     public static final int DB_RIGHT_2 = 4;
     
-    public static final int CLIMBER1 = 1;
-    public static final int CLIMBER2 = 2;
+    public static final int CLIMBER_LEFT = 11;
+    public static final int CLIMBER_RIGHT = 12;
 
     // neo 550 CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
     public static final int INTAKE_ROTARY_LEFT = 5; // left side spark max 
@@ -29,4 +29,8 @@ public class Ports {
     public static final int TALON_PORT = 0;
     public static final int SPARKMAX_PORT = 1;
     public static final int SPARKMAX_PORT_2 = 2;
+
+    // PWM
+    public static final int CLIMB_SERVO_LEFT = 0;
+    public static final int CLIMB_SERVO_RIGHT = 1;
 } // ports 

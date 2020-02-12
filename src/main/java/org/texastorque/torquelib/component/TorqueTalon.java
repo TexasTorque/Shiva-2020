@@ -14,6 +14,7 @@ public class TorqueTalon extends TorqueMotor {
     // ===================== constructor stuff =================
     public TorqueTalon(int port){
         talon = new TalonSRX(port);
+        this.port = port;
     } // torque talon 
 
     @Override
@@ -78,4 +79,8 @@ public class TorqueTalon extends TorqueMotor {
         }
         return 0;
     } // get position
+
+    public void invertFollower(){
+		invert = !invert;
+	} // invert follower - flips the direction of the follower from what it was previously, default direction is same as leader 
 } // Torque Talon 

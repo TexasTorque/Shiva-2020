@@ -5,6 +5,7 @@ import org.texastorque.inputs.State.RobotState;
 import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
@@ -24,14 +25,17 @@ public class Climber extends Subsystem{
     private static volatile Climber instance;
 
     // ============ variables =============
-
+    private double servoPos_left = 0;
+    private double servoPos_right = 0;
+    private double climberSpeed = 0;
     // ============ motors ==============
-    private CANSparkMax climber1 = new CANSparkMax(Ports.CLIMBER1, MotorType.kBrushless);
+    private CANSparkMax climber_left = new CANSparkMax(Ports.CLIMBER_LEFT, MotorType.kBrushless);
     // private CANSparkMax climber2 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
     // === PID ===
     // private CANPIDController climberPID = climber.getPIDController();
-    private CANEncoder climberEncoder1 = climber1.getEncoder(EncoderType.kHallSensor, 4096);
+    private CANEncoder climberEncoder1 = climber_left.getEncoder(EncoderType.kHallSensor, 4096);
     // private CANEncoder climberEncoder2 = climber2.getEncoder(EncoderType.kHallSensor, 4096);
+    // private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
 
     // =================== methods ==================
     private void Climber(){
@@ -56,7 +60,12 @@ public class Climber extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
-            
+            if (input.getServoLocked()){
+                servoPos_left = 0;
+            } else {
+                servoPos_left = 0.5;
+            }
+            climberSpeed = input.getClimberStatus();
             // SmartDashboard.putNumber("input", input.getClimberSpeed());
             // ==== Raw Output ====
             // climber1.set(input.getMag());
@@ -66,14 +75,17 @@ public class Climber extends Subsystem{
             // climberPID.setReference(-300, ControlType.kVelocity);
             SmartDashboard.putNumber("neo encoder1", climberEncoder1.getVelocity());
             // SmartDashboard.putNumber("neo encoder2", climberEncoder2.getVelocity());
-            SmartDashboard.putNumber("neo current1", climber1.getOutputCurrent());
+            SmartDashboard.putNumber("neo current1", climber_left.getOutputCurrent());
             // SmartDashboard.putNumber("neo current2", climber2.getOutputCurrent());
         }
+        output();
     } // run at all times 
 
     @Override 
     public void output(){
-
+        // climbServo_left.set(servoPos_left);
+        SmartDashboard.putNumber("Climber speed", climberSpeed);
+        climber_left.set(climberSpeed);
     } // output
 
     // ============= continuous =============

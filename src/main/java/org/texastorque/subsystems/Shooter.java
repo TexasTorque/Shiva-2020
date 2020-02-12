@@ -31,7 +31,7 @@ public class Shooter extends Subsystem {
     // =========================================== methods ==============================================
     private Shooter() {
         flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        flywheel.invertFollower();
+        // flywheel.invertFollower();
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
