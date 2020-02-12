@@ -3,12 +3,6 @@ package org.texastorque.subsystems;
 import org.texastorque.inputs.Feedback;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
-
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANError;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueSparkMax;
 import org.texastorque.torquelib.controlLoop.LowPassFilter;
@@ -32,10 +26,14 @@ public class DriveBase extends Subsystem{
 
     private double pidValue;
     private double position;
+
+    private double leftDrivePositionZero = 0;
+    private double rightDrivePositionZero = 0;
     
     private DriveBase(){
         db_left.addFollower(Ports.DB_LEFT_2);
         db_right.addFollower(Ports.DB_RIGHT_2);
+        db_right.setAlternateEncoder();
     } // constructor 
 
     // ============= initialization ==========
@@ -62,18 +60,20 @@ public class DriveBase extends Subsystem{
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
+        state = input.getState();
         if (state == RobotState.AUTO){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
-        if (state == RobotState.TELEOP){
+        else if (state == RobotState.TELEOP){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
-        if (state == RobotState.VISION){
+        else if (state == RobotState.VISION){
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
             pidValue = linePID.calculate(position);
+            SmartDashboard.putNumber("pidValue", pidValue);
             leftSpeed = pidValue;
             rightSpeed = pidValue;
         }
@@ -82,9 +82,10 @@ public class DriveBase extends Subsystem{
 
     @Override 
     public void output(){
-        SmartDashboard.setDefaultNumber("leftSpeed", leftSpeed);
-        SmartDashboard.setDefaultNumber("rightspeed", rightSpeed);
-        db_left.set(-leftSpeed);
+        SmartDashboard.putNumber("leftSpeed", leftSpeed);
+        SmartDashboard.putNumber("rightspeed", rightSpeed);
+        SmartDashboard.putNumber("shooter speed", db_right.getAlternateVelocity());
+        db_left.set(leftSpeed);
         db_right.set(rightSpeed);
     }
 
@@ -99,10 +100,16 @@ public class DriveBase extends Subsystem{
     @Override
     public void teleopContinuous(){}
 
+    // =========== encoders ==========
+    public void resetEncoders(){
+        leftDrivePositionZero = - db_left.getPosition();
+        rightDrivePositionZero = db_right.getPosition();
+    }
+
     // =========== others ===========
     @Override 
     public void smartDashboard(){
-        
+        SmartDashboard.putString("State", state.getRobotState().name());
     } // display all this to smart dashboard
 
     public static DriveBase getInstance(){

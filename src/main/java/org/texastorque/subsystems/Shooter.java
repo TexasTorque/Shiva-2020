@@ -32,7 +32,7 @@ public class Shooter extends Subsystem {
     // =========================================== methods ==============================================
     private Shooter() {
         flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        flywheel.invertFollower();
+        // flywheel.invertFollower();
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
@@ -73,6 +73,7 @@ public class Shooter extends Subsystem {
     @Override
     public void output() {
         flywheel.set(flywheelSpeed);
+        SmartDashboard.putNumber("flywheel velocity", flywheel.getVelocity());
         // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 

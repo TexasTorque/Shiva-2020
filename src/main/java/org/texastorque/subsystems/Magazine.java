@@ -20,14 +20,15 @@ public class Magazine extends Subsystem{
 
     // ============ variables =============
     private KPID beltPID = new KPID(0, 0, 0, 0, -1, 1);
-    private double beltSpeed = 0;
+    private double beltSpeed_high = 0;
+    private double beltSpeed_low = 0;
 
     // ============ motors ==============
-    private TorqueSparkMax belt = new TorqueSparkMax(Ports.BELT_LEAD);
+    private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
+    private TorqueSparkMax beltLow = new TorqueSparkMax(Ports.BELT_LOW);
 
     // =================== methods ==================
-    private void Climber(){
-        belt.addFollower(Ports.BELT_FOLLOW);
+    public Magazine(){
     } // constructor 
 
     @Override
@@ -45,14 +46,16 @@ public class Magazine extends Subsystem{
         if (state == RobotState.AUTO){
         }
         if (state == RobotState.TELEOP){
-            beltSpeed = input.getMag();
+            beltSpeed_high = input.getMagHigh();
+            beltSpeed_low = input.getMagLow();
         }
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        belt.set(beltSpeed); // running raw output rn (maybe add pid later?)
+        beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
+        beltLow.set(beltSpeed_low);
     } // output
 
     // ============= continuous =============
