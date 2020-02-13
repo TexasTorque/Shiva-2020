@@ -84,7 +84,7 @@ public class DriveBase extends Subsystem{
     public void output(){
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
-        SmartDashboard.putNumber("shooter speed", db_right.getAlternateVelocity());
+        input.setFlywheelEncoderSpeed(db_right.getAlternateVelocity());
         db_left.set(leftSpeed);
         db_right.set(rightSpeed);
     }

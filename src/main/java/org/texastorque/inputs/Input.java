@@ -5,6 +5,8 @@ import org.texastorque.constants.Constants;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Input {
     private static volatile Input instance;
 
@@ -42,7 +44,7 @@ public class Input {
 
     public void updateDrive(){
         double leftRight = driver.getRightXAxis();
-        DB_leftSpeed = -driver.getLeftYAxis() + 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
+        DB_leftSpeed = driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
         DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
         if (driver.getAButtonPressed()){
             state.setRobotState(RobotState.VISION);
@@ -122,7 +124,7 @@ public class Input {
     double magVelocity_low = 0;
     double magVelocity_high = 0;
     double magSpeed_low = 1; // keep this number positive
-    double magSpeed_high = 1; // keep this number positive
+    double magSpeed_high = .9; // keep this number positive
 
     public void updateMagazine(){
         magVelocity_low = 0;
@@ -190,11 +192,14 @@ public class Input {
 
     private volatile double flywheelSpeed = 0;
     private volatile double flywheelPercent = 0;
+    private volatile double[] hoodSetpoints = {-30, -18, -4.0};
+    private volatile double hoodSetpoint = -15;
 
     public void updateShooter(){
         if (driver.getBButton()){
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelPercent = .5;
+            flywheelPercent = .3;
+            flywheelSpeed = 4000;
         } 
         else if (driver.getXButtonReleased()){
             // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
@@ -202,7 +207,18 @@ public class Input {
         else {
             // flywheelSpeed = 0;
             flywheelPercent = 0;
+            flywheelSpeed = 0;
         }
+        if(operator.getBButton()){
+            hoodSetpoint = hoodSetpoints[2];
+        }
+        else if (operator.getXButton()){
+            hoodSetpoint = hoodSetpoints[0];
+        }
+        else{
+            hoodSetpoint = hoodSetpoints[1];
+        }
+
     } // update Shooter 
 
     public double getFlywheelSpeed(){
@@ -211,6 +227,19 @@ public class Input {
 
     public double getFlywheelPercent(){
         return flywheelPercent;
+    }
+    private double flywheelEncoderSpeed = 0;
+
+    public void setFlywheelEncoderSpeed(double speed){
+        flywheelEncoderSpeed = speed;
+    }
+
+    public double getFlywheelEncoderSpeed(){
+        return flywheelEncoderSpeed;
+    }
+
+    public double getHoodSetpoint(){
+        return hoodSetpoint;
     }
 
     // =========== Others ============
