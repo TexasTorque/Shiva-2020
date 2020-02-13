@@ -9,6 +9,8 @@ import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 import org.texastorque.util.KPID;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,58 +25,47 @@ public class Shooter extends Subsystem {
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
 
-    double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
+    double flywheelSpeed = 0;
     
     // =========== motors ============
     private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
 
     // =========================================== methods ==============================================
-    private Shooter() {
-        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        // flywheel.invertFollower();
-        // pidValues.add(kPIDLow);
-        // pidValues.add(kPIDHigh);
-        // flywheel.configurePID(pidValues.get(0));
+    TalonSRX talonA = new TalonSRX(Ports.FLYWHEEL_FOLLOW);
+    TalonSRX talonB = new TalonSRX(Ports.FLYWHEEL_LEAD);
+
+    private void Shooter() {
+        SmartDashboard.putNumber("ShooterInstantiated", 1);
+        talonB.selectProfileSlot(0, 0);
+        talonB.set(ControlMode.Velocity, 0);  
+        talonA.set(ControlMode.Follower,Ports.FLYWHEEL_LEAD);
     } // constructor
 
     // ============= initialization ==========
+    @Override 
+    public void autoInit(){}
 
     @Override
-    public void autoInit() {
-    } // autoInit
+    public void teleopInit(){}
 
-    @Override
-    public void teleopInit() {
-    } // teleopInit
-
-    @Override
-    public void disabledInit() {
-    } // disabledInit
+    @Override 
+    public void disabledInit(){}
 
     // ============ actually doing stuff ==========
-    @Override
-    public void run(RobotState state) {
-        if (state == RobotState.AUTO){
-        } // if in autonomous
-        if (state == RobotState.TELEOP) {
-            flywheelSpeed = input.getFlywheelPercent();
-            // flywheelSpeed += input.getFlywheelSpeed();
-            // if (flywheelSpeed > 4500){
-            //     flywheel.updatePID(pidValues.get(1));
-            // } // set to pid high
-            // else {
-            //     flywheel.updatePID(pidValues.get(0));
-            // } // set to pid low
-        } // if in teleop
+    @Override 
+    public void run(RobotState state){
+        SmartDashboard.putNumber("Shooter_Run", 1);
+        if (state == RobotState.TELEOP){
+            flywheelSpeed = input.getFlywheelSpeed();
+        } // if in teleop 
         output();
-    } // run at all times
+    } // run at all times 
 
-    @Override
-    public void output() {
-        flywheel.set(flywheelSpeed);
-        SmartDashboard.putNumber("flywheel velocity", flywheel.getVelocity());
-        // flywheel.set(flywheelSpeed, ControlMode.Velocity);
-    } // output
+    @Override 
+    public void output(){
+        talonB.set(ControlMode.Velocity, 5000*Constants.RPM_VICTORSPX_CONVERSION);
+        talonA.set(ControlMode.Follower, 1);
+    } // output 
 
     // =========== continuous ==========
     @Override

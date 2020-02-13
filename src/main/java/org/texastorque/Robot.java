@@ -6,12 +6,16 @@ import org.texastorque.auto.AutoManager;
 import org.texastorque.inputs.*;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.base.TorqueIterative;
+import org.texastorque.constants.*;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
+
+
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.*;
 
 // =============================== Robot ===============================
 
@@ -32,6 +36,8 @@ public class Robot extends TorqueIterative {
   private Feedback feedback = Feedback.getInstance();
   private AutoManager autoManager = AutoManager.getInstance();
 
+  TalonSRX talonA;
+  TalonSRX talonB;
   // ======= initialize ============
   public void robotInit() {
     initSubsystems();    
@@ -53,7 +59,7 @@ public class Robot extends TorqueIterative {
     autoManager.chooseSequence();
     input.resetAll();
 
-    for(Subsystem system : subsystems){
+    for (Subsystem system : subsystems){
       system.autoInit();
     }
   } // initialize in auto
@@ -68,6 +74,9 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void disabledInit(){
+    for (Subsystem system : subsystems){
+      system.disabledInit();
+    }
   } // initialize when disabled
 
   // ======== continous ==============
