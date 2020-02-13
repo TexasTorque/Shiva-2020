@@ -82,6 +82,8 @@ public class ScheduledPID {
 		return gain * (de/dt);
 	}
 
+	//feedforward term. Multiplies fTerm by setpoint to add to PIDOutput 
+	//Use when output is needed to maintain positions
 	private double feedForwardTerm(double setPoint){
 		double gain = this.fGains[this.currentGainIndex];
 		return gain*setPoint;

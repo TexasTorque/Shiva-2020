@@ -196,6 +196,7 @@ public class Input {
     private volatile double hoodSetpoint = -15;
 
     public void updateShooter(){
+        //RPM is in testing state
         if (driver.getBButton()){
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelPercent = .3;

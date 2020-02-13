@@ -73,7 +73,7 @@ public class DriveBase extends Subsystem{
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
             pidValue = linePID.calculate(position);
-            SmartDashboard.putNumber("pidValue", pidValue);
+            SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;
             rightSpeed = pidValue;
         }
@@ -84,6 +84,7 @@ public class DriveBase extends Subsystem{
     public void output(){
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
+        //for spark alternate encoder (flywheel)
         input.setFlywheelEncoderSpeed(db_right.getAlternateVelocity());
         db_left.set(leftSpeed);
         db_right.set(rightSpeed);

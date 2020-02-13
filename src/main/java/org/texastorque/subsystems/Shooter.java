@@ -27,7 +27,7 @@ public class Shooter extends Subsystem {
     private ScheduledPID shooterPID;
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
-    KPID hoodkPID = new KPID( 0.08, 0, 0, 0, -1, 1);
+    KPID hoodkPID = new KPID( 0.08, 0, 0, 0, -1, 1);//Hood PID for all positions
 
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
     
@@ -37,6 +37,7 @@ public class Shooter extends Subsystem {
 
     // =========================================== methods ==============================================
     private Shooter() {
+        //Configuring Motors
         flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
         flywheel.invertFollower();
         hood.configurePID(hoodkPID);
@@ -53,6 +54,8 @@ public class Shooter extends Subsystem {
 
     @Override
     public void teleopInit() {
+        //Bulding shooter PID (this is for when the encoder is put into the spark max!)
+        //Use integrated PID when encoder is put onto talon
         shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
             .setPGains(0.002)
             .setIGains(0)
@@ -67,19 +70,20 @@ public class Shooter extends Subsystem {
 
     // ============ actually doing stuff ==========
     private double pidOutput = 0;
-    private double tempConversionSpark = -.03125;
     private double hoodSetpoint;
+    //conversion from RPM to encoders arbitrary units (1/32)
+    private double tempConversionSpark = -.03125;
     @Override
     public void run(RobotState state) {
         if (state == RobotState.AUTO){
         } // if in autonomous
         if (state == RobotState.TELEOP) {
-            hoodSetpoint = input.getHoodSetpoint();
-            flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-            SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
-            shooterPID.changeSetpoint(flywheelSpeed);
-            pidOutput = shooterPID.calculate(input.getFlywheelEncoderSpeed());
-            SmartDashboard.putNumber("pidOutput", pidOutput);
+            //====================Flywheel====================
+            //When Encoder is in Spark Max!
+                hoodSetpoint = input.getHoodSetpoint();
+                flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+                shooterPID.changeSetpoint(flywheelSpeed);
+                pidOutput = shooterPID.calculate(input.getFlywheelEncoderSpeed());
             // flywheelSpeed += input.getFlywheelSpeed();
             // if (flywheelSpeed > 4500){
             //     flywheel.updatePID(pidValues.get(1));
@@ -87,9 +91,7 @@ public class Shooter extends Subsystem {
             // else {
             //     flywheel.updatePID(pidValues.get(0));
             // } // set to pid low
-            //============hoood stuff==============
-            SmartDashboard.putNumber("Hood Position", hood.getPosition());
-            SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
+            //================Hood==============
             hood.set(hoodSetpoint, ControlType.kPosition);
         } // if in teleop
         output();
@@ -97,13 +99,13 @@ public class Shooter extends Subsystem {
 
     @Override
     public void output() {
+        //allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
         if(pidOutput > 0){
             flywheel.set(0);
         }
         else{
             flywheel.set(-pidOutput);
         }
-        SmartDashboard.putNumber("flywheel velocity", input.getFlywheelEncoderSpeed());
         // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
@@ -120,6 +122,11 @@ public class Shooter extends Subsystem {
     // =========== others ===========
     @Override
     public void smartDashboard() {
+        SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
+        SmartDashboard.putNumber("flywheel velocity", input.getFlywheelEncoderSpeed());
+        SmartDashboard.putNumber("pidOutput", pidOutput);
+        SmartDashboard.putNumber("Hood Position", hood.getPosition());
+        SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
         // SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
     } // display all this to smart dashboard
 
