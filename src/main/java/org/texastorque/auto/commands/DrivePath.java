@@ -12,7 +12,6 @@
 //     private DistanceFollower leftFollower;
 //     private DistanceFollower rightFollower;
 //     private boolean forward;
-//     private boolean highGear;
 
 //     /**
 //      * Position is relative to initial Waypoint, heading angle is set to 0 in robotInit() and remains absolute
@@ -26,7 +25,6 @@
 //     public DrivePath(double delay, Waypoint[] points, boolean forward, boolean highGear) {
 //         super(delay);
 //         this.forward = forward;
-//         this.highGear = highGear;
 
 //         /**
 //          * Fit method: HERMITE_CUBIC or HERMITE_QUINTIC

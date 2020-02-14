@@ -21,8 +21,8 @@ public class Intake extends Subsystem{
 
     // =========== variables ===========
     // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
-    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.8, 0.8);
-    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, -1, 1);
+    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.8, .8);
+    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, 1, 1);
     private double rotaryPosition_left = 0;
     private double rotaryPosition_right = 0;
     private double rollerSpeed = 0;
@@ -36,13 +36,18 @@ public class Intake extends Subsystem{
     private Intake(){
         rotary_left.configurePID(kPIDRotary_left);
         rotary_right.configurePID(kPIDRotary_right);
+        rotary_left.resetEncoder();
+        rotary_right.resetEncoder();
     } // constructor 
 
     @Override
     public void autoInit(){}
 
     @Override
-    public void teleopInit(){} // teleop init
+    public void teleopInit(){
+        rotary_left.resetEncoder();
+        rotary_right.resetEncoder();
+    } // teleop init
 
     @Override 
     public void disabledInit(){}
@@ -54,8 +59,10 @@ public class Intake extends Subsystem{
         } // auto 
         if (state == RobotState.TELEOP){
             rollerSpeed = input.getRollerSpeed();
-            rotaryPosition_left = input.getRotaryPositionLeft();
-            rotaryPosition_right = input.getRotaryPositionRight();
+            rotaryPosition_left = input.getRotaryPositionLeft(); //- rotary_left.getZero();
+            rotaryPosition_right = input.getRotaryPositionRight(); //- rotary_right.getZero();
+            SmartDashboard.putNumber("Left 0", rotary_left.getZero());
+            SmartDashboard.putNumber("Right 0", rotary_right.getZero());
             SmartDashboard.putNumber("rotary_left_position", rotary_left.getPosition());
             SmartDashboard.putNumber("rotary_right_position", rotary_right.getPosition());
             SmartDashboard.putNumber("rotary_left_setpoint", rotaryPosition_left);

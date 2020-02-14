@@ -39,7 +39,7 @@ public class DriveBase extends Subsystem{
     // ============= initialization ==========
     @Override 
     public void autoInit(){
-        // db_left. // reset drive encoder  HOW DO YOU DO THIS????
+        resetEncoders();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class DriveBase extends Subsystem{
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
             pidValue = linePID.calculate(position);
-            SmartDashboard.putNumber("pidValue", pidValue);
+            SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;
             rightSpeed = pidValue;
         }
@@ -84,7 +84,8 @@ public class DriveBase extends Subsystem{
     public void output(){
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
-        SmartDashboard.putNumber("shooter speed", db_right.getAlternateVelocity());
+        //for spark max alternate encoder (flywheel)
+        input.setFlywheelEncoderSpeed(db_right.getAlternateVelocity());
         db_left.set(leftSpeed);
         db_right.set(rightSpeed);
     }
@@ -102,9 +103,17 @@ public class DriveBase extends Subsystem{
 
     // =========== encoders ==========
     public void resetEncoders(){
-        leftDrivePositionZero = - db_left.getPosition();
-        rightDrivePositionZero = db_right.getPosition();
-    }
+        db_left.resetEncoder();
+        db_right.resetEncoder();
+    } // reset where the zero is of the encoders 
+
+    public double getLeftDistance(){
+        return (db_left.getPosition() - leftDrivePositionZero);
+    } // return left drive distance 
+
+    public double getRightDistance(){
+        return (db_right.getPosition() - rightDrivePositionZero);
+    } // return right drive distance 
 
     // =========== others ===========
     @Override 
