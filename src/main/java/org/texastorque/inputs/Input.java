@@ -5,6 +5,8 @@ import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Input {
     private static volatile Input instance;
 
@@ -36,7 +38,7 @@ public class Input {
     } // reset all the things
 
     // ============= Drivebase ============
-
+    // driver controlled 
     private volatile double DB_leftSpeed = 0;
     private volatile double DB_rightSpeed = 0;
 
@@ -73,14 +75,14 @@ public class Input {
     } // TO BE USED IN AUTO ONLY
 
     // ============= Intake ==============
-
+    // driver controlled 
     private volatile double rotaryPosition_left = 8.857;
     private volatile double rotaryPosition_right = -23.5;
     private double rotarySpeed = 0;
     private int rollerSpeed = 0;
     // start position ---- up position ----- down position 
-    private double[] rotarySetpoints_left = {17.095, 0.524, -24.547};
-    private double[] rotarySetpoints_right = {-26.262, -11.191, 17.881};
+private double[] rotarySetpoints_left = {0, -6, -42};
+    private double[] rotarySetpoints_right = {0, 6, 42};
 
     public void updateIntake(){
         rollerSpeed = 0;
@@ -124,6 +126,7 @@ public class Input {
     }
 
     // ============ Magazine ============
+    // operator controlled 
     double magVelocity_low = 0;
     double magVelocity_high = 0;
     double magSpeed_low = 1; // keep this number positive
@@ -132,18 +135,33 @@ public class Input {
     public void updateMagazine(){
         magVelocity_low = 0;
         magVelocity_high = 0;
-        if (operator.getDPADUp()){
-            magVelocity_low = -magSpeed_low;
+
+        if (operator.getLeftTrigger()){ // high mag - balls in 
+            magVelocity_high = operator.getRightZAxis() * magSpeed_high;
         }
-        else if(operator.getDPADDown()){
+        else if (operator.getLeftBumper()){ // high mag - balls out 
             magVelocity_low = magSpeed_low;
         }
-        if (operator.getYButton()){ // brings balls up
-            magVelocity_high = magSpeed_high;
+        if (operator.getRightTrigger()){ // low mag - balls in 
+            magVelocity_low = operator.getLeftZAxis() * magSpeed_low;
         }
-        else if (operator.getAButton()){ // brings balls down 
-            magVelocity_high = -magSpeed_high;
+        else if (operator.getRightBumper()){ // low mag - balls out
+            magVelocity_low = magSpeed_low;
         }
+
+        // if (operator.getRightTrigger()){ // bring balls up - low mag 
+        //     // magVelocity_low = -magSpeed_low;
+        //     magVelocity_low = operator.getLeftZAxis() * magSpeed_low;
+        // }
+        // else if(operator.getLeftTrigger()){ // bring balls down - low mag 
+        //     magVelocity_low = magSpeed_low;
+        // }
+        // if (operator.getRightBumper()){ // brings balls up - high mag 
+        //     magVelocity_high = magSpeed_high;
+        // }
+        // else if (operator.getLeftBumper()){ // brings balls down - high mag 
+        //     magVelocity_high = -magSpeed_high;
+        // }
     } // update Magazine 
 
     public double getMagHigh(){
@@ -155,26 +173,27 @@ public class Input {
     } // get low mag direction
 
     // ============= Climber ==============
+    // driver controlled 
     private volatile double climberSpeed = .7;
     private volatile int climberStatus = 0;
     private volatile boolean climberServoLocked = true; 
     
     public void updateClimber(){
-        if (operator.getDPADRight()){ // goes up
+        if (driver.getDPADRight()){ // goes up
             // climberSpeed += .05;
             climberStatus = -1;
         }
-        else if (operator.getDPADLeft()){ // goes down
+        else if (driver.getDPADLeft()){ // goes down
             // climberSpeed -= -.05;
             climberStatus = 1;
         }
         else {
             climberStatus = 0;
         }
-        if (operator.getLeftCenterButton()){
+        if (driver.getLeftCenterButton()){
             climberServoLocked = false;
         }
-        else if (operator.getRightCenterButton()){
+        else if (driver.getRightCenterButton()){
             climberServoLocked = true;
         }
     } // update Climber 
@@ -192,29 +211,39 @@ public class Input {
     }
 
     // ============= Shooter ==============
-
+    // operator controlled 
     private volatile double flywheelSpeed = 0;
     private volatile double flywheelPercent = 0;
-    private volatile double[] hoodSetpoints = {-30, -18, -4.0};
-    private volatile double hoodSetpoint = -15;
+    // min ---- mid ----- max 
+    private volatile double[] hoodSetpoints = {0, 15, 33};
+    private volatile double hoodSetpoint = 22.0;
+    private volatile double hoodFine = 0;
+    private volatile double shooterFine = 0;
+    private volatile double flywheelEncoderSpeed = 0;
 
     public void updateShooter(){
         //RPM is in testing state
-        if (driver.getBButton()){
+        flywheelSpeed = 0;
+        hoodFine = -operator.getLeftYAxis() * 10;
+        shooterFine = -operator.getRightYAxis() * 100;
+        hoodSetpoint = hoodSetpoints[0];
+
+        if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelPercent = .3;
-            flywheelSpeed = 4000;
+            flywheelSpeed = 4000 + shooterFine;
+            hoodSetpoint = hoodSetpoints[1] + hoodFine;
         } 
-        else if (driver.getXButtonReleased()){
+        else if (operator.getBButton()){ // trench shot 
             // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelSpeed = 6000 + shooterFine;
+            hoodSetpoint = hoodSetpoints[2] + hoodFine;
         }
-        else {
-            // flywheelSpeed = 0;
-            flywheelPercent = 0;
-            flywheelSpeed = 0;
+        else if (operator.getAButton()){ // longshot™
+            flywheelSpeed = 10000 + shooterFine;
+            hoodSetpoint = hoodSetpoints[0] + hoodFine;
         }
-        if(operator.getBButton()){
-            hoodSetpoint = hoodSetpoints[2];
+        if (operator.getXButton()){
+            // shoot?? 
         }
         else if (operator.getXButton()){
             hoodSetpoint = hoodSetpoints[0];
@@ -232,7 +261,6 @@ public class Input {
     public double getFlywheelPercent(){
         return flywheelPercent;
     }
-    private double flywheelEncoderSpeed = 0;
 
     public void setFlywheelEncoderSpeed(double speed){
         flywheelEncoderSpeed = speed;
@@ -245,6 +273,7 @@ public class Input {
     public double getHoodSetpoint(){
         return hoodSetpoint;
     }
+
 
     // =========== Others ============
     

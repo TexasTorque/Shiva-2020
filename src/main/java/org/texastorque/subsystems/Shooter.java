@@ -29,7 +29,7 @@ public class Shooter extends Subsystem {
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
     KPID hoodkPID = new KPID( 0.08, 0, 0, 0, -1, 1);//Hood PID for all positions
 
-    double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
+    double flywheelSpeed;
     
     // =========== motors ============
     private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
@@ -92,7 +92,6 @@ public class Shooter extends Subsystem {
             //     flywheel.updatePID(pidValues.get(0));
             // } // set to pid low
             //================Hood==============
-            hood.set(hoodSetpoint, ControlType.kPosition);
         } // if in teleop
         output();
     } // run at all times
@@ -106,6 +105,7 @@ public class Shooter extends Subsystem {
         else{
             flywheel.set(-pidOutput);
         }
+        hood.set(hoodSetpoint, ControlType.kPosition);
         // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 

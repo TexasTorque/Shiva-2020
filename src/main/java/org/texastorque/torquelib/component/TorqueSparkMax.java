@@ -20,6 +20,8 @@ public class TorqueSparkMax extends TorqueMotor {
     private CANEncoder alternateEncoder;
     private ArrayList<CANSparkMax> sparkMaxFollowers = new ArrayList<>();
 
+    private double encoderZero = 0;
+
     // ===================== constructor stuff =====================
     public TorqueSparkMax(int port) {
         this.port = port;
@@ -84,7 +86,7 @@ public class TorqueSparkMax extends TorqueMotor {
 
     @Override
     public double getPosition() {
-        return sparkMaxEncoder.getPosition() * sparkMaxEncoder.getPositionConversionFactor();
+        return (sparkMaxEncoder.getPosition() * sparkMaxEncoder.getPositionConversionFactor() - encoderZero);
     } // returns position of motor 
     
     public double getCurrent(){
@@ -97,5 +99,13 @@ public class TorqueSparkMax extends TorqueMotor {
 
     public double getAlternateVelocity(){
         return alternateEncoder.getVelocity();
+    }
+
+    public void resetEncoder(){
+        encoderZero = sparkMaxEncoder.getPosition();
+    }
+
+    public double getZero(){
+        return encoderZero;
     }
 }

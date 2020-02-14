@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import org.texastorque.util.KPID;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class TorqueTalon extends TorqueMotor {
     private TalonSRX talon;
     private ArrayList<TalonSRX> talonFollowers = new ArrayList<TalonSRX>();
@@ -35,6 +37,7 @@ public class TorqueTalon extends TorqueMotor {
         for(TalonSRX talonSRX : talonFollowers){
             talonSRX.set(ControlMode.Follower, port);
             talonSRX.setInverted(invert);
+            SmartDashboard.putNumber("FollowerVelocity", output);
         } // takes care of followers 
     } // generic set method 
 
@@ -86,6 +89,11 @@ public class TorqueTalon extends TorqueMotor {
         }
         return 0;
     } // get position
+
+    public double getOutput(){
+        return talon.getMotorOutputPercent();
+    }
+
     public void invertFollower(){
 		invert = !invert;
 	} // invert follower - flips the direction of the follower from what it was previously, default direction is same as leader 

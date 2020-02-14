@@ -12,6 +12,7 @@ import org.texastorque.util.TCS34725_I2C;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogInput;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,6 +35,9 @@ public class Feedback {
     // NetworkTables
     private NetworkTableInstance NT_instance;
     private NetworkTableEntry NT_offsetEntry;
+
+    // Analog Input 
+    // private AnalogInput mag_ultra = new AnalogInput(0);
 
     private Feedback(){
         NX_gyro = new AHRS(SPI.Port.kMXP);
