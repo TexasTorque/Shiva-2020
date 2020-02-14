@@ -76,13 +76,13 @@ public class Input {
 
     // ============= Intake ==============
     // driver controlled 
-    private volatile double rotaryPosition_left = 8.857;
-    private volatile double rotaryPosition_right = -23.5;
+    private volatile double rotaryPosition_left;
+    private volatile double rotaryPosition_right;
     private double rotarySpeed = 0;
     private int rollerSpeed = 0;
     // start position ---- up position ----- down position 
-private double[] rotarySetpoints_left = {0, -6, -42};
-    private double[] rotarySetpoints_right = {0, 6, 42};
+private double[] rotarySetpoints_left = {0, -15, -42};
+    private double[] rotarySetpoints_right = {0, 15, 42};
 
     public void updateIntake(){
         rollerSpeed = 0;
@@ -137,13 +137,13 @@ private double[] rotarySetpoints_left = {0, -6, -42};
         magVelocity_high = 0;
 
         if (operator.getLeftTrigger()){ // high mag - balls in 
-            magVelocity_high = operator.getRightZAxis() * magSpeed_high;
+            magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
         }
         else if (operator.getLeftBumper()){ // high mag - balls out 
-            magVelocity_low = magSpeed_low;
+            magVelocity_high = -magSpeed_high;
         }
         if (operator.getRightTrigger()){ // low mag - balls in 
-            magVelocity_low = operator.getLeftZAxis() * magSpeed_low;
+            magVelocity_low = -operator.getRightZAxis() * magSpeed_low;
         }
         else if (operator.getRightBumper()){ // low mag - balls out
             magVelocity_low = magSpeed_low;
@@ -226,21 +226,39 @@ private double[] rotarySetpoints_left = {0, -6, -42};
         flywheelSpeed = 0;
         hoodFine = -operator.getLeftYAxis() * 10;
         shooterFine = -operator.getRightYAxis() * 100;
-        hoodSetpoint = hoodSetpoints[0];
+        // hoodSetpoint = hoodSetpoints[0];
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelSpeed = 4000 + shooterFine;
-            hoodSetpoint = hoodSetpoints[1] + hoodFine;
+            if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
+                hoodSetpoint = hoodSetpoints[0] + hoodFine;
+            }
+            else {
+                hoodSetpoint = hoodSetpoints[0];
+            }
         } 
         else if (operator.getBButton()){ // trench shot 
             // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelSpeed = 6000 + shooterFine;
-            hoodSetpoint = hoodSetpoints[2] + hoodFine;
+            if (!(hoodSetpoint > 26) || !(hoodSetpoint < 10)){
+                hoodSetpoint = hoodSetpoints[2] + hoodFine;
+            }
+            else {
+                hoodSetpoint = hoodSetpoints[2];
+            }
         }
         else if (operator.getAButton()){ // longshot™
             flywheelSpeed = 10000 + shooterFine;
-            hoodSetpoint = hoodSetpoints[0] + hoodFine;
+            if (!(hoodSetpoint > 26) || !(hoodSetpoint < 10)){
+                hoodSetpoint = hoodSetpoints[2] + hoodFine;
+            }
+            else {
+                hoodSetpoint = hoodSetpoints[2];
+            }
+        }
+        else{
+            hoodSetpoint = hoodSetpoints[0];
         }
         if (operator.getXButton()){
             // shoot?? 
@@ -248,9 +266,7 @@ private double[] rotarySetpoints_left = {0, -6, -42};
         else if (operator.getXButton()){
             hoodSetpoint = hoodSetpoints[0];
         }
-        else{
-            hoodSetpoint = hoodSetpoints[1];
-        }
+
 
     } // update Shooter 
 

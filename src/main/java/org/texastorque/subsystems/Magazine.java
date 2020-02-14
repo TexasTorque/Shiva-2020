@@ -29,6 +29,7 @@ public class Magazine extends Subsystem{
 
     // =================== methods ==================
     public Magazine(){
+        beltHigh.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -54,6 +55,8 @@ public class Magazine extends Subsystem{
 
     @Override 
     public void output(){
+            //for spark max alternate encoder (flywheel)
+        input.setFlywheelEncoderSpeed(beltHigh.getAlternateVelocity());
         beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
         beltLow.set(beltSpeed_low);
     } // output
