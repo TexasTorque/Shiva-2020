@@ -17,6 +17,7 @@ public class TorqueSparkMax extends TorqueMotor {
 
     private CANSparkMax sparkMax;
     private CANEncoder sparkMaxEncoder;
+    private CANEncoder alternateEncoder;
     private ArrayList<CANSparkMax> sparkMaxFollowers = new ArrayList<>();
 
     // ===================== constructor stuff =====================
@@ -88,5 +89,13 @@ public class TorqueSparkMax extends TorqueMotor {
     
     public double getCurrent(){
         return sparkMax.getOutputCurrent();
+    }
+
+    public void setAlternateEncoder(){
+        alternateEncoder = sparkMax.getAlternateEncoder();
+    }
+
+    public double getAlternateVelocity(){
+        return alternateEncoder.getVelocity();
     }
 }

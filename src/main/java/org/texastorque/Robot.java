@@ -6,12 +6,16 @@ import org.texastorque.auto.AutoManager;
 import org.texastorque.inputs.*;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.base.TorqueIterative;
+import org.texastorque.constants.*;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
+
+
+import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.can.*;
 
 // =============================== Robot ===============================
 
@@ -20,9 +24,9 @@ public class Robot extends TorqueIterative {
   // make instances of subsystems to later place into arraylist 
   private ArrayList<Subsystem> subsystems;
   private Subsystem driveBase = DriveBase.getInstance();
-  // private Subsystem shooter = Shooter.getInstance();
-  // private Subsystem climber = Climber.getInstance();
-  private Subsystem intake = Intake.getInstance();
+  private Subsystem shooter = Shooter.getInstance();
+  //private Subsystem climber = Climber.getInstance();
+  //private Subsystem intake = Intake.getInstance();
   private Subsystem magazine = Magazine.getInstance();
   // private Subsystem testMotors = TestMotors.getInstance();
   
@@ -40,9 +44,9 @@ public class Robot extends TorqueIterative {
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
     subsystems.add(driveBase);
-    // subsystems.add(shooter);
-    // subsystems.add(climber);
-    subsystems.add(intake);
+    subsystems.add(shooter);
+    //subsystems.add(climber);
+    //subsystems.add(intake);
     subsystems.add(magazine);
     // subsystems.add(testMotors);
   } // initialize subsystems 
@@ -60,6 +64,7 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void teleopInit(){
+    feedback.update();
     state.setRobotState(RobotState.TELEOP);
     for (Subsystem system : subsystems){
       system.teleopInit();
@@ -68,6 +73,9 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void disabledInit(){
+    for (Subsystem system : subsystems){
+      system.disabledInit();
+    }
   } // initialize when disabled
 
   // ======== continous ==============
@@ -98,7 +106,7 @@ public class Robot extends TorqueIterative {
     feedback.update();
     feedback.smartDashboard();
     for (Subsystem system : subsystems){
-      system.disabledContinuous();
+      system.smartDashboard();
     }
   } // do continously always
 

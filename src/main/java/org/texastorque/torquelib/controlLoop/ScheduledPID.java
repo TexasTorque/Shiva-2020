@@ -16,6 +16,7 @@ public class ScheduledPID {
 	private final double[] pGains;
 	private final double[] iGains;
 	private final double[] dGains;
+	private final double[] fGains;
 	
 	private final double minOutput;
 	private final double maxOutput;
@@ -35,6 +36,7 @@ public class ScheduledPID {
 		this.pGains = new double[count];
 		this.iGains = new double[count];
 		this.dGains = new double[count];
+		this.fGains = new double[count];
 		
 		this.setpoint = setpoint;
 		this.minOutput = minOutput;
@@ -78,6 +80,13 @@ public class ScheduledPID {
 		double de = error - this.lastError;
 		
 		return gain * (de/dt);
+	}
+
+	//feedforward term. Multiplies fTerm by setpoint to add to PIDOutput 
+	//Use when output is needed to maintain positions
+	private double feedForwardTerm(double setPoint){
+		double gain = this.fGains[this.currentGainIndex];
+		return gain*setPoint;
 	}
 	
 	private boolean isSafeToOutput() {
@@ -163,7 +172,8 @@ public class ScheduledPID {
 		double pTerm = proportionalTerm(error);
 		double iTerm = integralTerm(error);
 		double dTerm = derivativeTerm(error);
-		double output = pTerm + iTerm + dTerm;  // Ideal PID form.
+		double fTerm = feedForwardTerm(setpoint);
+		double output = pTerm + iTerm + dTerm + fTerm;  // Ideal PID form.
 		
 		finishUpdate(error);
 		
@@ -240,6 +250,11 @@ public class ScheduledPID {
 		
 		public Builder setDGains(double... dGains) {
 			ArrayUtils.bufferAndFill(dGains, pid.dGains);
+			return this;
+		}
+
+		public Builder setFGains(double... fGains){
+			ArrayUtils.bufferAndFill(fGains, pid.fGains);
 			return this;
 		}
 		
