@@ -103,8 +103,8 @@ public class DriveBase extends Subsystem{
 
     // =========== encoders ==========
     public void resetEncoders(){
-        db_left.resetEncoder();
-        db_right.resetEncoder();
+        db_left.tareEncoder();
+        db_right.tareEncoder();
     } // reset where the zero is of the encoders 
 
     public double getLeftDistance(){

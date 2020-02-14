@@ -54,6 +54,8 @@ public class Magazine extends Subsystem{
 
     @Override 
     public void output(){
+        SmartDashboard.putNumber("HighMagSpeed", beltSpeed_high); // test z axis 
+        SmartDashboard.putNumber("LowMagSpeed", beltSpeed_low); // test z axis 
         beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
         beltLow.set(beltSpeed_low);
     } // output

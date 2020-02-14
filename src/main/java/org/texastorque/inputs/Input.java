@@ -80,8 +80,8 @@ public class Input {
     private volatile double rotaryPosition_right = -23.5;
     private double rotarySpeed = 0;
     private int rollerSpeed = 0;
-    // start position ---- up position ----- down position 
-private double[] rotarySetpoints_left = {0, -6, -42};
+    // start position ---- neutral position ----- down position
+    private double[] rotarySetpoints_left = {0, -6, -42};
     private double[] rotarySetpoints_right = {0, 6, 42};
 
     public void updateIntake(){

@@ -41,6 +41,7 @@ public class Shooter extends Subsystem {
         flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
         flywheel.invertFollower();
         hood.configurePID(hoodkPID);
+        hood.tareEncoder();
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
@@ -81,7 +82,7 @@ public class Shooter extends Subsystem {
         if (state == RobotState.TELEOP) {
             //====================Flywheel====================
             //When Encoder is in Spark Max!
-                hoodSetpoint = input.getHoodSetpoint();
+                hoodSetpoint = input.getHoodSetpoint() + hood.getZero();
                 flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
                 shooterPID.changeSetpoint(flywheelSpeed);
                 pidOutput = shooterPID.calculate(input.getFlywheelEncoderSpeed());
@@ -93,16 +94,12 @@ public class Shooter extends Subsystem {
     @Override
     public void output() {
         hood.set(hoodSetpoint, ControlType.kPosition);
-        //allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
-        SmartDashboard.putNumber("pidOutput", pidOutput);
         if(pidOutput > 0){
             flywheel.set(0);
-        }
+        } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
         else{
             flywheel.set(-pidOutput);
         }
-        SmartDashboard.putNumber("motorOutput", flywheel.getOutput());
-        // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
     // =========== continuous ==========

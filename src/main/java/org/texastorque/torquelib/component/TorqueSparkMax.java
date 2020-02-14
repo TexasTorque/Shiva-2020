@@ -84,10 +84,22 @@ public class TorqueSparkMax extends TorqueMotor {
         return sparkMaxEncoder.getVelocity()* sparkMaxEncoder.getVelocityConversionFactor();
     } // returns velocity of motor 
 
+    public void tareEncoder(){
+        encoderZero = sparkMaxEncoder.getPosition();
+    }
+
+    public double getZero(){
+        return encoderZero;
+    }
+    
     @Override
     public double getPosition() {
-        return (sparkMaxEncoder.getPosition() * sparkMaxEncoder.getPositionConversionFactor() - encoderZero);
+        return ((sparkMaxEncoder.getPosition() - encoderZero));
     } // returns position of motor 
+
+    public double getPositionConverted(){
+        return ((sparkMaxEncoder.getPosition() - encoderZero) * sparkMaxEncoder.getPositionConversionFactor());
+    } // returns motor position but converted by some factor 
     
     public double getCurrent(){
         return sparkMax.getOutputCurrent();
@@ -101,11 +113,5 @@ public class TorqueSparkMax extends TorqueMotor {
         return alternateEncoder.getVelocity();
     }
 
-    public void resetEncoder(){
-        encoderZero = sparkMaxEncoder.getPosition();
-    }
-
-    public double getZero(){
-        return encoderZero;
-    }
+    
 }
