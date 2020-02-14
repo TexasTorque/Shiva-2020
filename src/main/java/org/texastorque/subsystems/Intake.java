@@ -51,8 +51,14 @@ public class Intake extends Subsystem{
     @Override 
     public void run(RobotState state){
         if (state == RobotState.AUTO){
+            rotaryPosition_left = input.getRotaryPositionLeft();
+            rotaryPosition_right = input.getRotaryPositionRight();
+            rollerSpeed = input.getRollerSpeed();
         } // auto 
         if (state == RobotState.TELEOP){
+            rotaryPosition_left = input.getRotaryPositionLeft();
+            rotaryPosition_right = input.getRotaryPositionRight();
+            rollerSpeed = input.getRollerSpeed();
             SmartDashboard.putNumber("rotary_left_position", rotary_left.getPosition());
             SmartDashboard.putNumber("rotary_right_position", rotary_right.getPosition());
             SmartDashboard.putNumber("rotary_left_setpoint", rotaryPosition_left);
@@ -64,8 +70,8 @@ public class Intake extends Subsystem{
     @Override 
     public void output(){
         rollers.set(rollerSpeed);
-        SmartDashboard.putNumber("output_left", rotary_left.getCurrent());
-        SmartDashboard.putNumber("output_right", rotary_right.getCurrent());
+        SmartDashboard.putNumber("output_rotary_left", rotary_left.getCurrent());
+        SmartDashboard.putNumber("output_rotary_right", rotary_right.getCurrent());
         rotary_left.set(rotaryPosition_left, ControlType.kPosition);
         rotary_right.set(rotaryPosition_right, ControlType.kPosition);
     } // output

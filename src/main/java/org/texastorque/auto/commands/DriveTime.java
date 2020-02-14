@@ -3,8 +3,6 @@ package org.texastorque.auto.commands;
 import org.texastorque.auto.Command;
 import edu.wpi.first.wpilibj.Timer;
 
-import java.util.ArrayList;
-
 public class DriveTime extends Command{
 
     private double startTime;
@@ -19,7 +17,7 @@ public class DriveTime extends Command{
 
     @Override
     protected void init(){
-        startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+        startTime = Timer.getFPGATimestamp();
     } // on initialization
 
     @Override 

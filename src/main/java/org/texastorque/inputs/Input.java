@@ -1,10 +1,8 @@
 package org.texastorque.inputs;
 
-import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Input {
@@ -114,6 +112,11 @@ public class Input {
 
     public double getRotaryPositionRight(){
         return rotaryPosition_right;
+    }
+
+    public void setRotaryPosition(int arrayIndex){
+        rotaryPosition_left = rotarySetpoints_left[arrayIndex];
+        rotaryPosition_right = rotarySetpoints_right[arrayIndex];
     }
 
     public int getRollerSpeed(){
