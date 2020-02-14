@@ -48,7 +48,7 @@ public class Feedback {
 
     public void updateLimelight(){
         NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(2);
-        targetArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+        // targetArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         hOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     }

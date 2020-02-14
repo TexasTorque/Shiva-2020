@@ -123,6 +123,14 @@ public class Input {
         return rollerSpeed;
     }
 
+    public void setRotarySpeed(double speed){
+        rotarySpeed = speed;
+    }
+
+    public void setRollerSpeed(int speed){
+        rollerSpeed = speed;
+    }
+
     // ============ Magazine ============
     double magVelocity_low = 0;
     double magVelocity_high = 0;
@@ -244,6 +252,10 @@ public class Input {
 
     public double getHoodSetpoint(){
         return hoodSetpoint;
+    }
+
+    public void setHoodSetpoint(int point){
+        hoodSetpoint = hoodSetpoints[point];
     }
 
     // =========== Others ============

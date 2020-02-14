@@ -70,7 +70,6 @@ public class DriveBase extends Subsystem{
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.VISION){
-            SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
             pidValue = linePID.calculate(position);
             SmartDashboard.putNumber("pidValueVision", pidValue);
