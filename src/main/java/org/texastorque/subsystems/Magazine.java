@@ -46,7 +46,7 @@ public class Magazine extends Subsystem{
     public void run(RobotState state){
         if (state == RobotState.AUTO){
         }
-        if (state == RobotState.TELEOP){
+        if (state == RobotState.TELEOP || state == RobotState.VISION){
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
         }

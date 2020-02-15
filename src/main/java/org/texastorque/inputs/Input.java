@@ -46,8 +46,15 @@ public class Input {
 
     public void updateDrive(){
         double leftRight = driver.getRightXAxis();
-        DB_leftSpeed = driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
-        DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
+        if(hoodSetpoint == hoodSetpoints[0]){
+            DB_leftSpeed = driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
+            DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
+        }
+        else{
+            DB_leftSpeed = .2*(driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight));
+            DB_rightSpeed = .2*(-driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight));
+        }
+
         if (driver.getAButtonPressed()){
             state.setRobotState(RobotState.VISION);
         } else if (driver.getXButtonPressed()){
@@ -85,11 +92,20 @@ public class Input {
     // start position ---- neutral position ----- down position
     private double[] rotarySetpoints_left = {0, -15, -42};
     private double[] rotarySetpoints_right = {0, 15, 42};
+    private int neutral = 1;
 
     public void updateIntake(){
         rollerSpeed = 0;
-        rotaryPosition_left = rotarySetpoints_left[1];
-        rotaryPosition_right = rotarySetpoints_right[1];
+        if(driver.getBButtonPressed()){
+            if(neutral == 1){
+                neutral = 0;
+            }
+            else{
+                neutral =1;
+            }
+        }
+        rotaryPosition_left = rotarySetpoints_left[neutral];
+        rotaryPosition_right = rotarySetpoints_right[neutral];
         if (driver.getRightTrigger()){
             rotaryPosition_left = rotarySetpoints_left[2];
             rotaryPosition_right = rotarySetpoints_right[2];
@@ -104,6 +120,7 @@ public class Input {
             rotaryPosition_left = rotarySetpoints_left[0];
             rotaryPosition_right = rotarySetpoints_right[0];
         }
+        
     } // update Intake 
 
     public double getRotarySpeed(){
@@ -151,7 +168,7 @@ public class Input {
         if (operator.getRightTrigger()){ // low mag - balls in 
             magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
         }
-        else if (operator.getLeftBumper()){ // low mag - balls out
+        else if (operator.getRightBumper()){ // low mag - balls out
             magVelocity_low = magSpeed_low;
         }
     } // update Magazine 

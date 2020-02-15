@@ -78,7 +78,7 @@ public class Shooter extends Subsystem {
     public void run(RobotState state) {
         if (state == RobotState.AUTO){
         } // if in autonomous
-        if (state == RobotState.TELEOP) {
+        if (state == RobotState.TELEOP || state == RobotState.VISION) {
             //====================Flywheel====================
             //When Encoder is in Spark Max!
                 hoodSetpoint = input.getHoodSetpoint();

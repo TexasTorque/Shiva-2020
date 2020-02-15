@@ -46,8 +46,8 @@ public class DriveBase extends Subsystem{
         leftSpeed = 0;
         rightSpeed = 0;
         linePID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.005)
-            .setIGains(0.004)
+            .setPGains(0.008)
+            .setIGains(0.015)
             // .setDGains(0.000005)
             .build();
         lowPass = new LowPassFilter(1);
