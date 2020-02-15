@@ -33,7 +33,6 @@ public class DriveBase extends Subsystem{
     private DriveBase(){
         db_left.addFollower(Ports.DB_LEFT_2);
         db_right.addFollower(Ports.DB_RIGHT_2);
-        db_right.setAlternateEncoder();
     } // constructor 
 
     // ============= initialization ==========
@@ -47,9 +46,9 @@ public class DriveBase extends Subsystem{
         leftSpeed = 0;
         rightSpeed = 0;
         linePID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.03)
-            .setIGains(0.005)
-            .setDGains(0.00008)
+            .setPGains(0.005)
+            .setIGains(0.004)
+            // .setDGains(0.000005)
             .build();
         lowPass = new LowPassFilter(0.2);
     }
@@ -72,7 +71,7 @@ public class DriveBase extends Subsystem{
         else if (state == RobotState.VISION){
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
-            pidValue = linePID.calculate(position);
+            pidValue = - linePID.calculate(position);
             SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;
             rightSpeed = pidValue;
@@ -84,8 +83,8 @@ public class DriveBase extends Subsystem{
     public void output(){
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
+        // SmartDashboard.putNumber("right drive output", db_right.getCurrent());
         //for spark max alternate encoder (flywheel)
-        input.setFlywheelEncoderSpeed(db_right.getAlternateVelocity());
         db_left.set(leftSpeed);
         db_right.set(rightSpeed);
     }
@@ -108,7 +107,7 @@ public class DriveBase extends Subsystem{
     } // reset where the zero is of the encoders 
 
     public double getLeftDistance(){
-        return (db_left.getPosition() - leftDrivePositionZero);
+        return -(db_left.getPosition() - leftDrivePositionZero);
     } // return left drive distance 
 
     public double getRightDistance(){
@@ -119,6 +118,8 @@ public class DriveBase extends Subsystem{
     @Override 
     public void smartDashboard(){
         SmartDashboard.putString("State", state.getRobotState().name());
+        SmartDashboard.putNumber("db_right", getRightDistance());
+        SmartDashboard.putNumber("db_left", getLeftDistance());
     } // display all this to smart dashboard
 
     public static DriveBase getInstance(){

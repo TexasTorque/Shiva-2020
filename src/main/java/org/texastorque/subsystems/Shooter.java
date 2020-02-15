@@ -27,7 +27,7 @@ public class Shooter extends Subsystem {
     private ScheduledPID shooterPID;
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
-    KPID hoodkPID = new KPID( 0.08, 0, 0, 0, -1, 1); //Hood PID for all positions
+    KPID hoodkPID = new KPID( 0.1, 0, 0, 0, -1, 1); //Hood PID for all positions
 
     double flywheelSpeed = 6000 * Constants.RPM_VICTORSPX_CONVERSION;
     
@@ -82,7 +82,7 @@ public class Shooter extends Subsystem {
         if (state == RobotState.TELEOP) {
             //====================Flywheel====================
             //When Encoder is in Spark Max!
-                hoodSetpoint = input.getHoodSetpoint() + hood.getZero();
+                hoodSetpoint = input.getHoodSetpoint();
                 flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
                 shooterPID.changeSetpoint(flywheelSpeed);
                 pidOutput = shooterPID.calculate(input.getFlywheelEncoderSpeed());
@@ -94,6 +94,7 @@ public class Shooter extends Subsystem {
     @Override
     public void output() {
         hood.set(hoodSetpoint, ControlType.kPosition);
+        SmartDashboard.putNumber("hood output", hood.getCurrent());
         if(pidOutput > 0){
             flywheel.set(0);
         } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)

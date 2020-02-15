@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 
 import org.texastorque.constants.*;
+import org.texastorque.subsystems.DriveBase;
+import org.texastorque.subsystems.Subsystem;
 import org.texastorque.util.TCS34725ColorSensor;
 import org.texastorque.util.TCS34725_I2C;
 
@@ -39,7 +41,10 @@ public class Feedback {
     // Analog Input 
     // private AnalogInput mag_ultra = new AnalogInput(0);
 
+    // private Subsystem drivebase = DriveBase.getInstance();
+    
     private Feedback(){
+        
         NX_gyro = new AHRS(SPI.Port.kMXP);
     } // constructor
 
@@ -92,7 +97,6 @@ public class Feedback {
     public void zeroYaw() {
         NX_gyro.zeroYaw();
     }
- 
 
     // ======== Other stuff =========
     

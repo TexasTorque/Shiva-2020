@@ -29,6 +29,7 @@ public class Magazine extends Subsystem{
 
     // =================== methods ==================
     public Magazine(){
+        beltHigh.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -54,6 +55,7 @@ public class Magazine extends Subsystem{
 
     @Override 
     public void output(){
+        input.setFlywheelEncoderSpeed(beltHigh.getAlternateVelocity());
         SmartDashboard.putNumber("HighMagSpeed", beltSpeed_high); // test z axis 
         SmartDashboard.putNumber("LowMagSpeed", beltSpeed_low); // test z axis 
         beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
