@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.revrobotics.CANAnalog;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import org.texastorque.torquelib.component.TorqueMotor;
@@ -18,6 +20,7 @@ public class TorqueSparkMax extends TorqueMotor {
     private CANSparkMax sparkMax;
     private CANEncoder sparkMaxEncoder;
     private CANEncoder alternateEncoder;
+    private CANAnalog analogEncoder;
     private ArrayList<CANSparkMax> sparkMaxFollowers = new ArrayList<>();
 
     private double encoderZero = 0;
@@ -27,6 +30,7 @@ public class TorqueSparkMax extends TorqueMotor {
         this.port = port;
         sparkMax = new CANSparkMax(port, MotorType.kBrushless);
         sparkMaxEncoder = sparkMax.getEncoder();
+        analogEncoder = sparkMax.getAnalog(AnalogMode.kAbsolute);
     } // constructor 
 
     @Override
@@ -84,10 +88,28 @@ public class TorqueSparkMax extends TorqueMotor {
         return sparkMaxEncoder.getVelocity()* sparkMaxEncoder.getVelocityConversionFactor();
     } // returns velocity of motor 
 
+    public void tareEncoder(){
+        encoderZero = sparkMaxEncoder.getPosition();
+    }
+
+    public double getZero(){
+        return encoderZero;
+    }
+
+    public double getAnalogValue(){
+        // return (sparkMax.getAnalog(AnalogMode.kRelative).getPosition());
+        return analogEncoder.getPosition()*analogEncoder.getPositionConversionFactor();
+        
+    }
+
     @Override
     public double getPosition() {
-        return (sparkMaxEncoder.getPosition() * sparkMaxEncoder.getPositionConversionFactor() - encoderZero);
+        return ((sparkMaxEncoder.getPosition() - encoderZero));
     } // returns position of motor 
+
+    public double getPositionConverted(){
+        return ((sparkMaxEncoder.getPosition() - encoderZero) * sparkMaxEncoder.getPositionConversionFactor());
+    } // returns motor position but converted by some factor 
     
     public double getCurrent(){
         return sparkMax.getOutputCurrent();
@@ -101,11 +123,5 @@ public class TorqueSparkMax extends TorqueMotor {
         return alternateEncoder.getVelocity();
     }
 
-    public void resetEncoder(){
-        encoderZero = sparkMaxEncoder.getPosition();
-    }
-
-    public double getZero(){
-        return encoderZero;
-    }
+    
 }

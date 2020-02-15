@@ -27,7 +27,7 @@ public class Shooter extends Subsystem {
     private ScheduledPID shooterPID;
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
-    KPID hoodkPID = new KPID( 0.08, 0, 0, 0, -1, 1);//Hood PID for all positions
+    KPID hoodkPID = new KPID( 0.1, 0, 0, 0, -1, 1); //Hood PID for all positions
 
     double flywheelSpeed;
     
@@ -41,6 +41,7 @@ public class Shooter extends Subsystem {
         flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
         flywheel.invertFollower();
         hood.configurePID(hoodkPID);
+        hood.tareEncoder();
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
@@ -98,15 +99,14 @@ public class Shooter extends Subsystem {
 
     @Override
     public void output() {
-        //allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
+        hood.set(hoodSetpoint, ControlType.kPosition);
+        SmartDashboard.putNumber("hood output", hood.getCurrent());
         if(pidOutput > 0){
             flywheel.set(0);
-        }
+        } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
         else{
             flywheel.set(-pidOutput);
         }
-        hood.set(hoodSetpoint, ControlType.kPosition);
-        // flywheel.set(flywheelSpeed, ControlMode.Velocity);
     } // output
 
     // =========== continuous ==========

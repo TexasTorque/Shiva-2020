@@ -55,8 +55,9 @@ public class Magazine extends Subsystem{
 
     @Override 
     public void output(){
-            //for spark max alternate encoder (flywheel)
         input.setFlywheelEncoderSpeed(beltHigh.getAlternateVelocity());
+        SmartDashboard.putNumber("HighMagSpeed", beltSpeed_high); // test z axis 
+        SmartDashboard.putNumber("LowMagSpeed", beltSpeed_low); // test z axis 
         beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
         beltLow.set(beltSpeed_low);
     } // output

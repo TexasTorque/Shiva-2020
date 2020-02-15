@@ -36,8 +36,8 @@ public class Intake extends Subsystem{
     private Intake(){
         rotary_left.configurePID(kPIDRotary_left);
         rotary_right.configurePID(kPIDRotary_right);
-        rotary_left.resetEncoder();
-        rotary_right.resetEncoder();
+        rotary_left.tareEncoder();
+        rotary_right.tareEncoder();
     } // constructor 
 
     @Override
@@ -45,8 +45,8 @@ public class Intake extends Subsystem{
 
     @Override
     public void teleopInit(){
-        rotary_left.resetEncoder();
-        rotary_right.resetEncoder();
+        rotary_left.tareEncoder();
+        rotary_right.tareEncoder();
     } // teleop init
 
     @Override 
@@ -62,14 +62,13 @@ public class Intake extends Subsystem{
         } // auto 
         if (state == RobotState.TELEOP){
             rollerSpeed = input.getRollerSpeed();
-            rotaryPosition_left = input.getRotaryPositionLeft(); //- rotary_left.getZero();
-            rotaryPosition_right = input.getRotaryPositionRight(); //- rotary_right.getZero();
-            SmartDashboard.putNumber("Left 0", rotary_left.getZero());
-            SmartDashboard.putNumber("Right 0", rotary_right.getZero());
-            SmartDashboard.putNumber("rotary_left_position", rotary_left.getPosition());
-            SmartDashboard.putNumber("rotary_right_position", rotary_right.getPosition());
-            SmartDashboard.putNumber("rotary_left_setpoint", rotaryPosition_left);
-            SmartDashboard.putNumber("rotary_right_setpoint", rotaryPosition_right);
+            rotaryPosition_left = input.getRotaryPositionLeft();
+            rotaryPosition_right = input.getRotaryPositionRight();
+            
+            SmartDashboard.putNumber("rotary_left.position", rotary_left.getPosition());
+            SmartDashboard.putNumber("rotary_right.position", rotary_right.getPosition());
+            SmartDashboard.putNumber("rotaryPosition_left", rotaryPosition_left);
+            SmartDashboard.putNumber("rotaryPosition_right", rotaryPosition_right);
         } // teleop
         output();
     } // run at all times 
@@ -77,10 +76,10 @@ public class Intake extends Subsystem{
     @Override 
     public void output(){
         rollers.set(rollerSpeed);
-        SmartDashboard.putNumber("output_rotary_left", rotary_left.getCurrent());
-        SmartDashboard.putNumber("output_rotary_right", rotary_right.getCurrent());
-        rotary_left.set(rotaryPosition_left, ControlType.kPosition);
-        rotary_right.set(rotaryPosition_right, ControlType.kPosition);
+        SmartDashboard.putNumber("output_left_current", rotary_left.getCurrent());
+        SmartDashboard.putNumber("output_right_current", rotary_right.getCurrent());
+        // rotary_left.set(rotaryPosition_left, ControlType.kPosition);
+        // rotary_right.set(rotaryPosition_right, ControlType.kPosition);
     } // output
 
     // ============= continuous =============
@@ -92,6 +91,16 @@ public class Intake extends Subsystem{
 
     @Override 
     public void teleopContinuous(){}
+
+    // ========= get methods ==========
+
+    public double getRotaryPosLeft(){
+        return rotary_left.getPosition();
+    }
+
+    public double getRotaryPosRight(){
+        return rotary_right.getPosition();
+    }
 
     // ============ others ==========
 
