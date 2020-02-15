@@ -28,6 +28,7 @@ public class Input {
             updateShooter();
             updateClimber();
             updateIntake();
+            updateTest();
         } // update driver things
 
         if (operator != null){
@@ -256,6 +257,36 @@ public class Input {
 
     public void setHoodSetpoint(int point){
         hoodSetpoint = hoodSetpoints[point];
+    }
+    //================Test Motors (Neo rn)=================
+    private double neoSpeed = 0;
+    private double neoPercent = 0;
+    public void updateTest(){
+        neoSpeed = 0;
+        neoPercent = 0;
+        if(driver.getAButton()){
+            neoSpeed = 2000;
+            neoPercent = 0.2;
+
+        }
+        else if(driver.getBButton()){
+            neoSpeed = 4000;
+            neoPercent = 0.4;
+        }
+        else if(driver.getYButton()){
+            neoSpeed = 6000;
+            neoPercent = 0.6;
+        }
+
+        
+    }
+
+    public double getNeoSpeed(){
+        return neoSpeed;
+    }
+
+    public double getNeoPercent(){
+        return neoPercent;
     }
 
     // =========== Others ============

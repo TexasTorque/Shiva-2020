@@ -27,7 +27,7 @@ public class Ports {
 
     // testing individual motors 
     public static final int TALON_PORT = 0;
-    public static final int SPARKMAX_PORT = 1;
+    public static final int SPARKMAX_PORT_1 = 1;
     public static final int SPARKMAX_PORT_2 = 2;
 
     // PWM
