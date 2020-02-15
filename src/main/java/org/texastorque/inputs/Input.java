@@ -216,7 +216,7 @@ private double[] rotarySetpoints_left = {0, -15, -42};
     private volatile double flywheelPercent = 0;
     // min ---- mid ----- max 
     private volatile double[] hoodSetpoints = {0, 15, 33};
-    private volatile double hoodSetpoint = 22.0;
+    private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
     private volatile double flywheelEncoderSpeed = 0;
@@ -240,7 +240,7 @@ private double[] rotarySetpoints_left = {0, -15, -42};
         } 
         else if (operator.getBButton()){ // trench shot 
             // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelSpeed = 6000 + shooterFine;
+            flywheelSpeed = 5050 + shooterFine;
             if (!(hoodSetpoint > 26) || !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[2] + hoodFine;
             }
@@ -274,6 +274,10 @@ private double[] rotarySetpoints_left = {0, -15, -42};
         return flywheelSpeed;
     }
 
+    public void setFlywheelSpeed(double speed){
+        flywheelSpeed = speed;
+    }
+
     public double getFlywheelPercent(){
         return flywheelPercent;
     }
@@ -288,6 +292,10 @@ private double[] rotarySetpoints_left = {0, -15, -42};
 
     public double getHoodSetpoint(){
         return hoodSetpoint;
+    }
+
+    public void setHoodSetpoint(int index){
+        hoodSetpoint = hoodSetpoints[index];
     }
 
 

@@ -46,11 +46,11 @@ public class DriveBase extends Subsystem{
         leftSpeed = 0;
         rightSpeed = 0;
         linePID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.03)
-            .setIGains(0.005)
-            .setDGains(0.00008)
+            .setPGains(0.01)
+            .setIGains(0.004)
+            .setDGains(0.0000007)
             .build();
-        lowPass = new LowPassFilter(0.2);
+        lowPass = new LowPassFilter(1);
     }
 
     @Override 
@@ -71,7 +71,7 @@ public class DriveBase extends Subsystem{
         else if (state == RobotState.VISION){
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
-            pidValue = linePID.calculate(position);
+            pidValue = -linePID.calculate(position);
             SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;
             rightSpeed = pidValue;
