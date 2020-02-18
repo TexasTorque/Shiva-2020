@@ -22,10 +22,12 @@ public class Magazine extends Subsystem{
     private KPID beltPID = new KPID(0, 0, 0, 0, -1, 1);
     private double beltSpeed_high = 0;
     private double beltSpeed_low = 0;
+    private double beltSpeed_gate = 0;
 
     // ============ motors ==============
     private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
     private TorqueSparkMax beltLow = new TorqueSparkMax(Ports.BELT_LOW);
+    private TorqueSparkMax beltGate = new TorqueSparkMax(Ports.BELT_GATE);
 
     // =================== methods ==================
     public Magazine(){
@@ -41,25 +43,34 @@ public class Magazine extends Subsystem{
     @Override 
     public void disabledInit(){}
 
+    //updating feedback
+    public void update(){
+        feedback.setShooterVelocity(beltHigh.getAlternateVelocity());
+    }
+    
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
+        update();
         if (state == RobotState.AUTO){
         }
         if (state == RobotState.TELEOP || state == RobotState.VISION){
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
+            beltSpeed_gate = input.getMagGate();
         }
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        input.setFlywheelEncoderSpeed(beltHigh.getAlternateVelocity());
+        // input.setFlywheelEncoderSpeed(beltHigh.getAlternateVelocity());
         SmartDashboard.putNumber("HighMagSpeed", beltSpeed_high); // test z axis 
         SmartDashboard.putNumber("LowMagSpeed", beltSpeed_low); // test z axis 
+        SmartDashboard.putNumber("GateMagSpeed", beltSpeed_gate);
         beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
         beltLow.set(beltSpeed_low);
+        beltGate.set(beltSpeed_gate);
     } // output
 
     // ============= continuous =============

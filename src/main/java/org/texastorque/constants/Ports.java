@@ -21,7 +21,9 @@ public class Ports {
     public static final int INTAKE_ROLLERS = 7;
     
     public static final int BELT_HIGH = 8;
-    public static final int BELT_LOW = 9;
+    public static final int BELT_GATE = 9;
+    //belt_gate is gate because they stole the climber SparkMax... don't know if it's temporary or not
+    public static final int BELT_LOW = 11;
 
     public static final int SHOOTER_HOOD = 10;
 
@@ -33,4 +35,8 @@ public class Ports {
     // PWM
     public static final int CLIMB_SERVO_LEFT = 0;
     public static final int CLIMB_SERVO_RIGHT = 1;
+
+    //Sensors
+    public static final int MAG_SENSOR_HIGH = 0;
+    public static final int MAG_SENSOR_LOW = 2;
 } // ports 

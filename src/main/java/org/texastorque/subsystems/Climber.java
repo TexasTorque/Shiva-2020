@@ -29,13 +29,9 @@ public class Climber extends Subsystem{
     private double servoPos_right = 0;
     private double climberSpeed = 0;
     // ============ motors ==============
-    private CANSparkMax climber_left = new CANSparkMax(Ports.CLIMBER_LEFT, MotorType.kBrushless);
+    // private CANSparkMax climber_left = new CANSparkMax(Ports.CLIMBER_LEFT, MotorType.kBrushless);
     // private CANSparkMax climber2 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
-    // === PID ===
-    // private CANPIDController climberPID = climber.getPIDController();
-    private CANEncoder climberEncoder1 = climber_left.getEncoder(EncoderType.kHallSensor, 4096);
-    // private CANEncoder climberEncoder2 = climber2.getEncoder(EncoderType.kHallSensor, 4096);
-    // private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
+    private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
 
     // =================== methods ==================
     private void Climber(){
@@ -46,11 +42,7 @@ public class Climber extends Subsystem{
 
     @Override
     public void teleopInit(){
-        // === PID ===
-        // climberPID.setP(pidValues[0]);
-        // climberPID.setI(pidValues[1]);
-        // climberPID.setD(pidValues[2]);
-        // climberPID.setOutputRange(pidValues[6], pidValues[7]);
+
     } // teleop init
 
     @Override 
@@ -62,30 +54,21 @@ public class Climber extends Subsystem{
         if (state == RobotState.TELEOP){
             if (input.getServoLocked()){
                 servoPos_left = 0;
+                servoPos_right = 0;
             } else {
                 servoPos_left = 0.5;
+                servoPos_right = 0;
             }
             climberSpeed = input.getClimberStatus();
-            // SmartDashboard.putNumber("input", input.getClimberSpeed());
-            // ==== Raw Output ====
-            // climber1.set(input.getMag());
-            // climber2.set(0.5);
-            // 5805 units = 770 rpm
-            // ==== PID ====
-            // climberPID.setReference(-300, ControlType.kVelocity);
-            SmartDashboard.putNumber("neo encoder1", climberEncoder1.getVelocity());
-            // SmartDashboard.putNumber("neo encoder2", climberEncoder2.getVelocity());
-            SmartDashboard.putNumber("neo current1", climber_left.getOutputCurrent());
-            // SmartDashboard.putNumber("neo current2", climber2.getOutputCurrent());
+
         }
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        // climbServo_left.set(servoPos_left);
-        SmartDashboard.putNumber("Climber speed", climberSpeed);
-        climber_left.set(climberSpeed);
+        climbServo_left.set(servoPos_left);
+        // climber_left.set(climberSpeed);
     } // output
 
     // ============= continuous =============
@@ -102,7 +85,7 @@ public class Climber extends Subsystem{
 
     @Override 
     public void smartDashboard(){
-
+        SmartDashboard.putNumber("Climber speed", climberSpeed);
     } // display all this to smart dashboard
 
     public static Climber getInstance(){

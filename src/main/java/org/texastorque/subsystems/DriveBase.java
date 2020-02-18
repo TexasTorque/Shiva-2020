@@ -7,8 +7,6 @@ import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueSparkMax;
 import org.texastorque.torquelib.controlLoop.LowPassFilter;
 import org.texastorque.torquelib.controlLoop.ScheduledPID;
-import org.texastorque.util.KPID;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // ======== DriveBase =========
@@ -46,25 +44,33 @@ public class DriveBase extends Subsystem{
         leftSpeed = 0;
         rightSpeed = 0;
         linePID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.008)
-            .setIGains(0.015)
-            // .setDGains(0.000005)
+            .setPGains(0.015)
+            .setIGains(0.0005)
+            .setDGains(0.000005)
             .build();
-        lowPass = new LowPassFilter(1);
+        lowPass = new LowPassFilter(.5);
     }
 
     @Override 
     public void disabledInit(){}
 
+    public void update(){
+        feedback.setLeftPositionDT(db_left.getPosition());
+        feedback.setRightPositionDT(db_right.getPosition());
+        feedback.setLeftVelocityDT(db_left.getVelocity());
+        feedback.setRightVelocityDT(db_right.getVelocity());
+    }
     // ============ actually doing stuff ==========
     @Override 
     public void run(RobotState state){
+        update();
         state = input.getState();
         if (state == RobotState.AUTO){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.TELEOP){
+            lowPass.clear();
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }

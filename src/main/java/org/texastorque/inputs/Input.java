@@ -2,11 +2,8 @@ package org.texastorque.inputs;
 
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
-import org.texastorque.subsystems.Intake;
 import org.texastorque.torquelib.util.GenericController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.texastorque.util.TorqueTimer;
 
 public class Input {
     private static volatile Input instance;
@@ -14,11 +11,13 @@ public class Input {
     private volatile State state;
     private GenericController driver;
     private GenericController operator;
+    // private TorqueTimer timer;
 
     private Input(){
         state = State.getInstance();
         driver = new GenericController(0, 0.1);
         operator = new GenericController(1, 0.1);
+        // timer.start();
     } // Input constructor
 
     public void updateControllers() {
@@ -116,7 +115,7 @@ public class Input {
             rotaryPosition_right = rotarySetpoints_right[2];
             rollerSpeed = -1;
         }
-        else if (driver.getDPADUp()){
+        if (driver.getDPADUp()){
             rotaryPosition_left = rotarySetpoints_left[0];
             rotaryPosition_right = rotarySetpoints_right[0];
         }
@@ -152,12 +151,22 @@ public class Input {
     // operator controlled 
     double magVelocity_low = 0;
     double magVelocity_high = 0;
-    double magSpeed_low = 1; // keep this number positive
-    double magSpeed_high = .9; // keep this number positive
+    double magVelocity_gate = 0;
+    double magSpeed_low = .6; // keep this number positive
+    double magSpeed_high = .5; // keep this number positive
+    double magSpeed_gate = 1;
+
 
     public void updateMagazine(){
         magVelocity_low = 0;
         magVelocity_high = 0;
+        magVelocity_gate = 0;
+        //testing
+        // if(operator.getLeftTrigger() && !Feedback.getMagHighCheck()) {
+        //     magVelocity_high = magSpeed_high;
+        //     magVelocity_low = -magSpeed_low;
+        // }
+ 
 
         if (operator.getLeftTrigger()){ // high mag - balls in 
             magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
@@ -171,6 +180,25 @@ public class Input {
         else if (operator.getRightBumper()){ // low mag - balls out
             magVelocity_low = magSpeed_low;
         }
+        if(operator.getDPADUp()){   
+            // if(timer.elapsed()<.25){
+            //     magVelocity_gate = -magSpeed_gate;     
+            // }  
+            // else{
+            //     magVelocity_gate = -magSpeed_gate;
+            //     magVelocity_high = magSpeed_high;
+            //     magVelocity_low = -magSpeed_low; 
+            // }   
+            magVelocity_gate = -magSpeed_gate;
+            magVelocity_high = magSpeed_high;
+            magVelocity_low = -magSpeed_low;     
+        }
+        else{
+            // timer.reset();
+        }
+        if(operator.getDPADDown()){
+            magVelocity_gate = -magSpeed_gate;
+        }
     } // update Magazine 
 
     public double getMagHigh(){
@@ -180,6 +208,10 @@ public class Input {
     public double getMagLow(){
         return magVelocity_low;
     } // get low mag direction
+
+    public double getMagGate(){
+        return magVelocity_gate;
+    } // get gate mag direction
 
     // ============= Climber ==============
     // driver controlled 
@@ -220,7 +252,7 @@ public class Input {
     private volatile double flywheelSpeed = 0;
     private volatile double flywheelPercent = 0;
     // min ---- mid ----- max 
-    private volatile double[] hoodSetpoints = {0, 15, 33};
+    private volatile double[] hoodSetpoints = {0, 1, 15, 36};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
@@ -232,34 +264,40 @@ public class Input {
         hoodFine = -operator.getLeftYAxis() * 10;
         shooterFine = -operator.getRightYAxis() * 100;
         // hoodSetpoint = hoodSetpoints[0];
+        if(operator.getYButtonPressed()){
+            flywheelPercent += .1;
+        }
+        else if (operator.getAButtonPressed()){
+            flywheelPercent -= .1;
+        }
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelSpeed = 4000 + shooterFine;
+            flywheelSpeed = 4250 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[0] + hoodFine;
+                hoodSetpoint = hoodSetpoints[1] + hoodFine;
             }
             else {
-                hoodSetpoint = hoodSetpoints[0];
+                hoodSetpoint = hoodSetpoints[1];
             }
         } 
         else if (operator.getBButton()){ // trench shot 
             // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelSpeed = 6000 + shooterFine;
+            flywheelSpeed = 5500 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[2] + hoodFine;
+                hoodSetpoint = hoodSetpoints[3] + hoodFine;
             }
             else {
-                hoodSetpoint = hoodSetpoints[2];
+                hoodSetpoint = hoodSetpoints[3];
             }
         }
         else if (operator.getAButton()){ // longshot™
-            flywheelSpeed = 10000 + shooterFine;
+            flywheelSpeed = 8000 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[2] + hoodFine;
+                hoodSetpoint = hoodSetpoints[3] + hoodFine;
             }
             else {
-                hoodSetpoint = hoodSetpoints[2];
+                hoodSetpoint = hoodSetpoints[3];
             }
         }
         else{
