@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.texastorque.util.ArrayUtils;
 import org.texastorque.util.Integrator;
+import org.texastorque.util.KPID;
 import org.texastorque.util.MathUtils;
 import org.texastorque.util.TorqueTimer;
 import org.texastorque.util.interfaces.Stopwatch;
@@ -42,6 +43,25 @@ public class ScheduledPID {
 		this.minOutput = minOutput;
 		this.maxOutput = maxOutput;
 		
+		this.integrator = new Integrator();
+		this.timer = new TorqueTimer();
+	}
+
+	private ScheduledPID(KPID kPID){
+		this.gainDivisions = new double[0];
+		this.pGains = new double[1];
+		this.pGains[0] = kPID.p();
+		this.iGains = new double[1];
+		this.iGains[0] = kPID.p();
+		this.dGains = new double[1];
+		this.dGains[0] = kPID.p();
+		this.fGains = new double[1];
+		this.fGains[0] = kPID.p();
+		
+		this.setpoint = 0;
+		this.minOutput = kPID.min();
+		this.maxOutput = kPID.max();
+
 		this.integrator = new Integrator();
 		this.timer = new TorqueTimer();
 	}

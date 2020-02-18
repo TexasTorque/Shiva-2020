@@ -21,8 +21,8 @@ public class Intake extends Subsystem{
 
     // =========== variables ===========
     // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
-    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.8, .8);
-    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, 1, 1);
+    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.7, 1);
+    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, -1, .7);
     private double rotaryPosition_left = 0;
     private double rotaryPosition_right = 0;
     private double rollerSpeed = 0;
@@ -52,18 +52,25 @@ public class Intake extends Subsystem{
     @Override 
     public void disabledInit(){}
 
+    //updating feedback
+    public void update(){
+        feedback.setRotaryPositionLeft(rotary_left.getPosition());
+        feedback.setRotaryPositionRight(rotary_right.getPosition());
+    }
+    
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
+        update();
         if (state == RobotState.AUTO){
+            rotaryPosition_left = input.getRotaryPositionLeft();
+            rotaryPosition_right = input.getRotaryPositionRight();
+            rollerSpeed = input.getRollerSpeed();
         } // auto 
-        if (state == RobotState.TELEOP){
+        if (state == RobotState.TELEOP|| state == RobotState.VISION){
             rollerSpeed = input.getRollerSpeed();
             rotaryPosition_left = input.getRotaryPositionLeft();
             rotaryPosition_right = input.getRotaryPositionRight();
-            
-            SmartDashboard.putNumber("rotary_left.position", rotary_left.getPosition());
-            SmartDashboard.putNumber("rotary_right.position", rotary_right.getPosition());
             SmartDashboard.putNumber("rotaryPosition_left", rotaryPosition_left);
             SmartDashboard.putNumber("rotaryPosition_right", rotaryPosition_right);
         } // teleop
@@ -75,8 +82,8 @@ public class Intake extends Subsystem{
         rollers.set(rollerSpeed);
         SmartDashboard.putNumber("output_left_current", rotary_left.getCurrent());
         SmartDashboard.putNumber("output_right_current", rotary_right.getCurrent());
-        // rotary_left.set(rotaryPosition_left, ControlType.kPosition);
-        // rotary_right.set(rotaryPosition_right, ControlType.kPosition);
+        rotary_left.set(rotaryPosition_left, ControlType.kPosition);
+        rotary_right.set(rotaryPosition_right, ControlType.kPosition);
     } // output
 
     // ============= continuous =============
