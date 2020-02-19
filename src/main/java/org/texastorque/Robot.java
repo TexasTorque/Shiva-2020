@@ -10,6 +10,7 @@ import org.texastorque.constants.*;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 
@@ -50,12 +51,13 @@ public class Robot extends TorqueIterative {
     // subsystems.add(climber);
     subsystems.add(intake);
     subsystems.add(magazine);
+    autoManager = AutoManager.getInstance();
     // subsystems.add(testMotors);
   } // initialize subsystems 
 
   @Override
   public void autoInit(){
-    autoManager = AutoManager.getInstance();
+    // autoManager = AutoManager.getInstance();
     state.setRobotState(RobotState.AUTO);
     autoManager.chooseSequence();
     input.resetAll();
@@ -67,6 +69,7 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void teleopInit(){
+    // autoManager = AutoManager.getInstance();
     state.setRobotState(RobotState.TELEOP);
     for (Subsystem system : subsystems){
       system.teleopInit();
@@ -91,7 +94,18 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void teleopContinuous(){
-    input.updateControllers();
+    input.updateState();
+    String[] testStrings = new String[] {"hi", "robot", "hello"};
+    SmartDashboard.putStringArray("test", testStrings);
+    if (state.getRobotState() == RobotState.SHOOTING){
+      input.updateDrive();
+      input.updateShooter();
+      if (autoManager.sequenceEnded()){
+        state.setRobotState(RobotState.TELEOP);
+      }
+    } else {
+      input.updateControllers();
+    }
     for (Subsystem system : subsystems){
       system.run(state.getRobotState());
     }

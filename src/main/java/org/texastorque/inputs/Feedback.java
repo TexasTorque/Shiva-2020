@@ -61,6 +61,8 @@ public class Feedback {
 
     // ==============Drive Train===============
     // list of variables DriveTrain
+    private double leftTare = 0;
+    private double rightTare = 0;
     private double leftPositionDT;
     private double rightPositionDT;
     private double leftVelocityDT;
@@ -84,12 +86,12 @@ public class Feedback {
     }
 
     // accessor methods DriveTrain
-    public double getLeftPositionDT() {
-        return leftPositionDT;
+    public double getDBLeftDistance() {
+        return -leftPositionDT + leftTare; 
     }
 
-    public double getRightPositionDT() {
-        return rightPositionDT;
+    public double getDBRightDistance() {
+        return rightPositionDT - rightTare;
     }
 
     public double getLeftVelocityDT() {
@@ -98,6 +100,11 @@ public class Feedback {
 
     public double getRightVelocityDT() {
         return rightVelocityDT;
+    }
+
+    public void resetDriveEncoders(){
+        leftTare = leftPositionDT;
+        rightTare = rightPositionDT;
     }
 
     // ===========Intake=================
@@ -206,8 +213,8 @@ public class Feedback {
     
     public void smartDashboard(){
         SmartDashboard.putNumber("hOffset", hOffset);
-        SmartDashboard.putNumber("DB_left_velocity_feedback", leftVelocityDT);
-        SmartDashboard.putNumber("DB_right_velocity_feedback", rightVelocityDT);
+        SmartDashboard.putNumber("DB_left_position", getDBLeftDistance());
+        SmartDashboard.putNumber("DB_right_position", getDBRightDistance());
         SmartDashboard.putNumber("rotaryLeft_position", rotaryPosition_left);
         SmartDashboard.putNumber("rotaryRight_position", rotaryPosition_right);
         SmartDashboard.putBoolean("magcheckHigh", magHighCheck.get());

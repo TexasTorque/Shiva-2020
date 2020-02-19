@@ -1,5 +1,6 @@
 package org.texastorque.auto;
 
+import org.texastorque.auto.commands.MagazineSet;
 import org.texastorque.auto.sequences.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,46 +12,53 @@ public class AutoManager {
     private static AutoManager instance;
 
     private ArrayList<Sequence> autoSequences;
-    private SendableChooser<String> autoSelector = new SendableChooser<String>();
+    private String[] autoSequenceNames;
+    // private SendableChooser<String> autoSelector = new SendableChooser<String>();
 
     private Sequence currentSequence;
     private boolean sequenceEnded;
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
+        autoSequenceNames = new String[] {"Mode 0", "Baseline", "Testing"};
         autoSequences.add(new VinayMode());
         autoSequences.add(new CrossLine());
-        autoSequences.add(new Testing());
+        autoSequences.add(new PreShoot());
 
-        autoSelector.setDefaultOption("VinayMode", "VinayMode");
-        autoSelector.addOption("CrossLine", "CrossLine");
-        autoSelector.addOption("Testing", "Testing");
+        SmartDashboard.putStringArray("Auto List", autoSequenceNames);
+        // System.out.println(working);
+        // autoSelector.setDefaultOption("VinayMode", "VinayMode");
+        // autoSelector.addOption("CrossLine", "CrossLine");
+        // autoSelector.addOption("Testing", "Testing");
 
-        SmartDashboard.putData(autoSelector);
+        // SmartDashboard.putData(autoSelector);
         System.out.println("All auto sequences loaded.");
     } // constructor
 
     public void displayChoices(){
-        SmartDashboard.putData(autoSelector);
+        // SmartDashboard.putData(autoSelector);
+        SmartDashboard.putStringArray("Auto List", autoSequenceNames);
     } // display choices
 
     public void chooseSequence(){
-        String autoChoice = autoSelector.getSelected();
+        // String autoChoice = autoSelector.getSelected();
+        String autoChoice = SmartDashboard.getString("Auto List", "null");
         System.out.println(autoChoice);
         switch(autoChoice){
-            case "VinayMode":
-                currentSequence = autoSequences.get(2);
+            case "Mode 0":
+                currentSequence = autoSequences.get(0);
                 System.out.println("in vinayMode");
                 break;
-            case "CrossLine":
+            case "Baseline":
                 currentSequence = autoSequences.get(1);
                 System.out.println("in crossline");
                 break;
             case "Testing":
                 currentSequence = autoSequences.get(2);
                 System.out.println("in testing");
+                break;
             default:
-                currentSequence = autoSequences.get(0);
+                currentSequence = autoSequences.get(2);
                 break;
         } // select the autonomous program to run
 
@@ -66,6 +74,15 @@ public class AutoManager {
     public boolean sequenceEnded(){
         return sequenceEnded;
     } // sequence ended
+
+    public void runMagAutomatic(){
+        currentSequence = new PreShoot();
+        sequenceEnded = false;
+    }
+
+    public void resetCurrentSequence(){
+        currentSequence.reset();
+    } // TESTING 
 
     public static AutoManager getInstance(){
         if (instance == null){

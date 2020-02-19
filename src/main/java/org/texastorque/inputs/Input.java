@@ -1,9 +1,12 @@
 package org.texastorque.inputs;
 
+import org.texastorque.auto.AutoManager;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
 import org.texastorque.util.TorqueTimer;
+
+import edu.wpi.first.wpilibj.Timer;
 
 public class Input {
     private static volatile Input instance;
@@ -58,6 +61,10 @@ public class Input {
             state.setRobotState(RobotState.VISION);
         } else if (driver.getXButtonPressed()){
             state.setRobotState(RobotState.TELEOP);
+        }
+
+        if (driver.getLeftCenterButton()){
+            Feedback.getInstance().resetDriveEncoders();
         }
     } // update the drivebase
 
@@ -162,6 +169,7 @@ public class Input {
         magVelocity_high = 0;
         magVelocity_gate = 0;
 
+    
         if (operator.getLeftTrigger()){ // high mag - balls in 
             magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
         }
@@ -175,11 +183,11 @@ public class Input {
             magVelocity_low = magSpeed_low;
         }
 
-        if(operator.getDPADUp()){   // shoot button - needs to start the sequence 
-            magVelocity_gate = -magSpeed_gate;
-            magVelocity_high = magSpeed_high;
-            magVelocity_low = -magSpeed_low;     
-        }
+        // if(operator.getDPADUp()){   // shoot button - needs to start the sequence // TODO
+        //     // magVelocity_gate = -magSpeed_gate;
+        //     // magVelocity_high = magSpeed_high;
+        //     // magVelocity_low = -magSpeed_low;     
+        // }
         if(operator.getDPADDown()){ // gate on its own 
             magVelocity_gate = -magSpeed_gate;
         }
@@ -371,7 +379,25 @@ public class Input {
     }
 
     // =========== Others ============
-    
+    RobotState lastState = RobotState.TELEOP;
+    public void updateState(){
+        if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
+            AutoManager.getInstance().runMagAutomatic(); 
+            state.setRobotState(RobotState.SHOOTING);
+            lastState = RobotState.SHOOTING;
+        } 
+        else if(operator.getDPADUp()){
+            AutoManager.getInstance().runSequence();
+        }
+        else {
+            if (lastState == RobotState.SHOOTING){
+                AutoManager.getInstance().resetCurrentSequence();
+            }
+            state.setRobotState(RobotState.TELEOP);
+            lastState = RobotState.TELEOP;
+        }
+    }
+
     public RobotState getState(){
         return state.getRobotState();
     }

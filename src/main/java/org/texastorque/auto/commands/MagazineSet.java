@@ -7,18 +7,21 @@ public class MagazineSet extends Command {
     boolean highMag = false;
     boolean gate = false;
 
+    boolean runMag = false;
     boolean lowMagEnded = false;
     boolean highMagEnded = false;
     boolean gateEnded = false;
 
+    double delayMag = 0;
     double lowTime = 0;
     double highTime = 0;
     double gateTime = 0;
 
     double startTime;
 
-    public MagazineSet(double delay, boolean lowMag, double lowTime, boolean highMag, double highTime, boolean gate, double gateTime) {
+    public MagazineSet(double delay, double delayMag, boolean lowMag, double lowTime, boolean highMag, double highTime, boolean gate, double gateTime) {
         super(delay);
+        this.delayMag = delayMag;
         this.lowMag = lowMag;
         this.highMag = highMag;
         this.gate = gate;
@@ -40,18 +43,20 @@ public class MagazineSet extends Command {
 
     @Override
     protected void continuous() {
-        if (!lowMagEnded && lowMag){
-            input.setLowMag(true);
-        }
-        else {
-            input.setLowMag(false);
-        }
-        if (!highMagEnded && highMag){
-            input.setHighMag(true);
-        }
-        else {
-            input.setHighMag(false);
-        }
+        if (runMag){
+            if (!lowMagEnded && lowMag){
+                input.setLowMag(true);
+            }
+            else {
+                input.setLowMag(false);
+            }
+            if (!highMagEnded && highMag){
+                input.setHighMag(true);
+            }
+            else {
+                input.setHighMag(false);
+            }
+        } // running magazine outputs 
         if (!gateEnded && gate){
             input.setGate(true);
         }
@@ -63,7 +68,9 @@ public class MagazineSet extends Command {
 
     private void updateEndConditions(){
         double timeChanged = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-        System.out.println(timeChanged);
+        if (timeChanged > delayMag){
+            runMag = true;
+        }
         if (timeChanged >= lowTime){
             lowMagEnded = true;
         }
@@ -77,7 +84,6 @@ public class MagazineSet extends Command {
 
     @Override
     protected boolean endCondition() {
-        System.out.println(lowMagEnded && highMagEnded && gateEnded);
         return (lowMagEnded && highMagEnded && gateEnded);
     } // end condition 
 
