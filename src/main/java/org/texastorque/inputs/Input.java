@@ -161,12 +161,6 @@ public class Input {
         magVelocity_low = 0;
         magVelocity_high = 0;
         magVelocity_gate = 0;
-        //testing
-        // if(operator.getLeftTrigger() && !Feedback.getMagHighCheck()) {
-        //     magVelocity_high = magSpeed_high;
-        //     magVelocity_low = -magSpeed_low;
-        // }
- 
 
         if (operator.getLeftTrigger()){ // high mag - balls in 
             magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
@@ -180,23 +174,13 @@ public class Input {
         else if (operator.getRightBumper()){ // low mag - balls out
             magVelocity_low = magSpeed_low;
         }
-        if(operator.getDPADUp()){   
-            // if(timer.elapsed()<.25){
-            //     magVelocity_gate = -magSpeed_gate;     
-            // }  
-            // else{
-            //     magVelocity_gate = -magSpeed_gate;
-            //     magVelocity_high = magSpeed_high;
-            //     magVelocity_low = -magSpeed_low; 
-            // }   
+
+        if(operator.getDPADUp()){   // shoot button - needs to start the sequence 
             magVelocity_gate = -magSpeed_gate;
             magVelocity_high = magSpeed_high;
             magVelocity_low = -magSpeed_low;     
         }
-        else{
-            // timer.reset();
-        }
-        if(operator.getDPADDown()){
+        if(operator.getDPADDown()){ // gate on its own 
             magVelocity_gate = -magSpeed_gate;
         }
     } // update Magazine 
@@ -213,6 +197,33 @@ public class Input {
         return magVelocity_gate;
     } // get gate mag direction
 
+    public void setGate(boolean on){
+        if (on){
+            magVelocity_gate = -magSpeed_gate;
+        } 
+        else {
+            magVelocity_gate = 0;
+        }   
+    } // setGate 
+
+    public void setHighMag(boolean on){
+        if (on){
+            magVelocity_high = magSpeed_high;
+        }
+        else {
+            magVelocity_high = 0;
+        }
+    } // set low mag 
+
+    public void setLowMag(boolean on){
+        if (on){
+            magVelocity_low = -magSpeed_low;    
+        }
+        else {
+            magVelocity_low = 0;
+        }
+    } // set Low mag 
+    
     // ============= Climber ==============
     // driver controlled 
     private volatile double climberSpeed = .7;

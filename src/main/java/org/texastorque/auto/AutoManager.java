@@ -18,9 +18,13 @@ public class AutoManager {
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
+        autoSequences.add(new VinayMode());
         autoSequences.add(new CrossLine());
-        
-        autoSelector.setDefaultOption("CrossLine ", "CrossLine");
+        autoSequences.add(new Testing());
+
+        autoSelector.setDefaultOption("VinayMode", "VinayMode");
+        autoSelector.addOption("CrossLine", "CrossLine");
+        autoSelector.addOption("Testing", "Testing");
 
         SmartDashboard.putData(autoSelector);
         System.out.println("All auto sequences loaded.");
@@ -33,12 +37,20 @@ public class AutoManager {
     public void chooseSequence(){
         String autoChoice = autoSelector.getSelected();
         System.out.println(autoChoice);
-
         switch(autoChoice){
-            case "CrossLine":
-                currentSequence = autoSequences.get(0);
+            case "VinayMode":
+                currentSequence = autoSequences.get(2);
+                System.out.println("in vinayMode");
                 break;
+            case "CrossLine":
+                currentSequence = autoSequences.get(1);
+                System.out.println("in crossline");
+                break;
+            case "Testing":
+                currentSequence = autoSequences.get(2);
+                System.out.println("in testing");
             default:
+                currentSequence = autoSequences.get(0);
                 break;
         } // select the autonomous program to run
 

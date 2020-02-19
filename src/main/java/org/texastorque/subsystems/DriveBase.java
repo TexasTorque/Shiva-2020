@@ -64,19 +64,24 @@ public class DriveBase extends Subsystem{
     @Override 
     public void run(RobotState state){
         update();
-        state = input.getState();
         if (state == RobotState.AUTO){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.TELEOP){
+            state = input.getState();
+            linePID.reset();
+            linePID.setLastError(0);
+            SmartDashboard.putNumber("Last Error", linePID.getLastError());
             lowPass.clear();
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.VISION){
+            state = input.getState();
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
+            SmartDashboard.putNumber("hOffset 2", Feedback.getXOffset());
             pidValue = - linePID.calculate(position);
             SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;

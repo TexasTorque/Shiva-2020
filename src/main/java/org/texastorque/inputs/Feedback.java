@@ -56,6 +56,7 @@ public class Feedback {
     public void update() {
         updateLimelight();
         updateNavX();
+        smartDashboard();
     } // update
 
     // ==============Drive Train===============
@@ -207,11 +208,10 @@ public class Feedback {
         SmartDashboard.putNumber("hOffset", hOffset);
         SmartDashboard.putNumber("DB_left_velocity_feedback", leftVelocityDT);
         SmartDashboard.putNumber("DB_right_velocity_feedback", rightVelocityDT);
-        SmartDashboard.putNumber("rotary_left_position", rotaryPosition_left);
-        SmartDashboard.putNumber("rotary_right_position", rotaryPosition_right);
+        SmartDashboard.putNumber("rotaryLeft_position", rotaryPosition_left);
+        SmartDashboard.putNumber("rotaryRight_position", rotaryPosition_right);
         SmartDashboard.putBoolean("magcheckHigh", magHighCheck.get());
         SmartDashboard.putBoolean("magcheckLow", magLowCheck.get());
-
     } // stuff to put in smart dashboard
 
     public static Feedback getInstance() {

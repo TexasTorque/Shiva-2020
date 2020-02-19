@@ -13,8 +13,7 @@ public class CrossLine extends Sequence{
     @Override
     protected void init(){
         ArrayList<Command> block1 = new ArrayList<>();
-        block1.add(new DriveTime(0, 0.5,0.3));
-
+        block1.add(new DriveTime(0, 1,.5));
         addBlock(block1);
     }
 } // cross line 

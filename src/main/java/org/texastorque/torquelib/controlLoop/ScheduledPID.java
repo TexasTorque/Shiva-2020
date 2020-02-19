@@ -9,6 +9,8 @@ import org.texastorque.util.MathUtils;
 import org.texastorque.util.TorqueTimer;
 import org.texastorque.util.interfaces.Stopwatch;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class ScheduledPID {
 
 	private static boolean strictModeEnabled = false;
@@ -25,6 +27,8 @@ public class ScheduledPID {
 	private double setpoint;
 	private int currentGainIndex;
 	private double lastError;
+
+	private boolean firstCycle;
 
 	private final Integrator integrator;
 	private Stopwatch timer;
@@ -124,9 +128,17 @@ public class ScheduledPID {
 		return error;
 	}
 	
-	private void finishUpdate(double error) {
+	public void finishUpdate(double error) {
 		this.lastError = error;
 		timer.startLap();  // Measure dt from the end of the last update.
+	}
+
+	public void setLastError(double error){
+		this.lastError = error;
+	}
+
+	public double getLastError(){
+		return this.lastError;
 	}
 	
 	/** Calculates the index for the current gain values.
@@ -175,6 +187,13 @@ public class ScheduledPID {
 	// == Public API ==
 	
 	public double calculate(double processVar) {
+
+		if (firstCycle) {
+			lastError = 0; 
+			timer.reset();
+			firstCycle = false;
+		}
+		
 		if (!isSafeToOutput()) {
 			timer.reset();
 			integrator.reset();
@@ -202,6 +221,7 @@ public class ScheduledPID {
 	
 	public void reset() {
 		integrator.reset();
+		firstCycle = true;
 		timer.reset();
 	}
 	
