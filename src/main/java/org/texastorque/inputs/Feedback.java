@@ -21,9 +21,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Feedback {
     //Feedback is still used as the hub for all encoders... but now they need to be updated through subsystems 
     private static volatile Feedback instance;
-    private double targetArea;
+    private static double targetArea;
     private static double hOffset;
-    private double vOffset;
+    private static double vOffset;
 
     //mag infared sensors
     private static DigitalInput magHighCheck;
@@ -156,13 +156,13 @@ public class Feedback {
     // ==========Magazine==========
     // this is where ultrasonic stuff would go once we add them, don't think we will
     // need any values from motors themselves
-    // public static boolean getMagHighCheck() {
-    //     return magHighCheck.get();
-    // }
+    public static boolean getMagHigh() {
+        return magHighCheck.get();
+    }
 
-    // public boolean getMagLowCheck(){
-    //     return magHighCheck.get();
-    // }
+    public static boolean getMagLow(){
+        return magHighCheck.get();
+    }
 
     // ======== limelight ========
 
@@ -175,6 +175,10 @@ public class Feedback {
 
     public static double getXOffset(){
         return hOffset;
+    }
+
+    public static double getYOffset(){
+        return vOffset;
     }
 
     // ========== Gyro ==========

@@ -1,6 +1,7 @@
 package org.texastorque.inputs;
 
 import org.texastorque.auto.AutoManager;
+import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
@@ -268,8 +269,9 @@ public class Input {
 
     // ============= Shooter ==============
     // operator controlled 
+    private volatile boolean percentOutput = false;
+    private volatile double flywheelPercent = 0; 
     private volatile double flywheelSpeed = 0;
-    private volatile double flywheelPercent = 0;
     // min ---- mid ----- max 
     private volatile double[] hoodSetpoints = {0, 1, 15, 36};
     private volatile double hoodSetpoint;
@@ -278,17 +280,12 @@ public class Input {
     private volatile double flywheelEncoderSpeed = 0;
 
     public void updateShooter(){
-        //RPM is in testing state
+        hoodSetpoint = hoodSetpoints[0];
         flywheelSpeed = 0;
+        flywheelPercent = 0;
+
         hoodFine = -operator.getLeftYAxis() * 10;
         shooterFine = -operator.getRightYAxis() * 100;
-        // hoodSetpoint = hoodSetpoints[0];
-        if(operator.getYButtonPressed()){
-            flywheelPercent += .1;
-        }
-        else if (operator.getAButtonPressed()){
-            flywheelPercent -= .1;
-        }
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
@@ -301,14 +298,15 @@ public class Input {
             }
         } 
         else if (operator.getBButton()){ // trench shot 
-            // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelSpeed = 5500 + shooterFine;
+            flywheelPercent = 0.72;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
             }
             else {
                 hoodSetpoint = hoodSetpoints[3];
             }
+            
         }
         else if (operator.getAButton()){ // longshot™
             flywheelSpeed = 8000 + shooterFine;
@@ -319,29 +317,34 @@ public class Input {
                 hoodSetpoint = hoodSetpoints[3];
             }
         }
-        else{
-            hoodSetpoint = hoodSetpoints[0];
-        }
-        if (operator.getXButton()){
-            // shoot?? 
-        }
-        else if (operator.getXButton()){
-            hoodSetpoint = hoodSetpoints[0];
-        }
 
-
+        if (operator.getXButton()){ // limelight mode 
+            // shoot everything = the whole sequence of events required in order to shoot 
+        }
     } // update Shooter 
+
+    public double getFlywheelPercent(){
+        return flywheelPercent;
+    }
 
     public double getFlywheelSpeed(){
         return flywheelSpeed;
     }
 
-    public void setFlywheelSpeed(double speed){
-        flywheelSpeed = speed;
+    public boolean getFlywheelPercentMode(){
+        return percentOutput;
     }
 
-    public double getFlywheelPercent(){
-        return flywheelPercent;
+    public void setFlywheelOutputType(boolean percentOutput){
+        this.percentOutput = percentOutput;
+    }
+
+    public void setFlywheelPercent(double percent){
+        flywheelPercent = percent;
+    }
+
+    public void setFlywheelSpeed(double speed){
+        flywheelSpeed = speed;
     }
 
     public void setFlywheelEncoderSpeed(double speed){
@@ -380,22 +383,39 @@ public class Input {
 
     // =========== Others ============
     RobotState lastState = RobotState.TELEOP;
+    
     public void updateState(){
-        if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
-            AutoManager.getInstance().runMagAutomatic(); 
-            state.setRobotState(RobotState.SHOOTING);
-            lastState = RobotState.SHOOTING;
-        } 
-        else if(operator.getDPADUp()){
-            AutoManager.getInstance().runSequence();
-        }
-        else {
-            if (lastState == RobotState.SHOOTING){
-                AutoManager.getInstance().resetCurrentSequence();
-            }
-            state.setRobotState(RobotState.TELEOP);
-            lastState = RobotState.TELEOP;
-        }
+        // if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
+        //     AutoManager.getInstance().runMagAutomatic(); 
+        //     state.setRobotState(RobotState.SHOOTING);
+        //     lastState = RobotState.SHOOTING;
+        // } 
+        // else if(operator.getDPADUp()){
+        //     AutoManager.getInstance().runSequence();
+        // }
+        // else {
+        //     if (lastState == RobotState.SHOOTING){
+        //         AutoManager.getInstance().resetCurrentSequence();
+        //     }
+        //     state.setRobotState(RobotState.TELEOP);
+        //     lastState = RobotState.TELEOP;
+        // }
+
+        // if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
+        //     AutoManager.getInstance().runMagLoad();
+        //     state.setRobotState(RobotState.MAGLOAD);
+        //     lastState = RobotState.MAGLOAD;
+        // }
+        // else if(operator.getDPADRight()){
+        //     AutoManager.getInstance().runSequence();
+        // }
+        // else {
+        //     if (lastState == RobotState.MAGLOAD){
+        //         AutoManager.getInstance().resetCurrentSequence();
+        //     }
+        //     state.setRobotState(RobotState.TELEOP);
+        //     lastState = RobotState.TELEOP;
+        // }
     }
 
     public RobotState getState(){

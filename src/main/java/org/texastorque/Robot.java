@@ -97,15 +97,25 @@ public class Robot extends TorqueIterative {
     input.updateState();
     String[] testStrings = new String[] {"hi", "robot", "hello"};
     SmartDashboard.putStringArray("test", testStrings);
+    
     if (state.getRobotState() == RobotState.SHOOTING){
       input.updateDrive();
       input.updateShooter();
       if (autoManager.sequenceEnded()){
         state.setRobotState(RobotState.TELEOP);
       }
-    } else {
+    } // if doing auto mag shoot 
+    else if (state.getRobotState() == RobotState.MAGLOAD) {
+      input.updateDrive();
+      input.updateShooter();
+      if (autoManager.sequenceEnded()){
+        state.setRobotState(RobotState.TELEOP);
+      }
+    } // if doing auto mag load 
+    else {
       input.updateControllers();
     }
+
     for (Subsystem system : subsystems){
       system.run(state.getRobotState());
     }

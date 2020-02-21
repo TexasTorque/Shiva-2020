@@ -20,10 +20,11 @@ public class AutoManager {
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
-        autoSequenceNames = new String[] {"Mode 0", "Baseline", "Testing"};
+        autoSequenceNames = new String[] {"Mode 0", "Baseline", "Mode 2", "Testing"};
         autoSequences.add(new VinayMode());
         autoSequences.add(new CrossLine());
-        autoSequences.add(new PreShoot());
+        autoSequences.add(new ShootButWorse());
+        autoSequences.add(new Testing());
 
         SmartDashboard.putStringArray("Auto List", autoSequenceNames);
         // System.out.println(working);
@@ -54,11 +55,11 @@ public class AutoManager {
                 System.out.println("in crossline");
                 break;
             case "Testing":
-                currentSequence = autoSequences.get(2);
+                currentSequence = autoSequences.get(3);
                 System.out.println("in testing");
                 break;
-            default:
-                currentSequence = autoSequences.get(2);
+            default: // just change the value in here to test
+                currentSequence = autoSequences.get(3);
                 break;
         } // select the autonomous program to run
 
@@ -77,6 +78,11 @@ public class AutoManager {
 
     public void runMagAutomatic(){
         currentSequence = new PreShoot();
+        sequenceEnded = false;
+    }
+
+    public void runMagLoad(){
+        currentSequence = new MagLoad();
         sequenceEnded = false;
     }
 

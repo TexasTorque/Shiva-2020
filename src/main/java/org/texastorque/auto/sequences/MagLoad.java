@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import org.texastorque.auto.Command;
 import org.texastorque.auto.Sequence;
-import org.texastorque.auto.commands.PreShootSet;
+import org.texastorque.auto.commands.MagAutoLoad;
 
-public class PreShoot extends Sequence {
+public class MagLoad extends Sequence {
 
     @Override
     protected void init() {
         ArrayList<Command> block1 = new ArrayList<>();
-        block1.add(new PreShootSet());
-        // System.out.println("getting here 2");
-        addBlock(block1);        
+        block1.add(new MagAutoLoad());
+
+        addBlock(block1);
     }
 }

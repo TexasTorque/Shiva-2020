@@ -22,7 +22,7 @@ public class DrivePath extends Command {
      * https://www.chiefdelphi.com/t/tuning-pathfinder-pid-talon-motion-profiling-magic-etc/162516/4
      * https://www.thorlabs.com/tutorials.cfm?tabID=5dfca308-d07e-46c9-baa0-4defc5c40c3e
      */
-    public DrivePath(double delay, Waypoint[] points, boolean forward, boolean highGear) {
+    public DrivePath(double delay, Waypoint[] points, boolean forward) {
         super(delay);
         this.forward = forward;
 
@@ -31,34 +31,19 @@ public class DrivePath extends Command {
          * Sample count: SAMPLES_HIGH (100000), SAMPLES_LOW (10000), SAMPLES_FAST (1000)
          * Time step (s)
          * Max velocity (ft/s)
-         * Max Acceleration (ft/s/s)
+         * Max Acceleration (ft/s/s) 
          * Max Jerk (ft/s/s/s)
          */
-
-        if (highGear) {
-            Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_FAST, 1.0/80, Constants.DB_HIGH_MAX_SPEED, Constants.DB_HIGH_MAX_ACCEL, Constants.DB_HIGH_MAX_JERK);
+            Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_FAST, 1.0/80, Constants.DB_MAX_SPEED, Constants.DB_MAX_ACCEL, Constants.DB_MAX_JERK);
             
             Trajectory path = Pathfinder.generate(points, config);
             TankModifier modifier = new TankModifier(path);
-            modifier.modify(2.3); // DriveBase width (ft)
+            modifier.modify(Constants.DB_WIDTH); // DriveBase width (ft)
 
             leftFollower = new DistanceFollower(modifier.getLeftTrajectory());
             rightFollower = new DistanceFollower(modifier.getRightTrajectory());
-            leftFollower.configurePIDVA(0.8, 0.0, 0.05, 1/Constants.DB_HIGH_MAX_SPEED, 0);
-            rightFollower.configurePIDVA(0.8, 0.0, 0.05, 1/Constants.DB_HIGH_MAX_SPEED, 0);
-        }
-        else {
-            Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_FAST, 1.0/80, Constants.DB_LOW_MAX_SPEED, Constants.DB_LOW_MAX_ACCEL, Constants.DB_LOW_MAX_JERK);
-            
-            Trajectory path = Pathfinder.generate(points, config);
-            TankModifier modifier = new TankModifier(path);
-            modifier.modify(2.3); // DriveBase width (ft)
-
-            leftFollower = new DistanceFollower(modifier.getLeftTrajectory());
-            rightFollower = new DistanceFollower(modifier.getRightTrajectory());
-            leftFollower.configurePIDVA(0.8, 0.0, 0.05, 1/Constants.DB_LOW_MAX_SPEED, 0);
-            rightFollower.configurePIDVA(0.8, 0.0, 0.05, 1/Constants.DB_LOW_MAX_SPEED, 0);
-        }
+            leftFollower.configurePIDVA(0.8, 0.0, 0.05, 1/Constants.DB_MAX_SPEED, 0);
+            rightFollower.configurePIDVA(0.8, 0.0, 0.05, 1/Constants.DB_MAX_SPEED, 0);
     }
 
     @Override

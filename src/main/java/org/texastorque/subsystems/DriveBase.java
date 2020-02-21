@@ -46,7 +46,7 @@ public class DriveBase extends Subsystem{
         linePID = new ScheduledPID.Builder(0, -1, 1, 1)
             .setPGains(0.015)
             .setIGains(0.0005)
-            .setDGains(0.000005)
+            // .setDGains(0.000005)
             .build();
         lowPass = new LowPassFilter(.5);
     }
@@ -64,6 +64,7 @@ public class DriveBase extends Subsystem{
     @Override 
     public void run(RobotState state){
         update();
+        state = input.getState();
         if (state == RobotState.AUTO){
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
@@ -81,7 +82,6 @@ public class DriveBase extends Subsystem{
             state = input.getState();
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
-            SmartDashboard.putNumber("hOffset 2", Feedback.getXOffset());
             pidValue = - linePID.calculate(position);
             SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;
@@ -126,11 +126,14 @@ public class DriveBase extends Subsystem{
     } // return right drive distance 
 
     // =========== others ===========
+
     @Override 
     public void smartDashboard(){
         SmartDashboard.putString("State", state.getRobotState().name());
         SmartDashboard.putNumber("db_right", getRightDistance());
         SmartDashboard.putNumber("db_left", getLeftDistance());
+        SmartDashboard.putNumber("y pixels", Feedback.getYOffset());
+        SmartDashboard.putNumber("yaw", feedback.getYaw());
     } // display all this to smart dashboard
 
     public static DriveBase getInstance(){
