@@ -9,6 +9,7 @@ public class MagAutoLoad extends Command {
     boolean lowMagBall;
     boolean highMagBall;
     boolean keepGoing;
+    int count;
 
     public MagAutoLoad() {
         super(0);
@@ -19,6 +20,7 @@ public class MagAutoLoad extends Command {
         lowMagBall = false;
         highMagBall = false;
         keepGoing = false;
+        count = 0;
     }
 
     @Override

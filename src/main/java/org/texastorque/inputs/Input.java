@@ -69,6 +69,10 @@ public class Input {
         }
     } // update the drivebase
 
+    public void setState(RobotState stateSet){
+        state.setRobotState(stateSet);
+    }
+
     public void resetDrive(){
         DB_leftSpeed = 0;
         DB_rightSpeed = 0;
@@ -382,40 +386,44 @@ public class Input {
     }
 
     // =========== Others ============
-    RobotState lastState = RobotState.TELEOP;
+    RobotState lastState = RobotState.AUTO;
     
     public void updateState(){
-        // if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
-        //     AutoManager.getInstance().runMagAutomatic(); 
-        //     state.setRobotState(RobotState.SHOOTING);
-        //     lastState = RobotState.SHOOTING;
-        // } 
-        // else if(operator.getDPADUp()){
-        //     AutoManager.getInstance().runSequence();
-        // }
-        // else {
-        //     if (lastState == RobotState.SHOOTING){
-        //         AutoManager.getInstance().resetCurrentSequence();
-        //     }
-        //     state.setRobotState(RobotState.TELEOP);
-        //     lastState = RobotState.TELEOP;
-        // }
+        if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
+            AutoManager.getInstance().runMagAutomatic(); 
+            state.setRobotState(RobotState.SHOOTING);
+            lastState = RobotState.SHOOTING;
+        } 
+        else if(operator.getDPADUp()){
+            AutoManager.getInstance().runSequence();
+        }
+        else {
+            if (lastState == RobotState.SHOOTING){
+                AutoManager.getInstance().resetCurrentSequence();
+            }
+            if (lastState != RobotState.AUTO){
+                state.setRobotState(RobotState.TELEOP);
+                lastState = RobotState.TELEOP;
+            }
+        }
 
-        // if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
-        //     AutoManager.getInstance().runMagLoad();
-        //     state.setRobotState(RobotState.MAGLOAD);
-        //     lastState = RobotState.MAGLOAD;
-        // }
-        // else if(operator.getDPADRight()){
-        //     AutoManager.getInstance().runSequence();
-        // }
-        // else {
-        //     if (lastState == RobotState.MAGLOAD){
-        //         AutoManager.getInstance().resetCurrentSequence();
-        //     }
-        //     state.setRobotState(RobotState.TELEOP);
-        //     lastState = RobotState.TELEOP;
-        // }
+        if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
+            AutoManager.getInstance().runMagLoad();
+            state.setRobotState(RobotState.MAGLOAD);
+            lastState = RobotState.MAGLOAD;
+        }
+        else if(operator.getDPADRight()){
+            AutoManager.getInstance().runSequence();
+        }
+        else {
+            if (lastState == RobotState.MAGLOAD){
+                AutoManager.getInstance().resetCurrentSequence();
+            }
+            if (lastState != RobotState.AUTO){
+                state.setRobotState(RobotState.TELEOP);
+                lastState = RobotState.TELEOP;
+            }
+        }
     }
 
     public RobotState getState(){

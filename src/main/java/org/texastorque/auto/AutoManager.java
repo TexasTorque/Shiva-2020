@@ -20,10 +20,11 @@ public class AutoManager {
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
-        autoSequenceNames = new String[] {"Mode 0", "Baseline", "Mode 2", "Testing"};
+        autoSequenceNames = new String[] {"Mode 0", "Baseline", "Mode 2", "Mode 3", "Testing"};
         autoSequences.add(new VinayMode());
         autoSequences.add(new CrossLine());
         autoSequences.add(new ShootButWorse());
+        autoSequences.add(new ShootButNotAsBad());
         autoSequences.add(new Testing());
 
         SmartDashboard.putStringArray("Auto List", autoSequenceNames);
@@ -46,20 +47,8 @@ public class AutoManager {
         String autoChoice = SmartDashboard.getString("Auto List", "null");
         System.out.println(autoChoice);
         switch(autoChoice){
-            case "Mode 0":
-                currentSequence = autoSequences.get(0);
-                System.out.println("in vinayMode");
-                break;
-            case "Baseline":
-                currentSequence = autoSequences.get(1);
-                System.out.println("in crossline");
-                break;
-            case "Testing":
-                currentSequence = autoSequences.get(3);
-                System.out.println("in testing");
-                break;
             default: // just change the value in here to test
-                currentSequence = autoSequences.get(3);
+                currentSequence = autoSequences.get(4);
                 break;
         } // select the autonomous program to run
 

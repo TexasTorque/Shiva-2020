@@ -6,6 +6,7 @@ import org.texastorque.auto.Command;
 import org.texastorque.auto.Sequence;
 import org.texastorque.auto.commands.DrivePath;
 import org.texastorque.auto.commands.MagazineSet;
+import org.texastorque.auto.commands.ShooterSet;
 
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Waypoint;

@@ -2,6 +2,7 @@ package org.texastorque.auto.commands;
 
 import org.texastorque.auto.Command;
 import org.texastorque.inputs.Feedback;
+import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.controlLoop.LowPassFilter;
 import org.texastorque.torquelib.controlLoop.ScheduledPID;
 
@@ -14,7 +15,7 @@ public class DriveVision extends Command {
     private ScheduledPID visionPID;
     private LowPassFilter lowPass;
 
-    protected DriveVision(double delay) {
+    public DriveVision(double delay) {
         super(delay);
         currentOffset = 0;
         visionPID = new ScheduledPID.Builder(0,0.5,1)
@@ -29,7 +30,7 @@ public class DriveVision extends Command {
 
     @Override
     protected void continuous() {
-        currentOffset = -Feedback.getXOffset();
+        currentOffset = Feedback.getXOffset();
         position = lowPass.filter(currentOffset);
         pidCalc = visionPID.calculate(position);
         input.setDBLeftSpeed(pidCalc);
@@ -38,7 +39,7 @@ public class DriveVision extends Command {
 
     @Override
     protected boolean endCondition() {
-        if (Math.abs(currentOffset) < 0.1){ return true;}
+        if (Math.abs(currentOffset) < 0.1 && Math.abs(currentOffset) != 0){ return true;}
         return false;
     }
 
