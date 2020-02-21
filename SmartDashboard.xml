@@ -48,10 +48,6 @@
 	<widget field="rotaryLeft_position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="835" y="48"/>
 	</widget>
-	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="624" y="16"/>
-		<property name="Use Radio Buttons" value="false"/>
-	</widget>
 	<widget field="Hood Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="811" y="176"/>
 	</widget>
@@ -102,6 +98,10 @@
 	</widget>
 	<widget field="hOffset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="0"/>
+	</widget>
+	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="652" y="17"/>
+		<property name="Use Radio Buttons" value="false"/>
 	</widget>
 </dashboard>
 <live-window>
