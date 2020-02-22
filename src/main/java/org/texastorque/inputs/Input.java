@@ -5,9 +5,6 @@ import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.util.GenericController;
-import org.texastorque.util.TorqueTimer;
-
-import edu.wpi.first.wpilibj.Timer;
 
 public class Input {
     private static volatile Input instance;
@@ -15,13 +12,11 @@ public class Input {
     private volatile State state;
     private GenericController driver;
     private GenericController operator;
-    // private TorqueTimer timer;
 
     private Input(){
         state = State.getInstance();
         driver = new GenericController(0, 0.1);
         operator = new GenericController(1, 0.1);
-        // timer.start();
     } // Input constructor
 
     public void updateControllers() {
@@ -193,6 +188,7 @@ public class Input {
         //     // magVelocity_high = magSpeed_high;
         //     // magVelocity_low = -magSpeed_low;     
         // }
+
         if(operator.getDPADDown()){ // gate on its own 
             magVelocity_gate = -magSpeed_gate;
         }
@@ -248,30 +244,21 @@ public class Input {
     public void updateClimber(){
         climberLeft = 0;
         climberRight = 0;
-        // if (driver.getDPADRight()){ // goes up
-        //     // climberSpeed += .05;
-        //     climberStatus = -1;
-        // }
-        // else if (driver.getDPADLeft()){ // goes down
-        //     // climberSpeed -= -.05;
-        //     climberStatus = 1;
-        // }
-        // else {
-        //     climberStatus = 0;
-        // }
         if (driver.getLeftCenterButton()){
             // climberServoLocked = false;
             climberLeft = -.3;
+
         }
         else if (driver.getDPADLeft()){
             climberLeft =  0.3;
+            climberRight = -0.3;
         }
         if (driver.getRightCenterButton()){
             // climberServoLocked = true;
-            climberRight = - .3;
+            climberRight = .3;
         }
         else if (driver.getDPADRight()){
-            climberRight = 0.3;
+            climberRight = -0.3;
         }
 
     } // update Climber 
@@ -298,19 +285,20 @@ public class Input {
     private volatile double flywheelPercent = 0; 
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
-    private volatile double[] hoodSetpoints = {0, 1, 15, 36};
+    private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
     private volatile double flywheelEncoderSpeed = 0;
+    private volatile double distanceAway = 0;
 
     public void updateShooter(){
         hoodSetpoint = hoodSetpoints[0];
         flywheelSpeed = 0;
         flywheelPercent = 0;
 
-        hoodFine = -operator.getLeftYAxis() * 10;
-        shooterFine = -operator.getRightYAxis() * 100;
+        hoodFine += -operator.getLeftYAxis() * 10;
+        shooterFine += -operator.getRightYAxis() * 100;
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
@@ -323,7 +311,10 @@ public class Input {
             }
         } 
         else if (operator.getBButton()){ // trench shot 
-            flywheelSpeed = 5500 + shooterFine;
+            // flywheelSpeed = 5500 + shooterFine;
+            distanceAway = Feedback.getDistanceAway();
+            // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();
+            flywheelSpeed = 5065.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
             flywheelPercent = 0.72;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
@@ -409,43 +400,38 @@ public class Input {
     // =========== Others ============
     RobotState lastState = RobotState.AUTO;
     
-    public void updateState(){
-        // if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
-        //     AutoManager.getInstance().runMagAutomatic(); 
-        //     state.setRobotState(RobotState.SHOOTING);
-        //     lastState = RobotState.SHOOTING;
-        // } 
-        // else if(operator.getDPADUp()){
-        //     AutoManager.getInstance().runSequence();
-        // }
-        // else {
-        //     if (lastState == RobotState.SHOOTING){
-        //         AutoManager.getInstance().resetCurrentSequence();
-        //     }
-        //     if (lastState != RobotState.AUTO){
-        //         state.setRobotState(RobotState.TELEOP);
-        //         lastState = RobotState.TELEOP;
-        //     }
-        // }
-
-        // if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
-        //     AutoManager.getInstance().runMagLoad();
-        //     state.setRobotState(RobotState.MAGLOAD);
-        //     lastState = RobotState.MAGLOAD;
-        // }
-        // else if(operator.getDPADRight()){
-        //     AutoManager.getInstance().runSequence();
-        // }
-        // else {
-        //     if (lastState == RobotState.MAGLOAD){
-        //         AutoManager.getInstance().resetCurrentSequence();
-        //     }
-        //     if (lastState != RobotState.AUTO){
-        //         state.setRobotState(RobotState.TELEOP);
-        //         lastState = RobotState.TELEOP;
-        //     }
-        // }
-    }
+    public void updateState(){ // NEED TO DO THIS AGAIN BC THIS IS BAD!!!!! ITS NOT WORKING AS IT SHOULD 
+        if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
+            AutoManager.getInstance().runMagAutomatic(); 
+            state.setRobotState(RobotState.SHOOTING);
+            lastState = RobotState.SHOOTING;
+        } 
+        else if(operator.getDPADUp()){
+            AutoManager.getInstance().runSequence();
+        }
+        else if (lastState == RobotState.SHOOTING){
+                AutoManager.getInstance().resetCurrentSequence();
+        }
+        else if (lastState != RobotState.AUTO){
+                state.setRobotState(RobotState.TELEOP);
+                lastState = RobotState.TELEOP;
+        } // end of mag automatic shooting out
+        else if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
+            AutoManager.getInstance().runMagLoad();
+            state.setRobotState(RobotState.MAGLOAD);
+            lastState = RobotState.MAGLOAD;
+        }
+        else if(operator.getDPADRight()){
+            AutoManager.getInstance().runSequence();
+        }
+        else if (lastState == RobotState.MAGLOAD){
+                AutoManager.getInstance().resetCurrentSequence();
+        }
+        else if (lastState != RobotState.AUTO){
+                state.setRobotState(RobotState.TELEOP);
+                lastState = RobotState.TELEOP;
+        }
+    } // end of mag auto load 
 
     public RobotState getState(){
         return state.getRobotState();

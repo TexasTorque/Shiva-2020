@@ -44,8 +44,9 @@ public class DriveBase extends Subsystem{
         leftSpeed = 0;
         rightSpeed = 0;
         linePID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.015)
-            .setIGains(0.0005)
+            .setPGains(0.01)
+            .setIGains(.0005)
+            // .setIGains(0.0005)
             // .setDGains(0.000005)
             .build();
         lowPass = new LowPassFilter(.5);
@@ -94,6 +95,7 @@ public class DriveBase extends Subsystem{
     public void output(){
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
+        SmartDashboard.putNumber("distance away", Feedback.getDistanceAway());
         // SmartDashboard.putNumber("right drive output", db_right.getCurrent());
         //for spark max alternate encoder (flywheel)
         db_left.set(leftSpeed);

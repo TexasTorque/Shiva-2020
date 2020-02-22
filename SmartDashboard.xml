@@ -1,5 +1,14 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="flywheel put speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="102"/>
+	</widget>
+	<widget field="distance away" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="21" y="81"/>
+	</widget>
+	<widget field="pidValueVision" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="32" y="60"/>
+	</widget>
 	<widget field="climb right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="351"/>
 	</widget>

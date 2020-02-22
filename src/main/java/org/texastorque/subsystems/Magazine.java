@@ -52,12 +52,13 @@ public class Magazine extends Subsystem{
     @Override 
     public void run(RobotState state){
         update();
+        input.updateState();
         if (state == RobotState.AUTO){
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();
         }
-        if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING){
+        if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD){
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();

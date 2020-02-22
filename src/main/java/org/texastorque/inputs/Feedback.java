@@ -182,6 +182,10 @@ public class Feedback {
         return vOffset;
     }
 
+    public static double getDistanceAway(){
+        return Math.abs(7.56*vOffset + 56.866);
+    }
+
     // ========== Gyro ==========
 
     private double NX_pitch;

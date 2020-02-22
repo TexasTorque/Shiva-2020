@@ -12,7 +12,6 @@ public class MagLoad extends Sequence {
     protected void init() {
         ArrayList<Command> block1 = new ArrayList<>();
         block1.add(new MagAutoLoad());
-
         addBlock(block1);
     }
 }

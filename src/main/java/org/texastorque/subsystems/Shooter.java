@@ -134,6 +134,7 @@ public class Shooter extends Subsystem {
     // =========== others ===========
     @Override
     public void smartDashboard() {
+        SmartDashboard.putNumber("flywheel put speed", input.getFlywheelSpeed());
         SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
         SmartDashboard.putNumber("flywheel velocity", feedback.getShooterVelocity());
         SmartDashboard.putNumber("pidOutput", pidOutput);
