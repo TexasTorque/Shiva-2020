@@ -1,5 +1,32 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="climb right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="351"/>
+	</widget>
+	<widget field="climb left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="330"/>
+	</widget>
+	<widget field="autos" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="240"/>
+	</widget>
+	<widget field="GateMagSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="219"/>
+	</widget>
+	<widget field="LowMagSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="198"/>
+	</widget>
+	<widget field="HighMagSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="177"/>
+	</widget>
+	<widget field="FollowerVelocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="156"/>
+	</widget>
+	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="66"/>
+	</widget>
+	<widget field="example_variable" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="32" y="39"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
 		<location x="-1" y="33"/>
 	</static-widget>
@@ -97,14 +124,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="rotary_right_position"/>
-	<hidden field="SendableChooser[0]"/>
-	<hidden field="example_variable"/>
-	<hidden field="DB_right_velocity_feedback"/>
-	<hidden field="LowMagSpeed"/>
-	<hidden field="DB_left_velocity_feedback"/>
-	<hidden field="HighMagSpeed"/>
-	<hidden field="FollowerVelocity"/>
-	<hidden field="GateMagSpeed"/>
-	<hidden field="rotary_left_position"/>
 </xml>
