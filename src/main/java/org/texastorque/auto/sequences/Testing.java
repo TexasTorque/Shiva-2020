@@ -18,9 +18,9 @@ public class Testing extends Sequence {
         ArrayList<Command> block1 = new ArrayList<>();
         Waypoint[] points = new Waypoint[] {
             new Waypoint(0,0,Pathfinder.d2r(0)),
-            new Waypoint(-6,6,Pathfinder.d2r(0))
+            new Waypoint(-1,-1,Pathfinder.d2r(180))
         };
-        block1.add(new DrivePath(0, points, true));
+        block1.add(new DrivePath(0, points, false));
 
         addBlock(block1);
     }

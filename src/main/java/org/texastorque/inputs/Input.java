@@ -240,31 +240,52 @@ public class Input {
     // ============= Climber ==============
     // driver controlled 
     private volatile double climberSpeed = .7;
+    private volatile double climberLeft = 0;
+    private volatile double climberRight = 0;
     private volatile int climberStatus = 0;
     private volatile boolean climberServoLocked = true; 
     
     public void updateClimber(){
-        if (driver.getDPADRight()){ // goes up
-            // climberSpeed += .05;
-            climberStatus = -1;
-        }
-        else if (driver.getDPADLeft()){ // goes down
-            // climberSpeed -= -.05;
-            climberStatus = 1;
-        }
-        else {
-            climberStatus = 0;
-        }
+        climberLeft = 0;
+        climberRight = 0;
+        // if (driver.getDPADRight()){ // goes up
+        //     // climberSpeed += .05;
+        //     climberStatus = -1;
+        // }
+        // else if (driver.getDPADLeft()){ // goes down
+        //     // climberSpeed -= -.05;
+        //     climberStatus = 1;
+        // }
+        // else {
+        //     climberStatus = 0;
+        // }
         if (driver.getLeftCenterButton()){
-            climberServoLocked = false;
+            // climberServoLocked = false;
+            climberLeft = -.3;
         }
-        else if (driver.getRightCenterButton()){
-            climberServoLocked = true;
+        else if (driver.getDPADLeft()){
+            climberLeft =  0.3;
         }
+        if (driver.getRightCenterButton()){
+            // climberServoLocked = true;
+            climberRight = - .3;
+        }
+        else if (driver.getDPADRight()){
+            climberRight = 0.3;
+        }
+
     } // update Climber 
 
     public int getClimberStatus(){
         return climberStatus;
+    }
+
+    public double getClimberLeft(){
+        return climberLeft;
+    }
+
+    public double getClimberRight(){
+        return climberRight;
     }
 
     public boolean getServoLocked(){
@@ -389,41 +410,41 @@ public class Input {
     RobotState lastState = RobotState.AUTO;
     
     public void updateState(){
-        if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
-            AutoManager.getInstance().runMagAutomatic(); 
-            state.setRobotState(RobotState.SHOOTING);
-            lastState = RobotState.SHOOTING;
-        } 
-        else if(operator.getDPADUp()){
-            AutoManager.getInstance().runSequence();
-        }
-        else {
-            if (lastState == RobotState.SHOOTING){
-                AutoManager.getInstance().resetCurrentSequence();
-            }
-            if (lastState != RobotState.AUTO){
-                state.setRobotState(RobotState.TELEOP);
-                lastState = RobotState.TELEOP;
-            }
-        }
+        // if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
+        //     AutoManager.getInstance().runMagAutomatic(); 
+        //     state.setRobotState(RobotState.SHOOTING);
+        //     lastState = RobotState.SHOOTING;
+        // } 
+        // else if(operator.getDPADUp()){
+        //     AutoManager.getInstance().runSequence();
+        // }
+        // else {
+        //     if (lastState == RobotState.SHOOTING){
+        //         AutoManager.getInstance().resetCurrentSequence();
+        //     }
+        //     if (lastState != RobotState.AUTO){
+        //         state.setRobotState(RobotState.TELEOP);
+        //         lastState = RobotState.TELEOP;
+        //     }
+        // }
 
-        if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
-            AutoManager.getInstance().runMagLoad();
-            state.setRobotState(RobotState.MAGLOAD);
-            lastState = RobotState.MAGLOAD;
-        }
-        else if(operator.getDPADRight()){
-            AutoManager.getInstance().runSequence();
-        }
-        else {
-            if (lastState == RobotState.MAGLOAD){
-                AutoManager.getInstance().resetCurrentSequence();
-            }
-            if (lastState != RobotState.AUTO){
-                state.setRobotState(RobotState.TELEOP);
-                lastState = RobotState.TELEOP;
-            }
-        }
+        // if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
+        //     AutoManager.getInstance().runMagLoad();
+        //     state.setRobotState(RobotState.MAGLOAD);
+        //     lastState = RobotState.MAGLOAD;
+        // }
+        // else if(operator.getDPADRight()){
+        //     AutoManager.getInstance().runSequence();
+        // }
+        // else {
+        //     if (lastState == RobotState.MAGLOAD){
+        //         AutoManager.getInstance().resetCurrentSequence();
+        //     }
+        //     if (lastState != RobotState.AUTO){
+        //         state.setRobotState(RobotState.TELEOP);
+        //         lastState = RobotState.TELEOP;
+        //     }
+        // }
     }
 
     public RobotState getState(){

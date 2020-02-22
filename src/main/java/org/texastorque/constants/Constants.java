@@ -18,5 +18,6 @@ public class Constants {
     public static final double DB_MAX_ACCEL = 5.0; // max acceleration (ft/s/s)
     public static final double DB_MAX_JERK = 60.0; // max jerk (ft/s/s/s)
 
+    public static final double TICKS_PER_FOOT_DB = 4.4096;
     public static final double CAMERA_ANGLE_X = 60;
 } // Constants 

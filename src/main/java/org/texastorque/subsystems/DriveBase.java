@@ -16,6 +16,11 @@ public class DriveBase extends Subsystem{
     private TorqueSparkMax db_left = new TorqueSparkMax(Ports.DB_LEFT_1);
     private TorqueSparkMax db_right = new TorqueSparkMax(Ports.DB_RIGHT_1);
 
+    private TorqueSparkMax leftClimb = new TorqueSparkMax(Ports.CLIMBER_LEFT);
+    private TorqueSparkMax rightClimb = new TorqueSparkMax(Ports.CLIMBER_RIGHT);
+    private double leftClimbSpeed = 0.0;
+    private double rightClimbSpeed = 0.0;
+
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
 
@@ -77,6 +82,8 @@ public class DriveBase extends Subsystem{
             lowPass.clear();
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
+            leftClimbSpeed = input.getClimberLeft();
+            rightClimbSpeed = input.getClimberRight();
         }
         else if (state == RobotState.VISION){
             state = input.getState();
@@ -98,6 +105,8 @@ public class DriveBase extends Subsystem{
         //for spark max alternate encoder (flywheel)
         db_left.set(leftSpeed);
         db_right.set(rightSpeed);
+        leftClimb.set(leftClimbSpeed);
+        rightClimb.set(rightClimbSpeed);
     }
 
     // =========== continuous ==========

@@ -2,6 +2,7 @@ package org.texastorque.subsystems;
 
 // ============ inputs ===========
 import org.texastorque.inputs.State.RobotState;
+import org.texastorque.torquelib.component.TorqueSparkMax;
 import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
 
@@ -25,55 +26,66 @@ public class Climber extends Subsystem{
     private static volatile Climber instance;
 
     // ============ variables =============
-    private double servoPos_left = 0;
-    private double servoPos_right = 0;
-    private double climberSpeed = 0;
+    // private double servoPos_left = 0;
+    // private double servoPos_right = 0;
+    private double climberSpeed_left = 0;
+    private double climberSpeed_right = 0;
     // ============ motors ==============
-    // private CANSparkMax climber_left = new CANSparkMax(Ports.CLIMBER_LEFT, MotorType.kBrushless);
-    // private CANSparkMax climber2 = new CANSparkMax(Ports.CLIMBER2, MotorType.kBrushless);
-    private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
+    private TorqueSparkMax climber_left = new TorqueSparkMax(Ports.BELT_GATE);
+    private TorqueSparkMax climber_right = new TorqueSparkMax(Ports.INTAKE_ROLLERS);
+    // private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
 
     // =================== methods ==================
-    private void Climber(){
+    private Climber(){
+        // climber_left = new TorqueSparkMax(Ports.CLIMBER_LEFT);
+        // climber_right = new TorqueSparkMax(Ports.CLIMBER_RIGHT);
     } // constructor 
 
     @Override
-    public void autoInit(){}
+    public void autoInit(){
+    }
 
     @Override
     public void teleopInit(){
-
+        
     } // teleop init
 
     @Override 
-    public void disabledInit(){}
+    public void disabledInit(){
+    }
 
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
-            if (input.getServoLocked()){
-                servoPos_left = 0;
-                servoPos_right = 0;
-            } else {
-                servoPos_left = 0.5;
-                servoPos_right = 0;
-            }
-            climberSpeed = input.getClimberStatus();
-
+            // if (input.getServoLocked()){
+            //     servoPos_left = 0;
+            //     servoPos_right = 0;
+            // } else {
+            //     servoPos_left = 0.5;
+            //     servoPos_right = 0;
+            // }
+            // climberSpeed = input.getClimberStatus();
+            climberSpeed_left = input.getClimberLeft();
+            climberSpeed_right = input.getClimberRight();
         }
         output();
     } // run at all times 
 
     @Override 
     public void output(){
-        climbServo_left.set(servoPos_left);
+        // climbServo_left.set(servoPos_left);
         // climber_left.set(climberSpeed);
+        SmartDashboard.putNumber("climb left", climberSpeed_left);
+        SmartDashboard.putNumber("climb right", climberSpeed_right);
+        climber_left.set(1);
+        climber_right.set(1);
     } // output
 
     // ============= continuous =============
     @Override 
-    public void disabledContinuous(){}
+    public void disabledContinuous(){
+    }
 
     @Override 
     public void autoContinuous(){}
@@ -85,7 +97,6 @@ public class Climber extends Subsystem{
 
     @Override 
     public void smartDashboard(){
-        SmartDashboard.putNumber("Climber speed", climberSpeed);
     } // display all this to smart dashboard
 
     public static Climber getInstance(){

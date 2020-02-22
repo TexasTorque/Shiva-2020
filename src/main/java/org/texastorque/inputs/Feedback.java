@@ -70,11 +70,11 @@ public class Feedback {
 
     // set methods DriveTrain
     public void setLeftPositionDT(double leftPositionDT) {
-        this.leftPositionDT = leftPositionDT;
+        this.leftPositionDT = leftPositionDT / Constants.TICKS_PER_FOOT_DB;
     }
 
     public void setRightPositionDT(double rightPositionDT) {
-        this.rightPositionDT = rightPositionDT;
+        this.rightPositionDT = rightPositionDT / Constants.TICKS_PER_FOOT_DB;
     }
 
     public void setLeftVelocityDT(double leftVelocityDT) {
@@ -84,6 +84,7 @@ public class Feedback {
     public void setRightVelocityDT(double rightVelocityDT) {
         this.rightVelocityDT = rightVelocityDT;
     }
+
 
     // accessor methods DriveTrain
     public double getDBLeftDistance() {
@@ -103,8 +104,8 @@ public class Feedback {
     }
 
     public void resetDriveEncoders(){
-        leftTare = leftPositionDT;
-        rightTare = rightPositionDT;
+        leftTare = leftPositionDT / Constants.TICKS_PER_FOOT_DB;
+        rightTare = rightPositionDT / Constants.TICKS_PER_FOOT_DB;
     }
 
     // ===========Intake=================
@@ -217,8 +218,6 @@ public class Feedback {
     
     public void smartDashboard(){
         SmartDashboard.putNumber("hOffset", hOffset);
-        SmartDashboard.putNumber("DB_left_position", getDBLeftDistance());
-        SmartDashboard.putNumber("DB_right_position", getDBRightDistance());
         SmartDashboard.putNumber("rotaryLeft_position", rotaryPosition_left);
         SmartDashboard.putNumber("rotaryRight_position", rotaryPosition_right);
         SmartDashboard.putBoolean("magcheckHigh", magHighCheck.get());
