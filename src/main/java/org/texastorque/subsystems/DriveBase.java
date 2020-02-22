@@ -18,6 +18,7 @@ public class DriveBase extends Subsystem{
 
     private TorqueSparkMax leftClimb = new TorqueSparkMax(Ports.CLIMBER_LEFT);
     private TorqueSparkMax rightClimb = new TorqueSparkMax(Ports.CLIMBER_RIGHT);
+   
     private double leftClimbSpeed = 0.0;
     private double rightClimbSpeed = 0.0;
 
