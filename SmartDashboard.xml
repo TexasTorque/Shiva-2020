@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="mag_high_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="21" y="240"/>
+	</widget>
+	<widget field="mag_low_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="123"/>
+	</widget>
 	<widget field="flywheel put speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="102"/>
 	</widget>

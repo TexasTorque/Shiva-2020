@@ -48,7 +48,7 @@ public class AutoManager {
         System.out.println(autoChoice);
         switch(autoChoice){
             default: // just change the value in here to test
-                currentSequence = autoSequences.get(4);
+                currentSequence = autoSequences.get(2);
                 break;
         } // select the autonomous program to run
 

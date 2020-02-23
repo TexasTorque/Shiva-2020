@@ -83,24 +83,29 @@ public class Shooter extends Subsystem {
     private double tempConversionSpark = -.03125;
     @Override
     public void run(RobotState state) {
-        if (state == RobotState.AUTO){
-            flywheelPercent = input.getFlywheelPercent();
-            hoodSetpoint = input.getHoodSetpoint();
-            flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-            shooterPID.changeSetpoint(flywheelSpeed);
-            pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
-        } // if in autonomous
-        if (state == RobotState.TELEOP || state == RobotState.VISION) {
-            //====================Flywheel====================
-            //When Encoder is in Spark Max!
-                flywheelPercent = input.getFlywheelPercent();
-                hoodSetpoint = input.getHoodSetpoint();
-                pidOutput = input.getFlywheelSpeed();
-                flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-                shooterPID.changeSetpoint(flywheelSpeed);
-                pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
-            //================Hood==============
-        } // if in teleop
+        // if (state == RobotState.AUTO){
+        //     flywheelPercent = input.getFlywheelPercent();
+        //     hoodSetpoint = input.getHoodSetpoint();
+        //     flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        //     shooterPID.changeSetpoint(flywheelSpeed);
+        //     pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        // } // if in autonomous
+        // if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
+        //     //====================Flywheel====================
+        //     //When Encoder is in Spark Max!
+        //         flywheelPercent = input.getFlywheelPercent();
+        //         hoodSetpoint = input.getHoodSetpoint();
+        //         pidOutput = input.getFlywheelSpeed();
+        //         flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        //         shooterPID.changeSetpoint(flywheelSpeed);
+        //         pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        //     //================Hood==============
+        // } // if in teleop
+        flywheelPercent = input.getFlywheelPercent();
+        hoodSetpoint = input.getHoodSetpoint();
+        flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        shooterPID.changeSetpoint(flywheelSpeed);
+        pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         output();
     } // run at all times
 

@@ -57,7 +57,7 @@ public class Robot extends TorqueIterative {
 
   @Override
   public void autoInit(){
-    // autoManager = AutoManager.getInstance();
+    autoManager = AutoManager.getInstance();
     state.setRobotState(RobotState.AUTO);
     autoManager.chooseSequence();
     input.resetAll();

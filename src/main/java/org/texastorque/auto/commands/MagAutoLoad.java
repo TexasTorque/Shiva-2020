@@ -26,14 +26,14 @@ public class MagAutoLoad extends Command {
 
     @Override
     protected void init() {
-        ballLast = false;
+        ballLast = true;
 
-        lowMagBall = false;
-        highMagBall = false;
+        lowMagBall = true;
+        highMagBall = true;
         
         keepGoing = false;
         entered = false;
-        delayTime = 0.3; // change this number based on what ends up working best 
+        delayTime = 0.1; // change this number based on what ends up working best 
 
         count = 0;
     }
@@ -50,7 +50,7 @@ public class MagAutoLoad extends Command {
         }
 
         if (ballLast != lowMagBall){
-            if (ballLast = false){
+            if (!lowMagBall){
                 count++;
             }
             ballLast = lowMagBall;
@@ -64,7 +64,7 @@ public class MagAutoLoad extends Command {
         }
 
         if (count == 1){ // after first ball passes through 
-            if (!highMagBall){
+            if (highMagBall){
                 input.setLowMag(true);
                 input.setHighMag(true);
             }
@@ -75,7 +75,14 @@ public class MagAutoLoad extends Command {
         } // ball 1
 
         if (count == 2){ // after the second ball passes in
-            input.setLowMag(true);
+            if (highMagBall){
+                input.setLowMag(true);
+                input.setHighMag(true);
+            }
+            else {
+                input.setHighMag(false);
+                input.setLowMag(true);
+            }
         } // ball 2
 
         if (count == 3){ // after it reads the third ball

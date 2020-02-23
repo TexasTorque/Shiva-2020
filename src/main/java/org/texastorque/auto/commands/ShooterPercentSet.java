@@ -36,6 +36,7 @@ public class ShooterPercentSet extends Command {
     @Override
     protected void end() {
         input.setFlywheelPercent(0);
+        input.setFlywheelOutputType(false);
     }
     
 }

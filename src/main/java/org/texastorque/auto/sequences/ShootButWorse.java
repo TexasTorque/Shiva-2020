@@ -13,11 +13,11 @@ public class ShootButWorse extends Sequence{
 	@Override
 	protected void init() {
         ArrayList<Command> block1 = new ArrayList<>();
-        block1.add(new ShooterPercentSet(0, 0.72, 9, 3));
-        block1.add(new MagazineSet(3, 0.5, true, 5, true, 5, true, 5));
+        block1.add(new ShooterPercentSet(0, 0.72, 5, 2));
+        block1.add(new MagazineSet(1.5, 0.5, true, 3.5, true, 3.5, true, 3.5));
         
         ArrayList<Command> block2 = new ArrayList<>();
-        block2.add(new DriveTime(0,0.5, 0.3));
+        block2.add(new DriveTime(0,0.7, 0.3));
 
         addBlock(block1);
         addBlock(block2);

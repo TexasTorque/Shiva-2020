@@ -70,7 +70,7 @@ public class DriveBase extends Subsystem{
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
-        else if (state == RobotState.TELEOP){
+        else if (state == RobotState.TELEOP || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
             state = input.getState();
             linePID.reset();
             linePID.setLastError(0);

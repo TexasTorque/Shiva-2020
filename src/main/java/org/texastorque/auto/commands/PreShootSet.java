@@ -59,5 +59,6 @@ public class PreShootSet extends Command {
         input.setLowMag(false);
         input.setHighMag(false);
         input.setGate(false);
+        feedback.resetCount();
     }
 }

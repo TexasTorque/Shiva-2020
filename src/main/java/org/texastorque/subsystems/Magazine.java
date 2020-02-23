@@ -24,6 +24,15 @@ public class Magazine extends Subsystem{
     private double beltSpeed_low = 0;
     private double beltSpeed_gate = 0;
 
+    private int lowMagFlo = 0;
+    private int highMagFlo = 0;
+    private boolean entered = false;
+    private double startTime;
+    private final double DELAY = 0.1;
+
+    private double magSpeed_low = -.6; // keep this number positive
+    private double magSpeed_high = .5; // keep this number positive
+
     // ============ motors ==============
     private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
     private TorqueSparkMax beltLow = new TorqueSparkMax(Ports.BELT_LOW);
@@ -53,15 +62,52 @@ public class Magazine extends Subsystem{
     public void run(RobotState state){
         update();
         input.updateState();
-        if (state == RobotState.AUTO){
+        beltSpeed_gate = 0;
+        if (state == RobotState.AUTO || state == RobotState.SHOOTING){
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();
         }
-        if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD){
-            beltSpeed_high = input.getMagHigh();
-            beltSpeed_low = input.getMagLow();
+        if (state == RobotState.TELEOP || state == RobotState.VISION){
+            lowMagFlo = input.getMagLowFlow();
+            highMagFlo = input.getMagHighFlow();
             beltSpeed_gate = input.getMagGate();
+
+            beltSpeed_high = 0;
+            beltSpeed_low = 0;
+
+            if (highMagFlo == 1 && Feedback.getMagHigh()){
+                beltSpeed_high = 0;
+            }
+            else if (highMagFlo == 1){
+                beltSpeed_high = magSpeed_high;
+            }
+            else if (highMagFlo == -1){
+                beltSpeed_high = - magSpeed_high;   
+            } // stops balls from going past high mag
+            if (lowMagFlo == 1 && Feedback.getCount() == 3){
+                if (!entered){
+                    startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                    entered = true;
+                }
+                if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < DELAY){
+                    beltSpeed_low = magSpeed_low;
+                }
+                else {
+                    beltSpeed_low = 0;
+                }
+            }
+            else if (lowMagFlo == 1){
+                beltSpeed_low = magSpeed_low;
+            } 
+            else if (lowMagFlo == -1) {
+                beltSpeed_low = -magSpeed_low;
+            }// on the third ball, wait for a bit then stop running the low mag
+            System.out.println(Feedback.getCount());
+            // beltSpeed_high = input.getMagHigh();
+            // beltSpeed_low = input.getMagLow();
+            // beltSpeed_gate = input.getMagGate();
+
         }
         output();
     } // run at all times 
@@ -72,6 +118,8 @@ public class Magazine extends Subsystem{
         SmartDashboard.putNumber("HighMagSpeed", beltSpeed_high); // test z axis 
         SmartDashboard.putNumber("LowMagSpeed", beltSpeed_low); // test z axis 
         SmartDashboard.putNumber("GateMagSpeed", beltSpeed_gate);
+        SmartDashboard.putBoolean("mag_low_magazine", Feedback.getMagLow());
+        SmartDashboard.putBoolean("mag_high_magazine", Feedback.getMagHigh());
         beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
         beltLow.set(beltSpeed_low);
         beltGate.set(beltSpeed_gate);

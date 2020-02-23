@@ -24,6 +24,7 @@ public class Feedback {
     private static double targetArea;
     private static double hOffset;
     private static double vOffset;
+    private static int count;
 
     //mag infared sensors
     private static DigitalInput magHighCheck;
@@ -57,6 +58,7 @@ public class Feedback {
         updateLimelight();
         updateNavX();
         smartDashboard();
+        updateMagazine();
     } // update
 
     // ==============Drive Train===============
@@ -157,14 +159,39 @@ public class Feedback {
     // ==========Magazine==========
     // this is where ultrasonic stuff would go once we add them, don't think we will
     // need any values from motors themselves
-    public static boolean getMagHigh() {
-        return magHighCheck.get();
+
+    private static boolean highMag = true;
+    private static boolean lowMag = true;
+
+    private boolean ballLast;
+
+    public void updateMagazine(){
+        highMag = magHighCheck.get();
+        lowMag = magLowCheck.get();
+
+        if (ballLast != lowMag){
+            if (!lowMag){
+                count++;
+            }
+            ballLast = lowMag;
+        } // should count how many balls have started to be read through the lower sensor 
     }
 
-    public static boolean getMagLow(){
-        return magHighCheck.get();
+    public static int getCount(){
+        return count;
     }
 
+    public void resetCount(){
+        count = 0;
+    }
+
+    public static boolean getMagHigh() { // returns true for seeing ball
+        return !highMag;
+    }
+
+    public static boolean getMagLow(){ // returns true for seeing a ball
+        return !lowMag;
+    }
     // ======== limelight ========
 
     public void updateLimelight(){

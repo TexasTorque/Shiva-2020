@@ -53,12 +53,6 @@ public class Input {
             DB_rightSpeed = .2*(-driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight));
         }
 
-        if (driver.getAButtonPressed()){
-            state.setRobotState(RobotState.VISION);
-        } else if (driver.getXButtonPressed()){
-            state.setRobotState(RobotState.TELEOP);
-        }
-
         if (driver.getLeftCenterButton()){
             Feedback.getInstance().resetDriveEncoders();
         }
@@ -156,31 +150,41 @@ public class Input {
 
     // ============ Magazine ============
     // operator controlled 
-    double magVelocity_low = 0;
-    double magVelocity_high = 0;
-    double magVelocity_gate = 0;
-    double magSpeed_low = .6; // keep this number positive
-    double magSpeed_high = .5; // keep this number positive
-    double magSpeed_gate = 1;
+    private double magVelocity_low = 0;
+    private double magVelocity_high = 0;
+    private double magVelocity_gate = 0;
+    private double magSpeed_low = .6; // keep this number positive
+    private double magSpeed_high = .5; // keep this number positive
+    private double magSpeed_gate = 1;
 
+    private int magLow; //0 = nothing, 1 = foreward, -1 = backward
+    private int magHigh;
+    private double gate;
 
     public void updateMagazine(){
-        magVelocity_low = 0;
-        magVelocity_high = 0;
-        magVelocity_gate = 0;
-
+        // magVelocity_low = 0;
+        // magVelocity_high = 0;
+        // magVelocity_gate = 0;
+        magLow = 0;
+        magHigh = 0;
+        gate = 0;
     
         if (operator.getLeftTrigger()){ // high mag - balls in 
-            magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
+            magHigh = 1;
+            // magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
+            
         }
         else if (operator.getLeftBumper()){ // high mag - balls out 
-            magVelocity_high = - magSpeed_high;
+            magHigh = -1;
+            // magVelocity_high = - magSpeed_high;
         }
         if (operator.getRightTrigger()){ // low mag - balls in 
-            magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
+            magLow = 1;
+            // magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
         }
         else if (operator.getRightBumper()){ // low mag - balls out
-            magVelocity_low = magSpeed_low;
+            magLow = -1;
+            // magVelocity_low = magSpeed_low;
         }
 
         // if(operator.getDPADUp()){   // shoot button - needs to start the sequence // TODO
@@ -193,6 +197,14 @@ public class Input {
             magVelocity_gate = -magSpeed_gate;
         }
     } // update Magazine 
+
+    public int getMagHighFlow(){
+        return magHigh;
+    }
+
+    public int getMagLowFlow(){
+        return magLow;
+    }
 
     public double getMagHigh(){
         return magVelocity_high;
@@ -311,10 +323,8 @@ public class Input {
             }
         } 
         else if (operator.getBButton()){ // trench shot 
-            // flywheelSpeed = 5500 + shooterFine;
-            distanceAway = Feedback.getDistanceAway();
+            flywheelSpeed = 5500 + shooterFine;
             // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();
-            flywheelSpeed = 5065.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
             flywheelPercent = 0.72;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
@@ -335,8 +345,17 @@ public class Input {
         }
 
         if (operator.getXButton()){ // limelight mode 
+            distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
+            flywheelSpeed = 5065.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
+            if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
+                hoodSetpoint = hoodSetpoints[3] + hoodFine;
+            }
+            else {
+                hoodSetpoint = hoodSetpoints[3];
+            }
         }
+
     } // update Shooter 
 
     public double getFlywheelPercent(){
@@ -401,6 +420,7 @@ public class Input {
     RobotState lastState = RobotState.AUTO;
     
     public void updateState(){ // NEED TO DO THIS AGAIN BC THIS IS BAD!!!!! ITS NOT WORKING AS IT SHOULD 
+
         if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
             AutoManager.getInstance().runMagAutomatic(); 
             state.setRobotState(RobotState.SHOOTING);
@@ -408,30 +428,42 @@ public class Input {
         } 
         else if(operator.getDPADUp()){
             AutoManager.getInstance().runSequence();
-        }
+        } // done 
         else if (lastState == RobotState.SHOOTING){
                 AutoManager.getInstance().resetCurrentSequence();
-        }
-        else if (lastState != RobotState.AUTO){
-                state.setRobotState(RobotState.TELEOP);
-                lastState = RobotState.TELEOP;
-        } // end of mag automatic shooting out
-        else if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
-            AutoManager.getInstance().runMagLoad();
-            state.setRobotState(RobotState.MAGLOAD);
-            lastState = RobotState.MAGLOAD;
-        }
-        else if(operator.getDPADRight()){
-            AutoManager.getInstance().runSequence();
-        }
-        else if (lastState == RobotState.MAGLOAD){
-                AutoManager.getInstance().resetCurrentSequence();
-        }
-        else if (lastState != RobotState.AUTO){
                 state.setRobotState(RobotState.TELEOP);
                 lastState = RobotState.TELEOP;
         }
-    } // end of mag auto load 
+        // else if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
+        //     AutoManager.getInstance().runMagLoad();
+        //     state.setRobotState(RobotState.MAGLOAD);
+        //     lastState = RobotState.MAGLOAD;
+        // }
+        // else if(operator.getDPADRight()){
+        //     AutoManager.getInstance().runSequence();
+        // }
+        // else if (lastState == RobotState.MAGLOAD){
+        //     AutoManager.getInstance().resetCurrentSequence();
+        //     state.setRobotState(RobotState.TELEOP);
+        //     lastState = RobotState.TELEOP;
+        // }
+        if (driver.getAButtonPressed()){
+            System.out.println("in vision");
+            if(lastState != RobotState.VISION){
+                state.setRobotState(RobotState.VISION);
+                lastState = RobotState.VISION;
+            }
+            else{
+                state.setRobotState(RobotState.TELEOP);
+                lastState = RobotState.TELEOP;
+            }
+        } 
+        // else if(driver.getAButtonPressed()){
+        //     System.out.println("should go back to teleop");
+        //     state.setRobotState(RobotState.TELEOP);
+        //     lastState = RobotState.TELEOP;
+        // }
+    } // update state 
 
     public RobotState getState(){
         return state.getRobotState();
