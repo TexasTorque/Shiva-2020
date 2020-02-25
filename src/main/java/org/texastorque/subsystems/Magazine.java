@@ -22,13 +22,14 @@ public class Magazine extends Subsystem{
     private KPID beltPID = new KPID(0, 0, 0, 0, -1, 1);
     private double beltSpeed_high = 0;
     private double beltSpeed_low = 0;
+    private double beltSpeed_gate = 0;
 
     // ============ motors ==============
-    private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
-    private TorqueSparkMax beltLow = new TorqueSparkMax(Ports.BELT_LOW);
+    private TorqueSparkMax beltGate = new TorqueSparkMax(Ports.BELT_GATE);
 
     // =================== methods ==================
     public Magazine(){
+        
     } // constructor 
 
     @Override
@@ -40,23 +41,39 @@ public class Magazine extends Subsystem{
     @Override 
     public void disabledInit(){}
 
+    //updating feedback
+    public void update(){
+        
+    }
+    
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
+        update();
         if (state == RobotState.AUTO){
         }
-        if (state == RobotState.TELEOP){
-            beltSpeed_high = input.getMagHigh();
-            beltSpeed_low = input.getMagLow();
+        if (state == RobotState.TELEOP || state == RobotState.VISION){
+            beltSpeed_gate = input.getMagGate();
         }
         output();
     } // run at all times 
 
+    // ==== testing?? ======
+
     @Override 
     public void output(){
-        beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
-        beltLow.set(beltSpeed_low);
+        SmartDashboard.putNumber("GateMagSpeed", beltSpeed_gate);
+        if(feedback.shouldGateRun()){
+            beltGate.set(0.6);
+
+        }else if(feedback.shouldRunToColor()){
+            beltGate.set(0.6);
+        }else{
+            beltGate.set(beltSpeed_gate);
+        }
     } // output
+
+
 
     // ============= continuous =============
     @Override 
@@ -85,4 +102,4 @@ public class Magazine extends Subsystem{
         return instance;
     } // getInstance
 
-} // Climber 
+} 

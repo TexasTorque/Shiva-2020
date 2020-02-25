@@ -24,8 +24,8 @@ public class DriveTime extends Command{
 
     @Override 
     protected void continuous(){
-        input.setDBLeftSpeed(speed);
-        input.setDBRightSpeed(speed);
+        // input.setDBLeftSpeed(speed);
+        // input.setDBRightSpeed(speed);
     } // continuous
 
     @Override 
@@ -35,7 +35,7 @@ public class DriveTime extends Command{
 
     @Override
     protected void end(){
-        input.setDBLeftSpeed(0);
-        input.setDBRightSpeed(0);
+        // input.setDBLeftSpeed(0);
+        // input.setDBRightSpeed(0);
     } // end
 } // DriveTime

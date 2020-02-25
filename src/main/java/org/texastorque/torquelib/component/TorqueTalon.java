@@ -10,22 +10,15 @@ import org.texastorque.util.KPID;
 public class TorqueTalon extends TorqueMotor {
     private TalonSRX talon;
     private ArrayList<TalonSRX> talonFollowers = new ArrayList<TalonSRX>();
-    private boolean invert = false;
 
     // ===================== constructor stuff =================
     public TorqueTalon(int port){
         talon = new TalonSRX(port);
-        this.port = port;
     } // torque talon 
 
     @Override
     public void addFollower(int port) {
         talonFollowers.add(new TalonSRX(port));
-    } // add follower 
-
-    public void addFollower(int port, boolean invert) {
-        talonFollowers.add(new TalonSRX(port));
-        
     } // add follower 
 
     // ====================== set methods ==========================
@@ -34,7 +27,6 @@ public class TorqueTalon extends TorqueMotor {
         talon.set(ControlMode.PercentOutput, output);
         for(TalonSRX talonSRX : talonFollowers){
             talonSRX.set(ControlMode.Follower, port);
-            talonSRX.setInverted(invert);
         } // takes care of followers 
     } // generic set method 
 
@@ -86,7 +78,4 @@ public class TorqueTalon extends TorqueMotor {
         }
         return 0;
     } // get position
-    public void invertFollower(){
-		invert = !invert;
-	} // invert follower - flips the direction of the follower from what it was previously, default direction is same as leader 
 } // Torque Talon 

@@ -3,10 +3,9 @@ package org.texastorque.inputs;
 import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
-import org.texastorque.torquelib.util.GenericController;
 import org.texastorque.inputs.Feedback;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.texastorque.torquelib.component.TorqueSparkMax;
+import org.texastorque.torquelib.util.GenericController;
 
 public class Input {
     private static volatile Input instance;
@@ -24,275 +23,52 @@ public class Input {
     public void updateControllers() {
 
         if(driver != null){
-            updateDrive();
-            updateShooter();
-            updateClimber();
-            updateIntake();
-            updateTest();
+            // updateDrive();
+            // updateShooter();
+            // updateClimber();
+            // updateIntake();
         } // update driver things
 
         if (operator != null){
-            updateMagazine();
+            updateColorMunch();
+            // updateMagazine();
         } // update operator things 
-
-
     } // update controllers
 
     public void resetAll(){
     } // reset all the things
 
-    // ============= Drivebase ============
+    // ========== ColorMunch ============
+    private volatile double rotaryPosition_Color = 8.857; // you will want to change this....
+    private double rotarySpeedColor = 0;
+    private int colorSwitcher = 0;
+    public static boolean colorIsUp = false;
+    // startpos... next pos (switching between 2)
+    private double[] rotarySetpoints_Color = {0, -45};
 
-    private double DB_leftSpeed = 0;
-    private double DB_rightSpeed = 0;
+    public void updateColorMunch(){  //Check where used "update intake"
+    //sets init position of setpoint to start
+    rotaryPosition_Color = rotarySetpoints_Color[0];
 
-    public void updateDrive(){
-        double leftRight = driver.getRightXAxis();
-        DB_leftSpeed = driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
-        DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
-        if (driver.getAButtonPressed()){
-            state.setRobotState(RobotState.VISION);
-        } else if (driver.getXButtonPressed()){
-            state.setRobotState(RobotState.TELEOP);
+    //If colorSwitcher = 0, set 1 (vice Vers)
+        if (driver.getDPADDown()){
+            if(colorSwitcher == 0){
+                colorSwitcher = 1;
+                colorIsUp = true;
+            }else if(colorSwitcher == 1){
+                colorSwitcher = 0;
+                colorIsUp = false;
+            }
+        rotaryPosition_Color = rotarySetpoints_Color[colorSwitcher];
         }
-    } // update the drivebase
-
-    public void resetDrive(){
-        DB_leftSpeed = 0;
-        DB_rightSpeed = 0;
-    } // set speeds to 0
-
-    public double getDBLeft(){
-        return DB_leftSpeed;
-    } // return left speed
-
-    public double getDBRight(){
-        return DB_rightSpeed;
-    } // return right speed
-
-    public void setDBLeftSpeed(double leftSpeed){
-        DB_leftSpeed = leftSpeed;
-    } // TO BE USED IN AUTO ONLY
-
-    public void setDBRightSpeed(double rightSpeed){
-        DB_rightSpeed = rightSpeed;
-    } // TO BE USED IN AUTO ONLY
-
-    // ============= Intake ==============
-
-    private volatile double rotaryPosition_left = 8.857;
-    private volatile double rotaryPosition_right = -23.5;
-    private double rotarySpeed = 0;
-    private int rollerSpeed = 0;
-    // start position ---- up position ----- down position 
-    private double[] rotarySetpoints_left = {17.095, 0.524, -24.547};
-    private double[] rotarySetpoints_right = {-26.262, -11.191, 17.881};
-
-    public void updateIntake(){
-        rollerSpeed = 0;
-        rotaryPosition_left = rotarySetpoints_left[1];
-        rotaryPosition_right = rotarySetpoints_right[1];
-        if (driver.getRightTrigger()){
-            rotaryPosition_left = rotarySetpoints_left[2];
-            rotaryPosition_right = rotarySetpoints_right[2];
-            rollerSpeed = 1;
-        }
-        else if (driver.getLeftTrigger()){
-            rotaryPosition_left = rotarySetpoints_left[2];
-            rotaryPosition_right = rotarySetpoints_right[2];
-            rollerSpeed = -1;
-        }
-        else if (driver.getDPADUp()){
-            rotaryPosition_left = rotarySetpoints_left[0];
-            rotaryPosition_right = rotarySetpoints_right[0];
-        }
-    } // update Intake 
-
-    public double getRotarySpeed(){
-        return rotarySpeed;
     }
 
-    public double getRotaryPositionLeft(){
-        return rotaryPosition_left;
+    public double getRotaryPositionColor(){
+        return rotaryPosition_Color;
     }
 
-    public double getRotaryPositionRight(){
-        return rotaryPosition_right;
-    }
-
-    public int getRollerSpeed(){
-        return rollerSpeed;
-    }
-
-    public void setRotarySpeed(double speed){
-        rotarySpeed = speed;
-    }
-
-    public void setRollerSpeed(int speed){
-        rollerSpeed = speed;
-    }
-
-    // ============ Magazine ============
-    double magVelocity_low = 0;
-    double magVelocity_high = 0;
-    double magSpeed_low = 1; // keep this number positive
-    double magSpeed_high = .9; // keep this number positive
-
-    public void updateMagazine(){
-        magVelocity_low = 0;
-        magVelocity_high = 0;
-        if (operator.getDPADUp()){
-            magVelocity_low = -magSpeed_low;
-        }
-        else if(operator.getDPADDown()){
-            magVelocity_low = magSpeed_low;
-        }
-        if (operator.getYButton()){ // brings balls up
-            magVelocity_high = magSpeed_high;
-        }
-        else if (operator.getAButton()){ // brings balls down 
-            magVelocity_high = -magSpeed_high;
-        }
-    } // update Magazine 
-
-    public double getMagHigh(){
-        return magVelocity_high;
-    } // get Mag Direction
-
-    public double getMagLow(){
-        return magVelocity_low;
-    } // get low mag direction
-
-    // ============= Climber ==============
-    private volatile double climberSpeed = .7;
-    private volatile int climberStatus = 0;
-    private volatile boolean climberServoLocked = true; 
-    
-    public void updateClimber(){
-        if (operator.getDPADRight()){ // goes up
-            // climberSpeed += .05;
-            climberStatus = -1;
-        }
-        else if (operator.getDPADLeft()){ // goes down
-            // climberSpeed -= -.05;
-            climberStatus = 1;
-        }
-        else {
-            climberStatus = 0;
-        }
-        if (operator.getLeftCenterButton()){
-            climberServoLocked = false;
-        }
-        else if (operator.getRightCenterButton()){
-            climberServoLocked = true;
-        }
-    } // update Climber 
-
-    public int getClimberStatus(){
-        return climberStatus;
-    }
-
-    public boolean getServoLocked(){
-        return climberServoLocked;
-    }
-
-    public double getTest(){
-        return climberSpeed;
-    }
-
-    // ============= Shooter ==============
-
-    private volatile double flywheelSpeed = 0;
-    private volatile double flywheelPercent = 0;
-    private volatile double[] hoodSetpoints = {-30, -18, -4.0};
-    private volatile double hoodSetpoint = -15;
-
-    public void updateShooter(){
-        //RPM is in testing state
-        if (driver.getBButton()){
-            // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelPercent = .3;
-            flywheelSpeed = 4000;
-        } 
-        else if (driver.getXButtonReleased()){
-            // flywheelSpeed = -1000*Constants.RPM_VICTORSPX_CONVERSION;
-        }
-        else {
-            // flywheelSpeed = 0;
-            flywheelPercent = 0;
-            flywheelSpeed = 0;
-        }
-        if(operator.getBButton()){
-            hoodSetpoint = hoodSetpoints[2];
-        }
-        else if (operator.getXButton()){
-            hoodSetpoint = hoodSetpoints[0];
-        }
-        else{
-            hoodSetpoint = hoodSetpoints[1];
-        }
-
-    } // update Shooter 
-
-    public double getFlywheelSpeed(){
-        return flywheelSpeed;
-    }
-
-    public double getFlywheelPercent(){
-        return flywheelPercent;
-    }
-    private double flywheelEncoderSpeed = 0;
-
-    public void setFlywheelEncoderSpeed(double speed){
-        flywheelEncoderSpeed = speed;
-    }
-
-    public double getFlywheelEncoderSpeed(){
-        return flywheelEncoderSpeed;
-    }
-
-    public double getHoodSetpoint(){
-        return hoodSetpoint;
-    }
-
-    public void setHoodSetpoint(int point){
-        hoodSetpoint = hoodSetpoints[point];
-    }
-    //================Test Motors (Neo rn)=================
-    private double neoSpeed = 0;
-    private double neoPercent = 0;
-    public void updateTest(){
-        neoSpeed = 0;
-        neoPercent = 0;
-        if(driver.getAButton()){
-            neoSpeed = 2000;
-            neoPercent = 0.2;
-
-        }
-        else if(driver.getBButton()){
-            neoSpeed = 4000;
-            neoPercent = 0.4;
-        }
-        else if(driver.getYButton()){
-            neoSpeed = 6000;
-            neoPercent = 0.6;
-        }
-
-        
-    }
-
-    public double getNeoSpeed(){
-        return neoSpeed;
-    }
-
-    public double getNeoPercent(){
-        return neoPercent;
-    }
-
-    // =========== Others ============
-    
-    public RobotState getState(){
-        return state.getRobotState();
+    public double getRotarySpeedColor(){
+        return rotarySpeedColor;
     }
 
     // =========== Input =============
@@ -306,4 +82,11 @@ public class Input {
         }
         return instance;
     } // getInstance 
+
+
+    //============ FOR NOW 0 UNTIL GET BOTH WORKING TOGETHER ==========
+	public double getMagGate() {
+		return 0;
+    }
+    
 } // Input
