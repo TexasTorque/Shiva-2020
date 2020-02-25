@@ -19,11 +19,11 @@ public class Robot extends TorqueIterative {
 
   // make instances of subsystems to later place into arraylist 
   private ArrayList<Subsystem> subsystems;
-  // private Subsystem driveBase = DriveBase.getInstance();
+  private Subsystem driveBase = DriveBase.getInstance();
   // private Subsystem shooter = Shooter.getInstance();
   // private Subsystem climber = Climber.getInstance();
   // private Subsystem intake = Intake.getInstance();
-  private Subsystem magazine = Magazine.getInstance();
+  // private Subsystem magazine = Magazine.getInstance();
   // private Subsystem testMotors = TestMotors.getInstance();
   private Subsystem colorMuncher = ColorMuncher.getInstance();
   
@@ -31,7 +31,7 @@ public class Robot extends TorqueIterative {
   private State state = State.getInstance();
   private Input input = Input.getInstance();
   private Feedback feedback = Feedback.getInstance();
-  private AutoManager autoManager = AutoManager.getInstance();
+  private AutoManager autoManager;
 
   // ======= initialize ============
   public void robotInit() {
@@ -40,28 +40,31 @@ public class Robot extends TorqueIterative {
 
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
-    // subsystems.add(driveBase);
+    subsystems.add(driveBase);
     // subsystems.add(shooter);
     // subsystems.add(climber);
     // subsystems.add(intake);
-    subsystems.add(magazine);
+    // subsystems.add(magazine);
+    autoManager = AutoManager.getInstance();
     // subsystems.add(testMotors);
     subsystems.add(colorMuncher);
   } // initialize subsystems 
 
   @Override
   public void autoInit(){
+    // autoManager = AutoManager.getInstance();
     state.setRobotState(RobotState.AUTO);
     autoManager.chooseSequence();
     input.resetAll();
 
-    for(Subsystem system : subsystems){
+    for (Subsystem system : subsystems){
       system.autoInit();
     }
   } // initialize in auto
 
   @Override
   public void teleopInit(){
+    // autoManager = AutoManager.getInstance();
     state.setRobotState(RobotState.TELEOP);
     for (Subsystem system : subsystems){
       system.teleopInit();
@@ -73,17 +76,40 @@ public class Robot extends TorqueIterative {
   } // initialize when disabled
 
   // ======== continous ==============
-  public void autoContinous(){
+  @Override
+  public void autoContinuous(){
+    autoManager.runSequence();
     for (Subsystem system : subsystems){
-      system.run(state.getRobotState());
+      system.run(RobotState.AUTO);
     }
   } // do continously in autonomous
 
   @Override
   public void teleopContinuous(){
-    input.updateControllers();
+    input.updateState();
+    String[] testStrings = new String[] {"hi", "robot", "hello"};
+    SmartDashboard.putStringArray("test", testStrings);
+    
+    if (state.getRobotState() == RobotState.SHOOTING){
+      input.updateDrive();
+      input.updateShooter();
+      if (autoManager.sequenceEnded()){
+        state.setRobotState(RobotState.TELEOP);
+      }
+    } // if doing auto mag shoot 
+    else if (state.getRobotState() == RobotState.MAGLOAD) {
+      input.updateDrive();
+      input.updateShooter();
+      if (autoManager.sequenceEnded()){
+        state.setRobotState(RobotState.TELEOP);
+      }
+    } // if doing auto mag load 
+    else {
+      input.updateControllers();
+    }
+
     for (Subsystem system : subsystems){
-      system.run(RobotState.TELEOP);
+      system.run(state.getRobotState());
     }
     
 

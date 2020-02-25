@@ -25,11 +25,13 @@ public class Magazine extends Subsystem{
     private double beltSpeed_gate = 0;
 
     // ============ motors ==============
+    private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
+    private TorqueSparkMax beltLow = new TorqueSparkMax(Ports.BELT_LOW);
     private TorqueSparkMax beltGate = new TorqueSparkMax(Ports.BELT_GATE);
 
     // =================== methods ==================
     public Magazine(){
-        
+        beltHigh.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -43,7 +45,7 @@ public class Magazine extends Subsystem{
 
     //updating feedback
     public void update(){
-        
+        feedback.setShooterVelocity(beltHigh.getAlternateVelocity());
     }
     
     // ============= actually doing stuff ===========
@@ -51,8 +53,13 @@ public class Magazine extends Subsystem{
     public void run(RobotState state){
         update();
         if (state == RobotState.AUTO){
+            beltSpeed_high = input.getMagHigh();
+            beltSpeed_low = input.getMagLow();
+            beltSpeed_gate = input.getMagGate();
         }
-        if (state == RobotState.TELEOP || state == RobotState.VISION){
+        if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING){
+            beltSpeed_high = input.getMagHigh();
+            beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();
         }
         output();
@@ -62,15 +69,13 @@ public class Magazine extends Subsystem{
 
     @Override 
     public void output(){
+        // input.setFlywheelEncoderSpeed(beltHigh.getAlternateVelocity());
+        SmartDashboard.putNumber("HighMagSpeed", beltSpeed_high); // test z axis 
+        SmartDashboard.putNumber("LowMagSpeed", beltSpeed_low); // test z axis 
         SmartDashboard.putNumber("GateMagSpeed", beltSpeed_gate);
-        if(feedback.shouldGateRun()){
-            beltGate.set(0.6);
-
-        }else if(feedback.shouldRunToColor()){
-            beltGate.set(0.6);
-        }else{
-            beltGate.set(beltSpeed_gate);
-        }
+        beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
+        beltLow.set(beltSpeed_low);
+        beltGate.set(beltSpeed_gate);
     } // output
 
 
@@ -102,4 +107,4 @@ public class Magazine extends Subsystem{
         return instance;
     } // getInstance
 
-} 
+} // Climber 
