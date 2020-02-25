@@ -21,7 +21,7 @@ public class ShootButNotAsBad extends Sequence {
         block2.add(new MagazineSet(2, 0.25, true, 3, true, 3, true, 3.25));
 
         ArrayList<Command> block3 = new ArrayList<>();
-        block3.add(new DriveTime(0, 1, 0.3));
+        block3.add(new DriveTime(0, 1, -0.3));
 
         addBlock(block1);
         addBlock(block2);

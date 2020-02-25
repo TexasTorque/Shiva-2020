@@ -39,7 +39,7 @@ public class DriveVision extends Command {
 
     @Override
     protected boolean endCondition() {
-        if (Math.abs(currentOffset) < 0.1 && Math.abs(currentOffset) != 0){ return true;}
+        if (Math.abs(currentOffset) < 2 && Math.abs(currentOffset) != 0){ return true;}
         return false;
     }
 

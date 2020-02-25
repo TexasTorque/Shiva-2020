@@ -90,8 +90,8 @@ public class Input {
     private double rotarySpeed = 0;
     private int rollerSpeed = 0;
     // start position ---- neutral position ----- down position
-    private double[] rotarySetpoints_left = {0, -15, -42};
-    private double[] rotarySetpoints_right = {0, 15, 42};
+    private double[] rotarySetpoints_left = {0, -10, -40.4};
+    private double[] rotarySetpoints_right = {0, 10.1, 39.9};
     private int neutral = 1;
 
     public void updateIntake(){
@@ -161,10 +161,13 @@ public class Input {
     private int magHigh;
     private double gate;
 
+    boolean lastShooting = false;
+    boolean shootingNow = false;
+
     public void updateMagazine(){
-        // magVelocity_low = 0;
-        // magVelocity_high = 0;
-        // magVelocity_gate = 0;
+        magVelocity_low = 0;
+        magVelocity_high = 0;
+        magVelocity_gate = 0;
         magLow = 0;
         magHigh = 0;
         gate = 0;
@@ -187,14 +190,23 @@ public class Input {
             // magVelocity_low = magSpeed_low;
         }
 
-        // if(operator.getDPADUp()){   // shoot button - needs to start the sequence // TODO
-        //     // magVelocity_gate = -magSpeed_gate;
-        //     // magVelocity_high = magSpeed_high;
-        //     // magVelocity_low = -magSpeed_low;     
-        // }
-
         if(operator.getDPADDown()){ // gate on its own 
             magVelocity_gate = -magSpeed_gate;
+        }
+
+        shootingNow = operator.getDPADUp();
+
+        // === operator automatic magazine === 
+        if (shootingNow && !lastShooting ){
+            AutoManager.getInstance().runMagAutomatic(); 
+            lastShooting = true;
+        } 
+        else if(shootingNow && lastShooting){
+            AutoManager.getInstance().runSequence();
+        } // done 
+        else if (!shootingNow && lastShooting){
+            AutoManager.getInstance().resetCurrentSequence();
+            lastShooting = false;
         }
     } // update Magazine 
 
@@ -204,6 +216,10 @@ public class Input {
 
     public int getMagLowFlow(){
         return magLow;
+    }
+
+    public boolean needPreShoot(){
+        return operator.getDPADUp();
     }
 
     public double getMagHigh(){
@@ -418,22 +434,23 @@ public class Input {
 
     // =========== Others ============
     RobotState lastState = RobotState.AUTO;
+    // boolean lastShooting = false;
+    // boolean shootingNow = false;
     
     public void updateState(){ // NEED TO DO THIS AGAIN BC THIS IS BAD!!!!! ITS NOT WORKING AS IT SHOULD 
+        // shootingNow = operator.getDPADUp();
 
-        if (operator.getDPADUp() && (lastState != RobotState.SHOOTING)){
-            AutoManager.getInstance().runMagAutomatic(); 
-            state.setRobotState(RobotState.SHOOTING);
-            lastState = RobotState.SHOOTING;
-        } 
-        else if(operator.getDPADUp()){
-            AutoManager.getInstance().runSequence();
-        } // done 
-        else if (lastState == RobotState.SHOOTING){
-                AutoManager.getInstance().resetCurrentSequence();
-                state.setRobotState(RobotState.TELEOP);
-                lastState = RobotState.TELEOP;
-        }
+        // if (shootingNow && !lastShooting ){
+        //     AutoManager.getInstance().runMagAutomatic(); 
+        //     lastShooting = true;
+        // } 
+        // else if(shootingNow){
+        //     AutoManager.getInstance().runSequence();
+        // } // done 
+        // else if (!shootingNow){
+        //         AutoManager.getInstance().resetCurrentSequence();
+        //         lastShooting = false;
+        // }
         // else if (operator.getDPADRight() && (lastState != RobotState.MAGLOAD)){
         //     AutoManager.getInstance().runMagLoad();
         //     state.setRobotState(RobotState.MAGLOAD);

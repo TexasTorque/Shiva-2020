@@ -7,10 +7,10 @@ public class Ports {
     public static final int FLYWHEEL_FOLLOW = 0; // left 
 
     // neo CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
-    public static final int DB_LEFT_1 = 1;
-    public static final int DB_LEFT_2 = 2;
-    public static final int DB_RIGHT_1 = 3;
-    public static final int DB_RIGHT_2 = 4;
+    public static final int DB_LEFT_1 = 1; // done
+    public static final int DB_LEFT_2 = 2; // done
+    public static final int DB_RIGHT_1 = 3; // done 
+    public static final int DB_RIGHT_2 = 4; //done
     
     public static final int CLIMBER_LEFT = 12;
     public static final int CLIMBER_RIGHT = 13;
@@ -20,12 +20,11 @@ public class Ports {
     public static final int INTAKE_ROTARY_RIGHT = 6; // right side spark max 
     public static final int INTAKE_ROLLERS = 7;
     
-    public static final int BELT_HIGH = 8;
-    public static final int BELT_GATE = 9;
-    //belt_gate is gate because they stole the climber SparkMax... don't know if it's temporary or not
+    public static final int BELT_HIGH = 8; // done
+    public static final int BELT_GATE = 9; // done
     public static final int BELT_LOW = 11;
 
-    public static final int SHOOTER_HOOD = 10;
+    public static final int SHOOTER_HOOD = 10; // done
 
     // testing individual motors 
     public static final int TALON_PORT = 0;

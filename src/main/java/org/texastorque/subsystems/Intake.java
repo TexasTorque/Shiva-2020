@@ -77,7 +77,7 @@ public class Intake extends Subsystem{
         // } // teleop
         output();
     } // run at all times 
-
+    
     @Override 
     public void output(){
         rollers.set(rollerSpeed);

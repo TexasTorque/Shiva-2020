@@ -162,6 +162,7 @@ public class Feedback {
 
     private static boolean highMag = true;
     private static boolean lowMag = true;
+    private static boolean highMagPast = false;
 
     private boolean ballLast;
 
@@ -175,6 +176,13 @@ public class Feedback {
             }
             ballLast = lowMag;
         } // should count how many balls have started to be read through the lower sensor 
+        if (!highMagPast && !highMag){
+            highMagPast = true;
+        }
+    }
+
+    public static boolean getHighMagPast(){
+        return highMagPast;
     }
 
     public static int getCount(){
@@ -183,6 +191,7 @@ public class Feedback {
 
     public void resetCount(){
         count = 0;
+        highMagPast = false;
     }
 
     public static boolean getMagHigh() { // returns true for seeing ball

@@ -6,6 +6,9 @@ import org.texastorque.auto.sequences.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 import java.util.ArrayList;
 
 public class AutoManager {
@@ -18,6 +21,9 @@ public class AutoManager {
     private Sequence currentSequence;
     private boolean sequenceEnded;
 
+    private NetworkTableInstance NT_instance;
+    private NetworkTableEntry NT_offsetEntry;
+
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
         autoSequenceNames = new String[] {"Mode 0", "Baseline", "Mode 2", "Mode 3", "Mode 4", "Testing"};
@@ -27,13 +33,13 @@ public class AutoManager {
         autoSequences.add(new ShootButNotAsBad());
         autoSequences.add(new Testing());
 
-        SmartDashboard.putStringArray("AutoList", autoSequenceNames);
+        // SmartDashboard.putStringArray("AutoList", autoSequenceNames);
         // System.out.println(working);
         autoSelector.setDefaultOption("VinayMode", "VinayMode");
         autoSelector.addOption("CrossLine", "CrossLine");
         autoSelector.addOption("Testing", "Testing");
 
-        SmartDashboard.putData(autoSelector);
+        SmartDashboard.putData("autos", autoSelector);
         System.out.println("All auto sequences loaded.");
     } // constructor
 
@@ -43,12 +49,16 @@ public class AutoManager {
     } // display choices
 
     public void chooseSequence(){
-        String autoChoice = autoSelector.getSelected();
-        // String autoChoice = SmartDashboard.getString("AutoList", "null");
-        System.out.println(autoChoice);
+        // String autoChoice = autoSelector.getSelected();
+        // // String autoChoice = SmartDashboard.getString("AutoList", "null");
+        // System.out.println(autoChoice);
+        String autoChoice = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("autos").getEntry("selected").getString("N/A");
+        
+        System.out.println("autos via network tables: " + autoChoice);
+
         switch(autoChoice){
             default: // just change the value in here to test
-                currentSequence = autoSequences.get(2);
+                currentSequence = autoSequences.get(3);
                 break;
         } // select the autonomous program to run
 

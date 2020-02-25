@@ -63,12 +63,13 @@ public class Magazine extends Subsystem{
         update();
         input.updateState();
         beltSpeed_gate = 0;
-        if (state == RobotState.AUTO || state == RobotState.SHOOTING){
+        if (state == RobotState.AUTO){
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();
+            System.out.println("inside auto mag");
         }
-        if (state == RobotState.TELEOP || state == RobotState.VISION){
+        else if ((state == RobotState.TELEOP || state == RobotState.VISION) && !input.needPreShoot()){
             lowMagFlo = input.getMagLowFlow();
             highMagFlo = input.getMagHighFlow();
             beltSpeed_gate = input.getMagGate();
@@ -76,7 +77,7 @@ public class Magazine extends Subsystem{
             beltSpeed_high = 0;
             beltSpeed_low = 0;
 
-            if (highMagFlo == 1 && Feedback.getMagHigh()){
+            if (highMagFlo == 1 && Feedback.getHighMagPast()){
                 beltSpeed_high = 0;
             }
             else if (highMagFlo == 1){
@@ -107,7 +108,14 @@ public class Magazine extends Subsystem{
             // beltSpeed_high = input.getMagHigh();
             // beltSpeed_low = input.getMagLow();
             // beltSpeed_gate = input.getMagGate();
-
+            System.out.println("teleop but not preshoot");
+        }
+        else if ((state == RobotState.TELEOP || state == RobotState.VISION) && input.needPreShoot()){
+            feedback.resetCount();
+            beltSpeed_high = input.getMagHigh();
+            beltSpeed_low = input.getMagLow();
+            beltSpeed_gate = input.getMagGate();
+            System.out.println("teleop but preshoot");
         }
         output();
     } // run at all times 

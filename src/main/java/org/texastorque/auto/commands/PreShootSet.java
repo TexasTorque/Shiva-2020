@@ -37,11 +37,13 @@ public class PreShootSet extends Command {
     @Override
     protected void continuous() {
         double timeChanged = edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime;
-        if (state.getRobotState() == RobotState.SHOOTING){
+        
+        if (input.needPreShoot()){
             keepGoing = true;
         } else {
             keepGoing = false;
         }
+
         if (timeChanged > 0.25){
             input.setLowMag(true);
             input.setHighMag(true);
