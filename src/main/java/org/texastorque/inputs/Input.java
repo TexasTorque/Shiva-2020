@@ -325,8 +325,8 @@ public class Input {
         flywheelSpeed = 0;
         flywheelPercent = 0;
 
-        hoodFine += -operator.getLeftYAxis() * 10;
-        shooterFine += -operator.getRightYAxis() * 100;
+        hoodFine += -operator.getRightYAxis() * 10;
+        shooterFine += -operator.getLeftYAxis() * 100;
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
