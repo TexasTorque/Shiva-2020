@@ -210,19 +210,6 @@ public class Input {
         }
 
         shootingNow = operator.getDPADUp();
-
-        // === operator automatic magazine === 
-        if (shootingNow && !lastShooting ){
-            AutoManager.getInstance().runMagAutomatic(); 
-            lastShooting = true;
-        } 
-        else if(shootingNow && lastShooting){
-            AutoManager.getInstance().runSequence();
-        } // done 
-        else if (!shootingNow && lastShooting){
-            AutoManager.getInstance().resetCurrentSequence();
-            lastShooting = false;
-        }
     } // update Magazine 
 
     public boolean getAutoMagTrue(){
