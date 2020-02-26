@@ -12,12 +12,15 @@ public class DriveVision extends Command {
     double currentOffset;
     double position;
     double pidCalc;
+    double startTime;
+    double time;
     private ScheduledPID visionPID;
     private LowPassFilter lowPass;
 
-    public DriveVision(double delay) {
+    public DriveVision(double delay, double time) {
         super(delay);
         currentOffset = 0;
+        this.time = time;
         visionPID = new ScheduledPID.Builder(0,0.5,1)
             .setPGains(0.015)
             .setIGains(0.0005)
@@ -26,7 +29,9 @@ public class DriveVision extends Command {
     }
 
     @Override
-    protected void init() {}
+    protected void init() {
+        startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+    }
 
     @Override
     protected void continuous() {
@@ -39,7 +44,10 @@ public class DriveVision extends Command {
 
     @Override
     protected boolean endCondition() {
-        if (Math.abs(currentOffset) < 2 && Math.abs(currentOffset) != 0){ return true;}
+        if ((Math.abs(currentOffset) < 2 && Math.abs(currentOffset) != 0) || 
+        (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime > time)){ 
+            return true;
+        }
         return false;
     }
 
