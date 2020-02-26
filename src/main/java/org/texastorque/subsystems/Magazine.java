@@ -23,6 +23,9 @@ public class Magazine extends Subsystem{
     private double beltSpeed_high = 0;
     private double beltSpeed_low = 0;
     private double beltSpeed_gate = 0;
+    private boolean autoMag = true;
+
+    private int robotMultiplier = -1; // if longshot = -1, if bravo = 1
 
     private int lowMagFlo = 0;
     private int highMagFlo = 0;
@@ -40,21 +43,23 @@ public class Magazine extends Subsystem{
 
     // =================== methods ==================
     public Magazine(){
-        beltHigh.setAlternateEncoder();
+        // beltGate.setAlternateEncoder();
     } // constructor 
 
     @Override
     public void autoInit(){}
 
     @Override
-    public void teleopInit(){} // teleop init
+    public void teleopInit(){
+        feedback.resetCount();
+    } // teleop init
 
     @Override 
     public void disabledInit(){}
 
     //updating feedback
     public void update(){
-        feedback.setShooterVelocity(beltHigh.getAlternateVelocity());
+        // feedback.setShooterVelocity(beltGate.getAlternateVelocity());
     }
     
     // ============= actually doing stuff ===========
@@ -76,34 +81,41 @@ public class Magazine extends Subsystem{
 
             beltSpeed_high = 0;
             beltSpeed_low = 0;
-
-            if (highMagFlo == 1 && Feedback.getHighMagPast()){
-                beltSpeed_high = 0;
-            }
-            else if (highMagFlo == 1){
-                beltSpeed_high = magSpeed_high;
-            }
-            else if (highMagFlo == -1){
-                beltSpeed_high = - magSpeed_high;   
-            } // stops balls from going past high mag
-            if (lowMagFlo == 1 && Feedback.getCount() == 3){
-                if (!entered){
-                    startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-                    entered = true;
+            if (input.getAutoMagTrue()){
+                if (highMagFlo == 1 && Feedback.getHighMagPast()){
+                    beltSpeed_high = 0;
                 }
-                if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < DELAY){
+                else if (highMagFlo == 1){
+                    beltSpeed_high = magSpeed_high;
+                }
+                else if (highMagFlo == -1){
+                    beltSpeed_high = - magSpeed_high;   
+                } // stops balls from going past high mag
+                if (lowMagFlo == 1 && Feedback.getCount() == 3){
+                    if (!entered){
+                        startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                        entered = true;
+                    }
+                    if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < DELAY){
+                        beltSpeed_low = magSpeed_low;
+                    }
+                    else {
+                        beltSpeed_low = 0;
+                    }
+                }
+                else if (lowMagFlo == 1){
                     beltSpeed_low = magSpeed_low;
-                }
-                else {
-                    beltSpeed_low = 0;
-                }
+                } 
+                else if (lowMagFlo == -1) {
+                    beltSpeed_low = -magSpeed_low;
+                }// on the third ball, wait for a bit then stop running the low mag
             }
-            else if (lowMagFlo == 1){
-                beltSpeed_low = magSpeed_low;
-            } 
-            else if (lowMagFlo == -1) {
-                beltSpeed_low = -magSpeed_low;
-            }// on the third ball, wait for a bit then stop running the low mag
+            else {
+                beltSpeed_high = input.getMagHigh();
+                beltSpeed_low = input.getMagLow();
+                beltSpeed_gate = input.getMagGate();
+            }
+            
             System.out.println(Feedback.getCount());
             // beltSpeed_high = input.getMagHigh();
             // beltSpeed_low = input.getMagLow();
@@ -128,9 +140,9 @@ public class Magazine extends Subsystem{
         SmartDashboard.putNumber("GateMagSpeed", beltSpeed_gate);
         SmartDashboard.putBoolean("mag_low_magazine", Feedback.getMagLow());
         SmartDashboard.putBoolean("mag_high_magazine", Feedback.getMagHigh());
-        beltHigh.set(beltSpeed_high); // running raw output rn (maybe add pid later?)
+        beltHigh.set(beltSpeed_high * robotMultiplier); // running raw output rn (maybe add pid later?)
         beltLow.set(beltSpeed_low);
-        beltGate.set(beltSpeed_gate);
+        beltGate.set(beltSpeed_gate * robotMultiplier); 
     } // output
 
     // ============= continuous =============

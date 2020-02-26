@@ -88,10 +88,13 @@ public class Input {
     private volatile double rotaryPosition_left;
     private volatile double rotaryPosition_right;
     private double rotarySpeed = 0;
-    private int rollerSpeed = 0;
+    private double rollerSpeed = 0;
     // start position ---- neutral position ----- down position
-    private double[] rotarySetpoints_left = {0, -10, -40.4};
-    private double[] rotarySetpoints_right = {0, 10.1, 39.9};
+    // private double[] rotarySetpoints_left = {0, -10, -40.4}; // bravo
+    // private double[] rotarySetpoints_right = {0, 10.1, 39.9}; // bravo
+    private double[] rotarySetpoints_left = {0, -15.21, -42.21}; // charlie
+    private double[] rotarySetpoints_right = {0, 14.21, 42.95}; // charlie
+
     private int neutral = 1;
 
     public void updateIntake(){
@@ -120,6 +123,9 @@ public class Input {
             rotaryPosition_left = rotarySetpoints_left[0];
             rotaryPosition_right = rotarySetpoints_right[0];
         }
+        if (driver.getYButton()){
+            rollerSpeed = 0.5;
+        }
         
     } // update Intake 
 
@@ -135,7 +141,7 @@ public class Input {
         return rotaryPosition_right;
     }
 
-    public int getRollerSpeed(){
+    public double getRollerSpeed(){
         return rollerSpeed;
     }
 
@@ -161,6 +167,8 @@ public class Input {
     private int magHigh;
     private double gate;
 
+    private boolean automaticMag = true;
+
     boolean lastShooting = false;
     boolean shootingNow = false;
 
@@ -171,23 +179,30 @@ public class Input {
         magLow = 0;
         magHigh = 0;
         gate = 0;
+
+        if (operator.getLeftCenterButton()){
+            automaticMag = true;
+        }
+        else if(operator.getRightCenterButton()){
+            automaticMag = false;
+        }
     
         if (operator.getLeftTrigger()){ // high mag - balls in 
             magHigh = 1;
-            // magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
+            magVelocity_high = operator.getLeftZAxis() * magSpeed_high;
             
         }
         else if (operator.getLeftBumper()){ // high mag - balls out 
             magHigh = -1;
-            // magVelocity_high = - magSpeed_high;
+            magVelocity_high = - magSpeed_high;
         }
         if (operator.getRightTrigger()){ // low mag - balls in 
             magLow = 1;
-            // magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
+            magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
         }
         else if (operator.getRightBumper()){ // low mag - balls out
             magLow = -1;
-            // magVelocity_low = magSpeed_low;
+            magVelocity_low = magSpeed_low;
         }
 
         if(operator.getDPADDown()){ // gate on its own 
@@ -209,6 +224,10 @@ public class Input {
             lastShooting = false;
         }
     } // update Magazine 
+
+    public boolean getAutoMagTrue(){
+        return automaticMag;
+    }
 
     public int getMagHighFlow(){
         return magHigh;
@@ -363,7 +382,7 @@ public class Input {
         if (operator.getXButton()){ // limelight mode 
             distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
-            flywheelSpeed = 5065.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
+            flywheelSpeed = 5565.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
             }

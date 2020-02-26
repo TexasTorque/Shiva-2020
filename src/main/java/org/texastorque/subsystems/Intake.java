@@ -38,6 +38,7 @@ public class Intake extends Subsystem{
         rotary_right.configurePID(kPIDRotary_right);
         rotary_left.tareEncoder();
         rotary_right.tareEncoder();
+        rollers.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -54,6 +55,7 @@ public class Intake extends Subsystem{
 
     //updating feedback
     public void update(){
+        feedback.setShooterVelocity(rollers.getAlternateVelocity());
         feedback.setRotaryPositionLeft(rotary_left.getPosition());
         feedback.setRotaryPositionRight(rotary_right.getPosition());
     }

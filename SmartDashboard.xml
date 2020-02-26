@@ -1,5 +1,17 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="neo current1" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="435"/>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="414"/>
+	</widget>
+	<widget field="Climber speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="393"/>
+	</widget>
+	<widget field="neo encoder1" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="372"/>
+	</widget>
 	<widget field="mag_high_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="21" y="240"/>
 	</widget>
