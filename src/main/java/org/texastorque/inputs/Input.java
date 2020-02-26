@@ -289,25 +289,33 @@ public class Input {
     private volatile boolean climberServoLocked = true; 
     
     public void updateClimber(){
-        climberLeft = 0;
-        climberRight = 0;
-        if (driver.getLeftCenterButton()){
-            // climberServoLocked = false;
-            climberLeft = -.3;
+        climberStatus = 0;
+        // climberLeft = 0;
+        // climberRight = 0;
+        // if (driver.getLeftCenterButton()){
+        //     // climberServoLocked = false;
+        //     climberLeft = -.3;
 
+        // }
+        // else if (driver.getDPADLeft()){
+        //     climberLeft =  0.3;
+        //     climberRight = -0.3;
+        // }
+        // if (driver.getRightCenterButton()){
+        //     // climberServoLocked = true;
+        //     climberRight = .3;
+        // }
+        // else if (driver.getDPADRight()){
+        //     climberRight = -0.3;
+        // }
+        if (driver.getLeftCenterButton()){ // extend climber
+            // climberLeft = -0.3;
+            // climberRight = 0.3;
+            climberStatus = 1;
         }
-        else if (driver.getDPADLeft()){
-            climberLeft =  0.3;
-            climberRight = -0.3;
+        else if (driver.getRightCenterButton()){ // retract climber (climb)
+            climberStatus = -1;
         }
-        if (driver.getRightCenterButton()){
-            // climberServoLocked = true;
-            climberRight = .3;
-        }
-        else if (driver.getDPADRight()){
-            climberRight = -0.3;
-        }
-
     } // update Climber 
 
     public int getClimberStatus(){
