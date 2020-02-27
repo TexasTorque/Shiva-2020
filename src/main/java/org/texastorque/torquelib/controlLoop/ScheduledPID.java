@@ -4,9 +4,12 @@ import java.util.Arrays;
 
 import org.texastorque.util.ArrayUtils;
 import org.texastorque.util.Integrator;
+import org.texastorque.util.KPID;
 import org.texastorque.util.MathUtils;
 import org.texastorque.util.TorqueTimer;
 import org.texastorque.util.interfaces.Stopwatch;
+
+import edu.wpi.first.wpilibj.Timer;
 
 public class ScheduledPID {
 
@@ -25,6 +28,8 @@ public class ScheduledPID {
 	private int currentGainIndex;
 	private double lastError;
 
+	private boolean firstCycle;
+
 	private final Integrator integrator;
 	private Stopwatch timer;
 	private SafetyCheck safetyCheck;
@@ -42,6 +47,25 @@ public class ScheduledPID {
 		this.minOutput = minOutput;
 		this.maxOutput = maxOutput;
 		
+		this.integrator = new Integrator();
+		this.timer = new TorqueTimer();
+	}
+
+	private ScheduledPID(KPID kPID){
+		this.gainDivisions = new double[0];
+		this.pGains = new double[1];
+		this.pGains[0] = kPID.p();
+		this.iGains = new double[1];
+		this.iGains[0] = kPID.p();
+		this.dGains = new double[1];
+		this.dGains[0] = kPID.p();
+		this.fGains = new double[1];
+		this.fGains[0] = kPID.p();
+		
+		this.setpoint = 0;
+		this.minOutput = kPID.min();
+		this.maxOutput = kPID.max();
+
 		this.integrator = new Integrator();
 		this.timer = new TorqueTimer();
 	}
@@ -104,9 +128,17 @@ public class ScheduledPID {
 		return error;
 	}
 	
-	private void finishUpdate(double error) {
+	public void finishUpdate(double error) {
 		this.lastError = error;
 		timer.startLap();  // Measure dt from the end of the last update.
+	}
+
+	public void setLastError(double error){
+		this.lastError = error;
+	}
+
+	public double getLastError(){
+		return this.lastError;
 	}
 	
 	/** Calculates the index for the current gain values.
@@ -155,6 +187,13 @@ public class ScheduledPID {
 	// == Public API ==
 	
 	public double calculate(double processVar) {
+
+		if (firstCycle) {
+			lastError = 0; 
+			timer.reset();
+			firstCycle = false;
+		}
+		
 		if (!isSafeToOutput()) {
 			timer.reset();
 			integrator.reset();
@@ -182,6 +221,7 @@ public class ScheduledPID {
 	
 	public void reset() {
 		integrator.reset();
+		firstCycle = true;
 		timer.reset();
 	}
 	

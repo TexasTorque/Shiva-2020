@@ -1,0 +1,157 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="shooter position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1035" y="404"/>
+	</widget>
+	<widget field="neo current1" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="435"/>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="414"/>
+	</widget>
+	<widget field="Climber speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="393"/>
+	</widget>
+	<widget field="neo encoder1" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="372"/>
+	</widget>
+	<widget field="mag_high_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="21" y="240"/>
+	</widget>
+	<widget field="mag_low_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="123"/>
+	</widget>
+	<widget field="flywheel put speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="102"/>
+	</widget>
+	<widget field="distance away" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="21" y="81"/>
+	</widget>
+	<widget field="pidValueVision" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="32" y="60"/>
+	</widget>
+	<widget field="climb right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="351"/>
+	</widget>
+	<widget field="climb left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="330"/>
+	</widget>
+	<widget field="autos" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="373" y="251"/>
+	</widget>
+	<widget field="GateMagSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="219"/>
+	</widget>
+	<widget field="LowMagSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="198"/>
+	</widget>
+	<widget field="HighMagSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="177"/>
+	</widget>
+	<widget field="FollowerVelocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="156"/>
+	</widget>
+	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="250" y="30"/>
+	</widget>
+	<widget field="example_variable" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="32" y="39"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="-1" y="33"/>
+	</static-widget>
+	<widget field="State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="16" y="12"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="147" y="6"/>
+	</static-widget>
+	<widget field="output_right_current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1034" y="76"/>
+	</widget>
+	<widget field="output_left_current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="832" y="76"/>
+	</widget>
+	<widget field="hood output" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="869" y="204"/>
+	</widget>
+	<widget field="rightspeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="636" y="12"/>
+	</widget>
+	<widget field="leftSpeed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="449" y="12"/>
+	</widget>
+	<widget field="Last Error" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="448" y="156"/>
+	</widget>
+	<widget field="rotaryRight_setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1035" y="44"/>
+	</widget>
+	<widget field="rotaryLeft_setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="834" y="44"/>
+	</widget>
+	<widget field="rotaryRight_position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1036" y="12"/>
+	</widget>
+	<widget field="rotaryLeft_position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="835" y="12"/>
+	</widget>
+	<widget field="Hood Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="859" y="172"/>
+	</widget>
+	<widget field="magcheckHigh" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1066" y="124"/>
+	</widget>
+	<widget field="flywheel percent" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1055" y="252"/>
+	</widget>
+	<widget field="db_left" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="461" y="44"/>
+	</widget>
+	<widget field="magcheckLow" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="861" y="124"/>
+	</widget>
+	<widget field="flywheel setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="844" y="284"/>
+	</widget>
+	<widget field="limelight_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="594" y="220"/>
+	</widget>
+	<widget field="pidOutput" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1087" y="284"/>
+	</widget>
+	<widget field="limelight_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="604" y="252"/>
+	</widget>
+	<widget field="db_right" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="647" y="44"/>
+	</widget>
+	<widget field="Hood Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1069" y="172"/>
+	</widget>
+	<widget field="limelight_PipelineName" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="572" y="188"/>
+	</widget>
+	<widget field="flywheel velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="848" y="252"/>
+	</widget>
+	<widget field="hOffset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="459" y="124"/>
+	</widget>
+	<widget field="yaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="669" y="156"/>
+	</widget>
+	<widget field="DB_left_position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="416" y="76"/>
+	</widget>
+	<widget field="y pixels" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="652" y="124"/>
+		<height>20</height>
+	</widget>
+	<widget field="DB_right_position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="601" y="76"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>
