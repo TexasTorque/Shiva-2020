@@ -25,7 +25,7 @@
 		<location x="0" y="102"/>
 	</widget>
 	<widget field="distance away" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="21" y="81"/>
+		<location x="554" y="509"/>
 	</widget>
 	<widget field="pidValueVision" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="32" y="60"/>
@@ -133,7 +133,7 @@
 		<location x="572" y="188"/>
 	</widget>
 	<widget field="flywheel velocity" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="848" y="252"/>
+		<location x="736" y="509"/>
 	</widget>
 	<widget field="hOffset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="459" y="124"/>

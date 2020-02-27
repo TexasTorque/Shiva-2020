@@ -1,5 +1,6 @@
 package org.texastorque.subsystems;
 
+import org.texastorque.inputs.Feedback;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
@@ -146,6 +147,7 @@ public class Shooter extends Subsystem {
         SmartDashboard.putNumber("pidOutput", pidOutput);
         SmartDashboard.putNumber("Hood Position", hood.getPosition());
         SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
+        SmartDashboard.putNumber("distance away", Feedback.getDistanceAway());
         // SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
     } // display all this to smart dashboard
 
