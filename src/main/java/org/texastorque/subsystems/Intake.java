@@ -55,9 +55,9 @@ public class Intake extends Subsystem{
 
     //updating feedback
     public void update(){
+        // feedback.setRotaryPositionLeft(rotary_left.getPosition());
+        // feedback.setRotaryPositionRight(rotary_right.getPosition());
         feedback.setShooterVelocity(rollers.getAlternateVelocity());
-        feedback.setRotaryPositionLeft(rotary_left.getPosition());
-        feedback.setRotaryPositionRight(rotary_right.getPosition());
     }
     
     // ============= actually doing stuff ===========

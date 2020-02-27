@@ -70,7 +70,7 @@ public class DrivePath extends Command {
             rightSpeed = -leftFollower.calculate(-feedback.getDBRightDistance()) - turn;
         }
 
-        input.setDBLeftSpeed(-leftSpeed);
+        input.setDBLeftSpeed(leftSpeed);
         input.setDBRightSpeed(rightSpeed);
         // System.out.println("L: " + leftSpeed + " | R: " + rightSpeed);
 	}

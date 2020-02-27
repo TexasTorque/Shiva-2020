@@ -344,6 +344,7 @@ public class Input {
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
+            flywheelPercent = .7;
             flywheelSpeed = 4250 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[1] + hoodFine;

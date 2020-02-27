@@ -113,6 +113,7 @@ public class Shooter extends Subsystem {
     public void output() {
         hood.set(hoodSetpoint, ControlType.kPosition);
         SmartDashboard.putNumber("hood output", hood.getCurrent());
+        // flywheel.set(flywheelPercent);
         if (input.getFlywheelPercentMode()){
             flywheel.set(flywheelPercent);
         }

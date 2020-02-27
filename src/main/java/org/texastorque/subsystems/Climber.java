@@ -5,6 +5,7 @@ import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.component.TorqueSparkMax;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Climber extends Subsystem {
 

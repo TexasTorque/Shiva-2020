@@ -25,7 +25,7 @@ public class Magazine extends Subsystem{
     private double beltSpeed_gate = 0;
     private boolean autoMag = true;
 
-    private int robotMultiplier = -1; // if longshot = -1, if bravo = 1
+    private int robotMultiplier = 1; // if longshot = -1, if bravo = 1
 
     private int lowMagFlo = 0;
     private int highMagFlo = 0;
@@ -44,6 +44,7 @@ public class Magazine extends Subsystem{
     // =================== methods ==================
     public Magazine(){
         // beltGate.setAlternateEncoder();
+        // beltHigh.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -60,6 +61,7 @@ public class Magazine extends Subsystem{
     //updating feedback
     public void update(){
         // feedback.setShooterVelocity(beltGate.getAlternateVelocity());
+        // feedback.setShooterVelocity(beltHigh.getAlternateVelocity());
     }
     
     // ============= actually doing stuff ===========
