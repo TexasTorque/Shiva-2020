@@ -183,6 +183,7 @@ public class Input {
             climberStatus = 0;
         }
         if (driver.getLeftCenterButton()){
+            System.out.print("servos locking");
             climberServoLocked = false;
         }
         else if (driver.getRightCenterButton()){

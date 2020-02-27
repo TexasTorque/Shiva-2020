@@ -35,7 +35,8 @@ public class Climber extends Subsystem{
     // private CANPIDController climberPID = climber.getPIDController();
     private CANEncoder climberEncoder1 = climber_left.getEncoder(EncoderType.kHallSensor, 4096);
     // private CANEncoder climberEncoder2 = climber2.getEncoder(EncoderType.kHallSensor, 4096);
-    // private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
+    private Servo climbServo_left = new Servo(Ports.CLIMB_SERVO_LEFT);
+    private Servo climbServo_right = new Servo(Ports.CLIMB_SERVO_RIGHT);
 
     // =================== methods ==================
     private void Climber(){
@@ -83,9 +84,11 @@ public class Climber extends Subsystem{
 
     @Override 
     public void output(){
-        // climbServo_left.set(servoPos_left);
+        System.out.println(climbServo_left.get());
+        climbServo_left.set(servoPos_left);
+        climbServo_right.setAngle(90);
         SmartDashboard.putNumber("Climber speed", climberSpeed);
-        climber_left.set(climberSpeed);
+        // climber_left.set(climberSpeed);
     } // output
 
     // ============= continuous =============

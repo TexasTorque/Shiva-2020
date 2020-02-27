@@ -31,6 +31,6 @@ public class Ports {
     public static final int SPARKMAX_PORT_2 = 2;
 
     // PWM
-    public static final int CLIMB_SERVO_LEFT = 0;
-    public static final int CLIMB_SERVO_RIGHT = 1;
+    public static final int CLIMB_SERVO_LEFT = 1;
+    public static final int CLIMB_SERVO_RIGHT = 2;
 } // ports 

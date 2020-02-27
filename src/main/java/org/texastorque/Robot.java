@@ -25,7 +25,7 @@ public class Robot extends TorqueIterative {
   private ArrayList<Subsystem> subsystems;
   private Subsystem driveBase = DriveBase.getInstance();
   // private Subsystem shooter = Shooter.getInstance();
-  // private Subsystem climber = Climber.getInstance();
+  private Subsystem climber = Climber.getInstance();
   // private Subsystem intake = Intake.getInstance();
   // private Subsystem magazine = Magazine.getInstance();
   // private Subsystem testMotors = TestMotors.getInstance();
@@ -47,7 +47,7 @@ public class Robot extends TorqueIterative {
     subsystems = new ArrayList<Subsystem>();
     subsystems.add(driveBase);
     // subsystems.add(shooter);
-    // subsystems.add(climber);
+    subsystems.add(climber);
     // subsystems.add(intake);
     // subsystems.add(magazine);
     // subsystems.add(testMotors);
