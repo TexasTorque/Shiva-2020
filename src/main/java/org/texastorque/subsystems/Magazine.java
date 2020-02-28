@@ -32,9 +32,12 @@ public class Magazine extends Subsystem{
     private boolean entered = false;
     private double startTime;
     private final double DELAY = 0.1;
+    private boolean preShootStarted = false;
 
-    private double magSpeed_low = -.6; // keep this number positive
-    private double magSpeed_high = .5; // keep this number positive
+    // private double magSpeed_low = -.6; // keep this number positive
+    // private double magSpeed_high = .5; // keep this number positive
+    private double magSpeed_low = -.8; // keep this number positive
+    private double magSpeed_high = .9; // keep this number positive
 
     // ============ motors ==============
     private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
@@ -74,7 +77,6 @@ public class Magazine extends Subsystem{
             beltSpeed_high = input.getMagHigh();
             beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();
-            System.out.println("inside auto mag");
         }
         else if ((state == RobotState.TELEOP || state == RobotState.VISION) && !input.needPreShoot()){
             lowMagFlo = input.getMagLowFlow();
@@ -117,19 +119,40 @@ public class Magazine extends Subsystem{
                 beltSpeed_low = input.getMagLow();
                 beltSpeed_gate = input.getMagGate();
             }
+            if (beltSpeed_gate != 0){
+                feedback.resetCount();
+            }
             
-            System.out.println(Feedback.getCount());
+            SmartDashboard.putNumber("count", Feedback.getCount());
+            SmartDashboard.putBoolean("autoMag", input.getAutoMagTrue());
             // beltSpeed_high = input.getMagHigh();
             // beltSpeed_low = input.getMagLow();
             // beltSpeed_gate = input.getMagGate();
-            System.out.println("teleop but not preshoot");
         }
         else if ((state == RobotState.TELEOP || state == RobotState.VISION) && input.needPreShoot()){
             feedback.resetCount();
-            beltSpeed_high = input.getMagHigh();
-            beltSpeed_low = input.getMagLow();
-            beltSpeed_gate = input.getMagGate();
-            System.out.println("teleop but preshoot");
+            if (!preShootStarted){
+                startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                preShootStarted = true;
+                System.out.println("in start");
+            }
+            else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < 0.25){
+                beltSpeed_gate = -1;    
+                beltSpeed_high = 0;
+                beltSpeed_low = 0;
+                System.out.println("in gate only");
+            }
+            else {
+                beltSpeed_gate = -1;    
+                // beltSpeed_high = 0.5;
+                // beltSpeed_low = -0.6;
+                beltSpeed_high = 0.8;
+                beltSpeed_low = -0.8;
+                System.out.println("in normal");
+            }
+            // beltSpeed_high = input.getMagHigh();
+            // beltSpeed_low = input.getMagLow();
+            // beltSpeed_gate = input.getMagGate();
         }
         output();
     } // run at all times 

@@ -4,6 +4,7 @@ import org.texastorque.auto.AutoManager;
 import org.texastorque.constants.Constants;
 // ========= Imports ==========
 import org.texastorque.inputs.State.RobotState;
+import org.texastorque.subsystems.Climber;
 import org.texastorque.torquelib.util.GenericController;
 
 public class Input {
@@ -167,7 +168,7 @@ public class Input {
     private int magHigh;
     private double gate;
 
-    private boolean automaticMag = true;
+    private boolean automaticMag = false;
 
     boolean lastShooting = false;
     boolean shootingNow = false;
@@ -274,6 +275,7 @@ public class Input {
     private volatile double climberRight = 0;
     private volatile int climberStatus = 0;
     private volatile boolean climberServoLocked = true; 
+    private volatile boolean climbStarted = false;
     
     public void updateClimber(){
         climberStatus = 0;
@@ -298,10 +300,18 @@ public class Input {
         if (driver.getLeftCenterButton()){ // extend climber
             // climberLeft = -0.3;
             // climberRight = 0.3;
+            if (!climbStarted){
+                Climber.resetClimb();
+                climbStarted = true;
+            }
             climberStatus = 1;
+            System.out.println("climber status" + climberStatus);
         }
         else if (driver.getRightCenterButton()){ // retract climber (climb)
             climberStatus = -1;
+        }
+        else {
+            climbStarted = false;
         }
     } // update Climber 
 
@@ -327,7 +337,8 @@ public class Input {
     private volatile double flywheelPercent = 0; 
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
-    private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
+    // private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
+    private volatile double[] hoodSetpoints = {0, 1, 15, 51, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
@@ -378,13 +389,16 @@ public class Input {
         if (operator.getXButton()){ // limelight mode 
             distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
-            flywheelSpeed = 5565.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
-            if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[3] + hoodFine;
-            }
-            else {
+            // flywheelSpeed = 5565.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
+            // flywheelSpeed = -(-4863 + (-4405.726 + 4863.127)/Math.pow(1+(distanceAway/33.56476),8.755706)); // basic basic 
+            // flywheelSpeed = -(-4800 + (-4405.726 + 4863.127)/Math.pow(1+(distanceAway/33.56476),8.755706)); // too high basic
+            flywheelSpeed = 4170.043 + 51.84663*distanceAway - 3.67*Math.pow(distanceAway,2) + 0.1085119*Math.pow(distanceAway,3) - 0.0009953746*Math.pow(distanceAway, 4);
+            // if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
+            //     hoodSetpoint = hoodSetpoints[3] + hoodFine;
+            // }
+            // else {
                 hoodSetpoint = hoodSetpoints[3];
-            }
+            // }
         }
 
     } // update Shooter 

@@ -15,12 +15,12 @@ public class Testing extends Sequence {
 
     @Override
     protected void init() {
-        ArrayList<Command> block1 = new ArrayList<>();
+        // ArrayList<Command> block1 = new ArrayList<>();
         // Waypoint[] points = new Waypoint[] {
-        //     new Waypoint(0,0,Pathfinder.d2r(0)),
-        //     new Waypoint(0,-3,Pathfinder.d2r(0))
+        //     new Waypoint(0,0,0),
+        //     new Waypoint(0,-3,0)
         // };
-        // block1.add(new DrivePath(0, points, false));
+        // block1.add(new DrivePath(0, points, true));
 
         // addBlock(block1);
     }

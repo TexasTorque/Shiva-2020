@@ -199,7 +199,7 @@ public class Feedback {
     }
 
     public static boolean getMagLow(){ // returns true for seeing a ball
-        return !lowMag;
+        return lowMag;
     }
     // ======== limelight ========
 

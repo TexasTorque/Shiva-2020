@@ -36,6 +36,6 @@ public class Ports {
     public static final int CLIMB_SERVO_RIGHT = 1;
 
     //Sensors
-    public static final int MAG_SENSOR_HIGH = 4;
-    public static final int MAG_SENSOR_LOW = 6;
+    public static final int MAG_SENSOR_HIGH = 2;
+    public static final int MAG_SENSOR_LOW = 0;
 } // ports 
