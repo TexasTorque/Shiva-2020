@@ -1,5 +1,6 @@
 package org.texastorque.subsystems;
 
+import org.texastorque.inputs.Feedback;
 // ========= imports =========
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.constants.*;
@@ -48,6 +49,15 @@ public class Shooter extends Subsystem {
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
+
+        //Bulding shooter PID (this is for when the encoder is put into the spark max!)
+        //Use integrated PID when encoder is put onto talon
+        shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
+            .setPGains(0.028)
+            .setIGains(0.0008)
+            .setDGains(0)
+            .setFGains(.00385)
+            .build();
     } // constructor
 
     // ============= initialization ==========
@@ -58,14 +68,6 @@ public class Shooter extends Subsystem {
 
     @Override
     public void teleopInit() {
-        //Bulding shooter PID (this is for when the encoder is put into the spark max!)
-        //Use integrated PID when encoder is put onto talon
-        shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.028)
-            .setIGains(0.0008)
-            .setDGains(0)
-            .setFGains(.00385)
-            .build();
     } // teleopInit
 
     @Override
@@ -82,18 +84,29 @@ public class Shooter extends Subsystem {
     private double tempConversionSpark = -.03125;
     @Override
     public void run(RobotState state) {
-        if (state == RobotState.AUTO){
-        } // if in autonomous
-        if (state == RobotState.TELEOP || state == RobotState.VISION) {
-            //====================Flywheel====================
-            //When Encoder is in Spark Max!
-                hoodSetpoint = input.getHoodSetpoint();
-                flywheelPercent = input.getFlywheelPercent();
-                flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-                shooterPID.changeSetpoint(flywheelSpeed);
-                pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
-            //================Hood==============
-        } // if in teleop
+        // if (state == RobotState.AUTO){
+        //     flywheelPercent = input.getFlywheelPercent();
+        //     hoodSetpoint = input.getHoodSetpoint();
+        //     flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        //     shooterPID.changeSetpoint(flywheelSpeed);
+        //     pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        // } // if in autonomous
+        // if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
+        //     //====================Flywheel====================
+        //     //When Encoder is in Spark Max!
+        //         flywheelPercent = input.getFlywheelPercent();
+        //         hoodSetpoint = input.getHoodSetpoint();
+        //         pidOutput = input.getFlywheelSpeed();
+        //         flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        //         shooterPID.changeSetpoint(flywheelSpeed);
+        //         pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        //     //================Hood==============
+        // } // if in teleop
+        flywheelPercent = input.getFlywheelPercent();
+        hoodSetpoint = input.getHoodSetpoint();
+        flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        shooterPID.changeSetpoint(flywheelSpeed);
+        pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         output();
     } // run at all times
 
@@ -101,11 +114,17 @@ public class Shooter extends Subsystem {
     public void output() {
         hood.set(hoodSetpoint, ControlType.kPosition);
         SmartDashboard.putNumber("hood output", hood.getCurrent());
-        if(pidOutput > 0){
-            flywheel.set(0);
-        } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
-        else{
-            flywheel.set(-pidOutput);
+        // flywheel.set(flywheelPercent);
+        if (input.getFlywheelPercentMode()){
+            flywheel.set(flywheelPercent);
+        }
+        else {
+            if(pidOutput > 0){
+                flywheel.set(0);
+            } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
+            else{
+                flywheel.set(-pidOutput);
+            }
         }
         //setting for testing (to get FGains)
         // flywheel.set(flywheelPercent);
@@ -124,12 +143,13 @@ public class Shooter extends Subsystem {
     // =========== others ===========
     @Override
     public void smartDashboard() {
+        SmartDashboard.putNumber("flywheel put speed", input.getFlywheelSpeed());
         SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
         SmartDashboard.putNumber("flywheel velocity", feedback.getShooterVelocity());
         SmartDashboard.putNumber("pidOutput", pidOutput);
-        SmartDashboard.putNumber("flywheel percent", flywheelPercent);
         SmartDashboard.putNumber("Hood Position", hood.getPosition());
         SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
+        SmartDashboard.putNumber("distance away", Feedback.getDistanceAway());
         // SmartDashboard.putNumber("Flywheel RPM",flywheel.getVelocity()/Constants.RPM_VICTORSPX_CONVERSION);
     } // display all this to smart dashboard
 

@@ -38,6 +38,7 @@ public class Intake extends Subsystem{
         rotary_right.configurePID(kPIDRotary_right);
         rotary_left.tareEncoder();
         rotary_right.tareEncoder();
+        rollers.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -54,29 +55,31 @@ public class Intake extends Subsystem{
 
     //updating feedback
     public void update(){
-        feedback.setRotaryPositionLeft(rotary_left.getPosition());
-        feedback.setRotaryPositionRight(rotary_right.getPosition());
+        // feedback.setRotaryPositionLeft(rotary_left.getPosition());
+        // feedback.setRotaryPositionRight(rotary_right.getPosition());
+        feedback.setShooterVelocity(rollers.getAlternateVelocity());
     }
     
     // ============= actually doing stuff ===========
     @Override 
     public void run(RobotState state){
         update();
-        if (state == RobotState.AUTO){
-            rotaryPosition_left = input.getRotaryPositionLeft();
-            rotaryPosition_right = input.getRotaryPositionRight();
-            rollerSpeed = input.getRollerSpeed();
-        } // auto 
-        if (state == RobotState.TELEOP|| state == RobotState.VISION){
-            rollerSpeed = input.getRollerSpeed();
-            rotaryPosition_left = input.getRotaryPositionLeft();
-            rotaryPosition_right = input.getRotaryPositionRight();
-            SmartDashboard.putNumber("rotaryPosition_left", rotaryPosition_left);
-            SmartDashboard.putNumber("rotaryPosition_right", rotaryPosition_right);
-        } // teleop
+        rollerSpeed = input.getRollerSpeed();
+        rotaryPosition_left = input.getRotaryPositionLeft();
+        rotaryPosition_right = input.getRotaryPositionRight();
+        // if (state == RobotState.AUTO){ // TODO 
+        //     rollerSpeed = input.getRollerSpeed();
+        //     rotaryPosition_left = input.getRotaryPositionLeft();
+        //     rotaryPosition_right = input.getRotaryPositionRight();
+        // } // auto 
+        // if (state == RobotState.TELEOP|| state == RobotState.VISION){
+        //     rollerSpeed = input.getRollerSpeed();
+        //     rotaryPosition_left = input.getRotaryPositionLeft();
+        //     rotaryPosition_right = input.getRotaryPositionRight();
+        // } // teleop
         output();
     } // run at all times 
-
+    
     @Override 
     public void output(){
         rollers.set(rollerSpeed);
@@ -110,7 +113,10 @@ public class Intake extends Subsystem{
 
     @Override 
     public void smartDashboard(){
-
+        SmartDashboard.putNumber("rotaryLeft_setpoint", rotaryPosition_left);
+        SmartDashboard.putNumber("rotaryRight_setpoint", rotaryPosition_right);
+        SmartDashboard.putNumber("rotaryLeft_position", feedback.getRotaryPositionLeft());
+        SmartDashboard.putNumber("rotaryRight_position", feedback.getRotaryPositionRight());
     } // display all this to smart dashboard
 
     public static Intake getInstance(){

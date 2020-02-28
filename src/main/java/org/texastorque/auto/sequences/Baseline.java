@@ -7,14 +7,13 @@ import org.texastorque.auto.commands.*;
 
 import java.util.ArrayList;
 
-// ================= Cross Line =====================
+// ================= Baseline =====================
 // crosses the line in auto, most basic autonomous
-public class CrossLine extends Sequence{
+public class Baseline extends Sequence{
     @Override
     protected void init(){
         ArrayList<Command> block1 = new ArrayList<>();
-        block1.add(new DriveTime(0, 0.5,0.3));
-
+        block1.add(new DriveTime(0, 0.7,-0.3));
         addBlock(block1);
     }
 } // cross line 

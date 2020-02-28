@@ -21,9 +21,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Feedback {
     //Feedback is still used as the hub for all encoders... but now they need to be updated through subsystems 
     private static volatile Feedback instance;
-    private double targetArea;
+    private static double targetArea;
     private static double hOffset;
-    private double vOffset;
+    private static double vOffset;
+    private static int count;
 
     //mag infared sensors
     private static DigitalInput magHighCheck;
@@ -46,7 +47,6 @@ public class Feedback {
     // private AnalogInput mag_ultra = new AnalogInput(0);
 
     // private Subsystem drivebase = DriveBase.getInstance();
-   
     private Feedback() {
         magHighCheck = new DigitalInput(Ports.MAG_SENSOR_HIGH);
         magLowCheck = new DigitalInput(Ports.MAG_SENSOR_LOW);
@@ -56,10 +56,14 @@ public class Feedback {
     public void update() {
         updateLimelight();
         updateNavX();
+        smartDashboard();
+        updateMagazine();
     } // update
 
     // ==============Drive Train===============
     // list of variables DriveTrain
+    private double leftTare = 0;
+    private double rightTare = 0;
     private double leftPositionDT;
     private double rightPositionDT;
     private double leftVelocityDT;
@@ -67,11 +71,11 @@ public class Feedback {
 
     // set methods DriveTrain
     public void setLeftPositionDT(double leftPositionDT) {
-        this.leftPositionDT = leftPositionDT;
+        this.leftPositionDT = leftPositionDT / Constants.TICKS_PER_FOOT_DB;
     }
 
     public void setRightPositionDT(double rightPositionDT) {
-        this.rightPositionDT = rightPositionDT;
+        this.rightPositionDT = rightPositionDT / Constants.TICKS_PER_FOOT_DB;
     }
 
     public void setLeftVelocityDT(double leftVelocityDT) {
@@ -82,13 +86,14 @@ public class Feedback {
         this.rightVelocityDT = rightVelocityDT;
     }
 
+
     // accessor methods DriveTrain
-    public double getLeftPositionDT() {
-        return leftPositionDT;
+    public double getDBLeftDistance() {
+        return -leftPositionDT + leftTare; 
     }
 
-    public double getRightPositionDT() {
-        return rightPositionDT;
+    public double getDBRightDistance() {
+        return rightPositionDT - rightTare;
     }
 
     public double getLeftVelocityDT() {
@@ -97,6 +102,11 @@ public class Feedback {
 
     public double getRightVelocityDT() {
         return rightVelocityDT;
+    }
+
+    public void resetDriveEncoders(){
+        leftTare = leftPositionDT / Constants.TICKS_PER_FOOT_DB;
+        rightTare = rightPositionDT / Constants.TICKS_PER_FOOT_DB;
     }
 
     // ===========Intake=================
@@ -148,14 +158,48 @@ public class Feedback {
     // ==========Magazine==========
     // this is where ultrasonic stuff would go once we add them, don't think we will
     // need any values from motors themselves
-    public static boolean getMagHighCheck() {
-        return magHighCheck.get();
+
+    private static boolean highMag = true;
+    private static boolean lowMag = true;
+    private static boolean highMagPast = false;
+
+    private boolean ballLast;
+
+    public void updateMagazine(){
+        highMag = magHighCheck.get();
+        lowMag = magLowCheck.get();
+
+        if (ballLast != lowMag){
+            if (!lowMag){
+                count++;
+            }
+            ballLast = lowMag;
+        } // should count how many balls have started to be read through the lower sensor 
+        if (!highMagPast && !highMag){
+            highMagPast = true;
+        }
     }
 
-    public boolean getMagLowCheck(){
-        return magHighCheck.get();
+    public static boolean getHighMagPast(){
+        return highMagPast;
     }
 
+    public static int getCount(){
+        return count;
+    }
+
+    public void resetCount(){
+        count = 0;
+        highMagPast = false;
+    }
+
+    public static boolean getMagHigh() { // returns true for seeing ball
+        return !highMag;
+    }
+
+    public static boolean getMagLow(){ // returns true for seeing a ball
+        return !lowMag;
+    }
     // ======== limelight ========
 
     public void updateLimelight(){
@@ -167,6 +211,14 @@ public class Feedback {
 
     public static double getXOffset(){
         return hOffset;
+    }
+
+    public static double getYOffset(){
+        return vOffset;
+    }
+
+    public static double getDistanceAway(){
+        return Math.abs(7.56*vOffset + 56.866);
     }
 
     // ========== Gyro ==========
@@ -205,13 +257,10 @@ public class Feedback {
     
     public void smartDashboard(){
         SmartDashboard.putNumber("hOffset", hOffset);
-        SmartDashboard.putNumber("DB_left_velocity_feedback", leftVelocityDT);
-        SmartDashboard.putNumber("DB_right_velocity_feedback", rightVelocityDT);
-        SmartDashboard.putNumber("rotary_left_position", rotaryPosition_left);
-        SmartDashboard.putNumber("rotary_right_position", rotaryPosition_right);
+        SmartDashboard.putNumber("rotaryLeft_position", rotaryPosition_left);
+        SmartDashboard.putNumber("rotaryRight_position", rotaryPosition_right);
         SmartDashboard.putBoolean("magcheckHigh", magHighCheck.get());
         SmartDashboard.putBoolean("magcheckLow", magLowCheck.get());
-
     } // stuff to put in smart dashboard
 
     public static Feedback getInstance() {

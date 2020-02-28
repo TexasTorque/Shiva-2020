@@ -26,6 +26,6 @@ public class LowPassFilter {
     }
 
     public void clear(){
-        update = true;
+        this.lastValue = 0;
     }
 }

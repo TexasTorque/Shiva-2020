@@ -2,29 +2,30 @@ package org.texastorque.auto.commands;
 
 import org.texastorque.auto.Command;
 
-public class ShooterSet extends Command {
+public class ShooterPercentSet extends Command {
 
-    private double velocity;
+    private double percent;
     private double time;
-    private int hoodSetpoint;
     private double startTime;
+    private int hoodSetpoint;
 
-    public ShooterSet(double delay, double velocity, double time, int hoodSetpoint){ // need to add the automatic calculations for what angle and velocity the ball needs to go
+    public ShooterPercentSet(double delay, double percent, double time, int hoodSetpoint){
         super(delay);
-        this.velocity = velocity;
+        this.percent = percent;
         this.time = time;
         this.hoodSetpoint = hoodSetpoint;
     }
 
     @Override
-    protected void init() { 
+    protected void init() {
         startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+        input.setFlywheelOutputType(true);
+        input.setHoodSetpoint(hoodSetpoint);
     }
 
     @Override
     protected void continuous() {
-        input.setFlywheelSpeed(velocity);
-        input.setHoodSetpoint(hoodSetpoint);
+        input.setFlywheelPercent(percent);
     }
 
     @Override
@@ -34,8 +35,9 @@ public class ShooterSet extends Command {
 
     @Override
     protected void end() {
-        input.setFlywheelSpeed(0);
         input.setHoodSetpoint(0);
+        input.setFlywheelPercent(0);
+        input.setFlywheelOutputType(false);
     }
-
+    
 }

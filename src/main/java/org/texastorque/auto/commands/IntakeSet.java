@@ -14,7 +14,7 @@ public class IntakeSet extends Command{
 
     @Override
     protected void init() {
-        input.setRotaryPosition(rotaryPos);
+        // input.setRotaryPosition(rotaryPos);
     }
 
     @Override
