@@ -46,7 +46,7 @@ public class Feedback {
     // private AnalogInput mag_ultra = new AnalogInput(0);
 
     // private Subsystem drivebase = DriveBase.getInstance();
-
+   
     private Feedback() {
         magHighCheck = new DigitalInput(Ports.MAG_SENSOR_HIGH);
         magLowCheck = new DigitalInput(Ports.MAG_SENSOR_LOW);
@@ -148,13 +148,13 @@ public class Feedback {
     // ==========Magazine==========
     // this is where ultrasonic stuff would go once we add them, don't think we will
     // need any values from motors themselves
-    // public static boolean getMagHighCheck() {
-    //     return magHighCheck.get();
-    // }
+    public static boolean getMagHighCheck() {
+        return magHighCheck.get();
+    }
 
-    // public boolean getMagLowCheck(){
-    //     return magHighCheck.get();
-    // }
+    public boolean getMagLowCheck(){
+        return magHighCheck.get();
+    }
 
     // ======== limelight ========
 

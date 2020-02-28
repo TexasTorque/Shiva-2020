@@ -71,6 +71,7 @@ public class DriveBase extends Subsystem{
         }
         else if (state == RobotState.TELEOP){
             lowPass.clear();
+            linePID.reset();
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
@@ -89,6 +90,7 @@ public class DriveBase extends Subsystem{
     public void output(){
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
+        SmartDashboard.putNumber("last_error", linePID.getLastError());
         // SmartDashboard.putNumber("right drive output", db_right.getCurrent());
         //for spark max alternate encoder (flywheel)
         db_left.set(leftSpeed);

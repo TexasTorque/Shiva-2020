@@ -26,6 +26,8 @@ public class ScheduledPID {
 	private int currentGainIndex;
 	private double lastError;
 
+	private boolean firstCycle;
+
 	private final Integrator integrator;
 	private Stopwatch timer;
 	private SafetyCheck safetyCheck;
@@ -68,6 +70,7 @@ public class ScheduledPID {
 
 	private ScheduledPID(double setpoint, double maxOutput, int count) {
 		this(setpoint, -maxOutput, maxOutput, count);
+		firstCycle = true;
 	}
 
 	private ScheduledPID(double setpoint, double maxOutput) {
@@ -124,9 +127,13 @@ public class ScheduledPID {
 		return error;
 	}
 	
-	private void finishUpdate(double error) {
+	public void finishUpdate(double error) {
 		this.lastError = error;
 		timer.startLap();  // Measure dt from the end of the last update.
+	}
+
+	public double getLastError(){
+		return lastError;
 	}
 	
 	/** Calculates the index for the current gain values.
@@ -186,6 +193,11 @@ public class ScheduledPID {
 			return safetyCheck.getSafetyModeOutput(this.setpoint, processVar);
 		}
 
+		if(firstCycle){
+			lastError = 0;
+			firstCycle = false;
+		}
+
 		startTimerIfNeeded();
 		
 		double error = startUpdate(processVar);
@@ -203,6 +215,7 @@ public class ScheduledPID {
 	public void reset() {
 		integrator.reset();
 		timer.reset();
+		lastError = 0;
 	}
 	
 	public void changeSetpoint(double newSetpoint) {
