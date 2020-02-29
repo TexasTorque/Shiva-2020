@@ -71,6 +71,7 @@ public class DriveBase extends Subsystem{
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.TELEOP || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
+            Feedback.setLimelightOn(false);
             state = input.getState();
             linePID.reset();
             linePID.setLastError(0);
@@ -80,6 +81,7 @@ public class DriveBase extends Subsystem{
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.VISION){
+            Feedback.setLimelightOn(true);
             state = input.getState();
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());

@@ -31,9 +31,10 @@ public class Magazine extends Subsystem{
     private int highMagFlo = 0;
     private boolean entered = false;
     private double startTime;
-    private final double DELAY = 0.1;
+    private final double DELAY = 0.075;
     private boolean preShootStarted = false;
-
+    private boolean startHighMag = false;
+    private double startTimeHighMag;
     // private double magSpeed_low = -.6; // keep this number positive
     // private double magSpeed_high = .5; // keep this number positive
     private double magSpeed_low = -.8; // keep this number positive
@@ -79,6 +80,7 @@ public class Magazine extends Subsystem{
             beltSpeed_gate = input.getMagGate();
         }
         else if ((state == RobotState.TELEOP || state == RobotState.VISION) && !input.needPreShoot()){
+            preShootStarted = false;
             lowMagFlo = input.getMagLowFlow();
             highMagFlo = input.getMagHighFlow();
             beltSpeed_gate = input.getMagGate();
@@ -87,7 +89,18 @@ public class Magazine extends Subsystem{
             beltSpeed_low = 0;
             if (input.getAutoMagTrue()){
                 if (highMagFlo == 1 && Feedback.getHighMagPast()){
-                    beltSpeed_high = 0;
+                    if (!startHighMag){
+                        startTimeHighMag = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                        startHighMag = true;
+                    }
+                    else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTimeHighMag < 0){
+                        beltSpeed_high = magSpeed_high;
+                    }
+                    else if (Feedback.getCount() == 0){
+                    }
+                    else {
+                        beltSpeed_high = 0;
+                    }
                 }
                 else if (highMagFlo == 1){
                     beltSpeed_high = magSpeed_high;
@@ -120,6 +133,7 @@ public class Magazine extends Subsystem{
                 beltSpeed_gate = input.getMagGate();
             }
             if (beltSpeed_gate != 0){
+                startHighMag = false;
                 feedback.resetCount();
             }
             

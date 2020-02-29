@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Feedback {
+public class Feedback { // swathi (put here to make sure all code is here after copy to other laptop)
     //Feedback is still used as the hub for all encoders... but now they need to be updated through subsystems 
     private static volatile Feedback instance;
     private static double targetArea;
@@ -160,15 +160,15 @@ public class Feedback {
     // this is where ultrasonic stuff would go once we add them, don't think we will
     // need any values from motors themselves
 
-    private static boolean highMag = true;
-    private static boolean lowMag = true;
+    private static boolean highMag = false;
+    private static boolean lowMag = false;
     private static boolean highMagPast = false;
 
     private boolean ballLast;
 
     public void updateMagazine(){
-        highMag = magHighCheck.get();
-        lowMag = magLowCheck.get();
+        highMag = !magHighCheck.get();
+        lowMag = !magLowCheck.get();
 
         if (ballLast != lowMag){
             if (!lowMag){
@@ -208,6 +208,15 @@ public class Feedback {
         targetArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         hOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    }
+
+    public static void setLimelightOn(boolean on){
+        if (on){
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        } // force on
+        else {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
+        } // force off 
     }
 
     public static double getXOffset(){

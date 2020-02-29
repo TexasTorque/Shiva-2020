@@ -168,7 +168,7 @@ public class Input {
     private int magHigh;
     private double gate;
 
-    private boolean automaticMag = false;
+    private boolean automaticMag = true;
 
     boolean lastShooting = false;
     boolean shootingNow = false;
@@ -354,6 +354,7 @@ public class Input {
         shooterFine += -operator.getLeftYAxis() * 100;
 
         if (operator.getYButton()){ // layup shot 
+            Feedback.setLimelightOn(false);
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelPercent = .7;
             flywheelSpeed = 4000 + shooterFine;
@@ -365,6 +366,7 @@ public class Input {
             }
         } 
         else if (operator.getBButton()){ // trench shot 
+            Feedback.setLimelightOn(false);
             flywheelSpeed = 5500 + shooterFine;
             // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();
             flywheelPercent = 0.72;
@@ -377,6 +379,7 @@ public class Input {
             
         }
         else if (operator.getAButton()){ // longshot™
+            Feedback.setLimelightOn(false);
             flywheelSpeed = 8000 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
@@ -387,6 +390,7 @@ public class Input {
         }
 
         if (operator.getXButton()){ // limelight mode 
+            Feedback.setLimelightOn(true);
             distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
             // flywheelSpeed = 5565.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);

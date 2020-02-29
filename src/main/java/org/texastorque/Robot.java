@@ -70,6 +70,7 @@ public class Robot extends TorqueIterative {
   @Override
   public void teleopInit(){
     // autoManager = AutoManager.getInstance();
+    Feedback.setLimelightOn(true);
     state.setRobotState(RobotState.TELEOP);
     for (Subsystem system : subsystems){
       system.teleopInit();
