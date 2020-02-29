@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="autoMag" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="628" y="382"/>
+	</widget>
+	<widget field="count" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="642" y="352"/>
+	</widget>
 	<widget field="shooter position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1035" y="404"/>
 	</widget>
@@ -16,10 +22,10 @@
 		<location x="0" y="372"/>
 	</widget>
 	<widget field="mag_high_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="21" y="240"/>
+		<location x="236" y="189"/>
 	</widget>
 	<widget field="mag_low_magazine" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="123"/>
+		<location x="234" y="215"/>
 	</widget>
 	<widget field="flywheel put speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="102"/>
