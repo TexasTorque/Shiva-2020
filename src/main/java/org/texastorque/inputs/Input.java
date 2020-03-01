@@ -152,10 +152,6 @@ public class Input {
         rotaryPosition_right = rotarySetpoints_right[rotarySetIndex];
     } // ONLY TO BE USED IN AUTO 
 
-    // public double getRotaryDiffLeft(){
-    //     // DO THIS LATER 
-    // }
-
     // ============ Magazine ============
     // operator controlled 
     private double magVelocity_low = 0;
