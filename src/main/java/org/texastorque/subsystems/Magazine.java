@@ -31,7 +31,7 @@ public class Magazine extends Subsystem{
     private int highMagFlo = 0;
     private boolean entered = false;
     private double startTime;
-    private final double DELAY = 0.075;
+    private final double DELAY = 0.0;
     private boolean preShootStarted = false;
     private boolean startHighMag = false;
     private double startTimeHighMag;
@@ -79,7 +79,7 @@ public class Magazine extends Subsystem{
             beltSpeed_low = input.getMagLow();
             beltSpeed_gate = input.getMagGate();
         }
-        else if ((state == RobotState.TELEOP || state == RobotState.VISION) && !input.needPreShoot()){
+        else if ((state == RobotState.TELEOP || state == RobotState.VISION) && !input.needPreShoot()){ // auto load mag 
             preShootStarted = false;
             lowMagFlo = input.getMagLowFlow();
             highMagFlo = input.getMagHighFlow();
@@ -88,15 +88,32 @@ public class Magazine extends Subsystem{
             beltSpeed_high = 0;
             beltSpeed_low = 0;
             if (input.getAutoMagTrue()){
-                if (highMagFlo == 1 && Feedback.getHighMagPast()){
+                // if (highMagFlo == 1 && Feedback.getHighMagPast()){
+                //     if (!startHighMag){
+                //         startTimeHighMag = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                //         startHighMag = true;
+                //     }
+                //     else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTimeHighMag < 0){
+                //         beltSpeed_high = magSpeed_high;
+                //     }
+                //     else {
+                //         beltSpeed_high = 0;
+                //     }
+                // }
+                // else if (highMagFlo == 1){
+                //     beltSpeed_high = magSpeed_high;
+                // }
+                // else if (highMagFlo == -1){
+                //     beltSpeed_high = - magSpeed_high;   
+                // } // stops balls from going past high mag // not working code for delay to stop on top
+
+                if (highMagFlo == 1 && Feedback.getMagHigh()){
                     if (!startHighMag){
-                        startTimeHighMag = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                        startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
                         startHighMag = true;
                     }
-                    else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTimeHighMag < 0){
+                    if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < 0.3){
                         beltSpeed_high = magSpeed_high;
-                    }
-                    else if (Feedback.getCount() == 0){
                     }
                     else {
                         beltSpeed_high = 0;
@@ -104,21 +121,22 @@ public class Magazine extends Subsystem{
                 }
                 else if (highMagFlo == 1){
                     beltSpeed_high = magSpeed_high;
-                }
-                else if (highMagFlo == -1){
-                    beltSpeed_high = - magSpeed_high;   
-                } // stops balls from going past high mag
-                if (lowMagFlo == 1 && Feedback.getCount() == 3){
-                    if (!entered){
-                        startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-                        entered = true;
-                    }
-                    if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < DELAY){
-                        beltSpeed_low = magSpeed_low;
-                    }
-                    else {
+                } 
+                else if (highMagFlo == -1) {
+                    beltSpeed_high = -magSpeed_high;
+                }// on the high ball, wait for a bit then stop running the low mag
+
+                if (lowMagFlo == 1 && Feedback.getCount() >= 3){
+                    // if (!entered){
+                    //     startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                    //     entered = true;
+                    // }
+                    // if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < DELAY){
+                    //     beltSpeed_low = magSpeed_low;
+                    // }
+                    // else {
                         beltSpeed_low = 0;
-                    }
+                    // }
                 }
                 else if (lowMagFlo == 1){
                     beltSpeed_low = magSpeed_low;
@@ -143,7 +161,8 @@ public class Magazine extends Subsystem{
             // beltSpeed_low = input.getMagLow();
             // beltSpeed_gate = input.getMagGate();
         }
-        else if ((state == RobotState.TELEOP || state == RobotState.VISION) && input.needPreShoot()){
+        else if ((state == RobotState.TELEOP || state == RobotState.VISION) && input.needPreShoot()){ // shooting setup
+            startHighMag = false;
             feedback.resetCount();
             if (!preShootStarted){
                 startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
@@ -161,8 +180,9 @@ public class Magazine extends Subsystem{
                 // beltSpeed_high = 0.5;
                 // beltSpeed_low = -0.6;
                 beltSpeed_high = 0.8;
-                beltSpeed_low = -0.8;
+                beltSpeed_low = input.getBen();
                 System.out.println("in normal");
+                System.out.println("ben" + beltSpeed_low);
             }
             // beltSpeed_high = input.getMagHigh();
             // beltSpeed_low = input.getMagLow();

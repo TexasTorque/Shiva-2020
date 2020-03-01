@@ -45,7 +45,12 @@ public class Input {
 
     public void updateDrive(){
         double leftRight = driver.getRightXAxis();
-        if(hoodSetpoint == hoodSetpoints[0]){
+    
+        if(climbStarted_DT){
+            DB_leftSpeed = .2*(driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight));
+            DB_rightSpeed = .2*(-driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight)); 
+        }
+        else if(hoodSetpoint == hoodSetpoints[0]){
             DB_leftSpeed = driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
             DB_rightSpeed = -driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight);
         }
@@ -54,9 +59,9 @@ public class Input {
             DB_rightSpeed = .2*(-driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight));
         }
 
-        if (driver.getLeftCenterButton()){
-            Feedback.getInstance().resetDriveEncoders();
-        }
+        // if (driver.getLeftCenterButton()){
+        //     Feedback.getInstance().resetDriveEncoders();
+        // }
     } // update the drivebase
 
     public void setState(RobotState stateSet){
@@ -113,16 +118,12 @@ public class Input {
         if (driver.getRightTrigger()){
             rotaryPosition_left = rotarySetpoints_left[2];
             rotaryPosition_right = rotarySetpoints_right[2];
-            rollerSpeed = 1;
+            rollerSpeed = .8;
         }
         else if (driver.getLeftTrigger()){
             rotaryPosition_left = rotarySetpoints_left[2];
             rotaryPosition_right = rotarySetpoints_right[2];
-            rollerSpeed = -1;
-        }
-        if (driver.getDPADUp()){
-            rotaryPosition_left = rotarySetpoints_left[0];
-            rotaryPosition_right = rotarySetpoints_right[0];
+            rollerSpeed = -.8;
         }
         if (driver.getYButton()){
             rollerSpeed = 0.5;
@@ -167,6 +168,7 @@ public class Input {
     private int magLow; //0 = nothing, 1 = foreward, -1 = backward
     private int magHigh;
     private double gate;
+    private double magAutoBenTest;
 
     private boolean automaticMag = true;
 
@@ -180,6 +182,7 @@ public class Input {
         magLow = 0;
         magHigh = 0;
         gate = 0;
+        magAutoBenTest = 0;
 
         if (operator.getLeftCenterButton()){
             automaticMag = true;
@@ -200,6 +203,7 @@ public class Input {
         if (operator.getRightTrigger()){ // low mag - balls in 
             magLow = 1;
             magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
+            magAutoBenTest = -0.4;
         }
         else if (operator.getRightBumper()){ // low mag - balls out
             magLow = -1;
@@ -209,12 +213,19 @@ public class Input {
         if(operator.getDPADDown()){ // gate on its own 
             magVelocity_gate = -magSpeed_gate;
         }
+        if(operator.getDPADLeft()){
+            magVelocity_gate = magSpeed_gate;
+        }
 
         shootingNow = operator.getDPADUp();
     } // update Magazine 
 
     public boolean getAutoMagTrue(){
         return automaticMag;
+    }
+
+    public double getBen(){
+        return magAutoBenTest;
     }
 
     public int getMagHighFlow(){
@@ -276,9 +287,14 @@ public class Input {
     private volatile int climberStatus = 0;
     private volatile boolean climberServoLocked = true; 
     private volatile boolean climbStarted = false;
+    private volatile boolean climbStarted_DT = false;
+    private volatile boolean manualClimb = false;
+    private volatile int sideToExtend = 0;
     
     public void updateClimber(){
+        manualClimb = false;
         climberStatus = 0;
+        sideToExtend = 0;
         // climberLeft = 0;
         // climberRight = 0;
         // if (driver.getLeftCenterButton()){
@@ -297,23 +313,42 @@ public class Input {
         // else if (driver.getDPADRight()){
         //     climberRight = -0.3;
         // }
-        if (driver.getLeftCenterButton()){ // extend climber
+        if (driver.getDPADUp()){ // extend climber
             // climberLeft = -0.3;
             // climberRight = 0.3;
             if (!climbStarted){
                 Climber.resetClimb();
                 climbStarted = true;
+                climbStarted_DT = true;
             }
             climberStatus = 1;
             System.out.println("climber status" + climberStatus);
         }
-        else if (driver.getRightCenterButton()){ // retract climber (climb)
+        else if (driver.getDPADDown()){ // retract climber (climb)
             climberStatus = -1;
+        }
+        else if (driver.getDPADLeft()){
+            manualClimb = true;
+            sideToExtend = -1;
+            // extend left climber 
+        }
+        else if (driver.getDPADRight()) {
+            manualClimb = true;
+            sideToExtend = 1;
+            // extend right climber
         }
         else {
             climbStarted = false;
         }
     } // update Climber 
+
+    public boolean getManualClimb(){
+        return manualClimb;
+    }
+
+    public int sideClimb(){
+        return sideToExtend;
+    }
 
     public int getClimberStatus(){
         return climberStatus;
@@ -338,7 +373,7 @@ public class Input {
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
     // private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
-    private volatile double[] hoodSetpoints = {0, 1, 15, 51, 34};
+    private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
@@ -357,7 +392,7 @@ public class Input {
             Feedback.setLimelightOn(false);
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelPercent = .7;
-            flywheelSpeed = 4000 + shooterFine;
+            flywheelSpeed = 3500 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[1] + hoodFine;
             }

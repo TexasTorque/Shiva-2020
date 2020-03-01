@@ -143,6 +143,8 @@ public class Shooter extends Subsystem {
     public void smartDashboard() {
         SmartDashboard.putNumber("flywheel put speed", input.getFlywheelSpeed());
         SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
+        SmartDashboard.putBoolean("Spun Up", Math.abs(feedback.getShooterVelocity() - flywheelSpeed) < 15); 
+        // SmartDashboard.putBoolean("Spun Up", (Math.abs(Math.abs(flywheelSpeed) - Math.abs(input.getFlywheelSpeed())) < 50));
         SmartDashboard.putNumber("flywheel velocity", feedback.getShooterVelocity());
         SmartDashboard.putNumber("pidOutput", pidOutput);
         SmartDashboard.putNumber("Hood Position", hood.getPosition());

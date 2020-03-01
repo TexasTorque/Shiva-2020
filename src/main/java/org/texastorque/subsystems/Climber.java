@@ -75,41 +75,59 @@ public class Climber extends Subsystem {
             // climberLeftSpeed = input.getClimberLeft();
             // climberRightSpeed = input.getClimberRight();
             climbStatus = input.getClimberStatus();
-            switch (climbStatus) {
-                case -1: // retract climber
-                    climberLeftSpeed = 0.3;
-                    climberRightSpeed = -0.3;
-                    leftRatchetPos = 0;
-                    rightRatchetPos = 0.5;
-                    break;
-                case 0: // do nothing
-                    climberLeftSpeed = 0;
-                    climberRightSpeed = 0;
-                    break;
-                case 1: // extend climber
-                    if (notStarted) {
-                        leftRatchetPos = 0.75;
-                        rightRatchetPos = -0.75;
-                        notStarted = false;
-                        inReverse = true;
-                        startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-                        System.out.println("startingclimb");
-                    } // unlocking ratchets
-                    else if (inReverse) {
-                        if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
-                            climberLeftSpeed = 0.1;
-                            climberRightSpeed = -0.1;
-                        } else {
-                            inReverse = false;
-                        }
-                        System.out.println("inreverse");
-                    } // bringing climb back
-                    else {
+            if (!input.getManualClimb()){
+                switch (climbStatus) {
+                    case -1: // retract climber
+                        climberLeftSpeed = 0.3;
+                        climberRightSpeed = -0.3;
+                        leftRatchetPos = 0;
+                        rightRatchetPos = 0.5;
+                        break;
+                    case 0: // do nothing
+                        climberLeftSpeed = 0;
+                        climberRightSpeed = 0;
+                        break;
+                    case 1: // extend climber
+                        if (notStarted) {
+                            leftRatchetPos = 0.75;
+                            rightRatchetPos = -0.75;
+                            notStarted = false;
+                            inReverse = true;
+                            startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                            System.out.println("startingclimb");
+                        } // unlocking ratchets
+                        else if (inReverse) {
+                            if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
+                                climberLeftSpeed = 0.1;
+                                climberRightSpeed = -0.1;
+                            } else {
+                                inReverse = false;
+                            }
+                            System.out.println("inreverse");
+                        } // bringing climb back
+                        else {
+                            climberLeftSpeed = -0.3;
+                            climberRightSpeed = 0.3;
+                            System.out.println("extending");
+                        } // climbing
+                } // climb status switch
+            }
+            else {
+                switch(input.sideClimb()){
+                    case -1:
                         climberLeftSpeed = -0.3;
+                        climberRightSpeed = 0;
+                        break;
+                    case 0:
+                        climberLeftSpeed = 0;
+                        climberRightSpeed = 0;
+                        break;
+                    case 1:
+                        climberLeftSpeed = 0;
                         climberRightSpeed = 0.3;
-                        System.out.println("extending");
-                    } // climbing
-            } // climb status switch
+                }
+            }
+            
         } // if in teleop
         output();
     }

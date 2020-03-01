@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Feedback { // swathi (put here to make sure all code is here after copy to other laptop)
+public class Feedback { 
     //Feedback is still used as the hub for all encoders... but now they need to be updated through subsystems 
     private static volatile Feedback instance;
     private static double targetArea;
@@ -211,12 +211,12 @@ public class Feedback { // swathi (put here to make sure all code is here after 
     }
 
     public static void setLimelightOn(boolean on){
-        if (on){
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
-        } // force on
-        else {
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
-        } // force off 
+        // if (on){
+        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        // } // force on
+        // else {
+        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
+        // } // force off 
     }
 
     public static double getXOffset(){

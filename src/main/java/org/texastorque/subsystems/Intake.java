@@ -21,8 +21,8 @@ public class Intake extends Subsystem{
 
     // =========== variables ===========
     // pid Values = kP, kI, kD, kFF, kMinOutput, kMaxOutput
-    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.7, 1);
-    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, -1, .7);
+    KPID kPIDRotary_left = new KPID(0.07, 0.00005, 0.00002, 0, -.7, .4);
+    KPID kPIDRotary_right = new KPID(0.07, 0.00005, 0.00002, 0, -.4, .7);
     private double rotaryPosition_left = 0;
     private double rotaryPosition_right = 0;
     private double rollerSpeed = 0;

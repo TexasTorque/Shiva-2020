@@ -71,6 +71,7 @@ public class DriveBase extends Subsystem{
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.TELEOP || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
+            SmartDashboard.putBoolean("vision", false);
             Feedback.setLimelightOn(false);
             state = input.getState();
             linePID.reset();
@@ -81,6 +82,7 @@ public class DriveBase extends Subsystem{
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.VISION){
+            SmartDashboard.putBoolean("vision", true);
             Feedback.setLimelightOn(true);
             state = input.getState();
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
@@ -90,6 +92,12 @@ public class DriveBase extends Subsystem{
             leftSpeed = pidValue;
             rightSpeed = pidValue;
         }
+        if (Feedback.getXOffset() < 3){
+            SmartDashboard.putBoolean("lined up", true);
+        }
+        else {
+            SmartDashboard.putBoolean("lined up", false);
+        }
         output();
     } // run
 
@@ -98,6 +106,7 @@ public class DriveBase extends Subsystem{
         SmartDashboard.putNumber("leftSpeed", leftSpeed);
         SmartDashboard.putNumber("rightspeed", rightSpeed);
         SmartDashboard.putNumber("distance away", Feedback.getDistanceAway());
+        SmartDashboard.putBoolean("target visible", Feedback.getYOffset() != 0.000000000);
         // SmartDashboard.putNumber("right drive output", db_right.getCurrent());
         //for spark max alternate encoder (flywheel)
         db_left.set(leftSpeed);
