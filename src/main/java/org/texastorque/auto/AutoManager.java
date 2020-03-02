@@ -75,7 +75,7 @@ public class AutoManager {
                 currentSequence = autoSequences.get(4);
                 break;
             default: // just change the value in here to test
-                currentSequence = autoSequences.get(3);
+                currentSequence = autoSequences.get(2);
                 break;
         } // select the autonomous program to run
 

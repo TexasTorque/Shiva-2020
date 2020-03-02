@@ -45,7 +45,9 @@ public class Input {
 
     public void updateDrive(){
         double leftRight = driver.getRightXAxis();
-    
+        if (driver.getLeftCenterButton()){
+            climbStarted_DT = false;
+        }
         if(climbStarted_DT){
             DB_leftSpeed = .2*(driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight));
             DB_rightSpeed = .2*(-driver.getLeftYAxis() - 0.4 * Math.pow(leftRight, 4) * Math.signum(leftRight)); 
