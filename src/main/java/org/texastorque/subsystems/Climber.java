@@ -1,93 +1,160 @@
 package org.texastorque.subsystems;
 
-// ============ inputs ===========
+import org.texastorque.constants.Ports;
 import org.texastorque.inputs.State.RobotState;
-import org.texastorque.inputs.*;
-import org.texastorque.constants.*;
+import org.texastorque.torquelib.component.TorqueSparkMax;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
+public class Climber extends Subsystem {
 
-import com.revrobotics.CANError;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ControlType;
-import com.revrobotics.EncoderType;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-// ================== Climber ==================
-public class Climber extends Subsystem{
     private static volatile Climber instance;
 
-    // ============ variables =============
+    // ========== motors ==========
+    private TorqueSparkMax climberLeft = new TorqueSparkMax(Ports.CLIMBER_LEFT);
+    private TorqueSparkMax climberRight = new TorqueSparkMax(Ports.CLIMBER_RIGHT);
 
-    // ============ motors ==============
-    private CANSparkMax climber = new CANSparkMax(Ports.CLIMBER, MotorType.kBrushless);
-    // private CANPIDController climberPID = climber.getPIDController();
-    private CANEncoder climberEncoder = climber.getEncoder(EncoderType.kHallSensor, 4096);
+    private Servo leftRatchet = new Servo(0);
+    private Servo rightRatchet = new Servo(1);
 
-    // =================== methods ==================
-    private void Climber(){
-        
-    } // constructor 
+    // =========== variables ============
+    private int climbStatus = 0;
+    private static boolean notStarted = true;
+    private static boolean inReverse = false;
+    private double startTime = 0;
+
+    private double climberLeftSpeed = 0;
+    private double climberRightSpeed = 0;
+
+    // private double leftRatchetPos = 1;
+    // private double rightRatchetPos = 0.5;
+    private double leftRatchetPos = 0.75;
+    private double rightRatchetPos = -0.75;
+
+    // =================== methods and important stuff ================
+    public Climber() {
+    }
 
     @Override
-    public void autoInit(){}
+    public void autoInit() {
+    }
 
     @Override
-    public void teleopInit(){
+    public void teleopInit() {
+        climberLeftSpeed = 0;
+        climberRightSpeed = 0;
+    }
 
-    } // teleop init
+    @Override
+    public void disabledInit() {
+    }
 
-    @Override 
-    public void disabledInit(){}
+    @Override
+    public void disabledContinuous() {
+    }
 
-    // ============= actually doing stuff ===========
-    @Override 
-    public void run(RobotState state){
-        if (state == RobotState.TELEOP){
-            SmartDashboard.putNumber("input", input.getClimberSpeed());
-            // climber.set();
-            // climberPID.setReference(-10000, ControlType.kVelocity, 0);
-            SmartDashboard.putNumber("neo encoder", climberEncoder.getVelocity());
-            SmartDashboard.putNumber("neo current", climber.getOutputCurrent());
-        }
-    } // run at all times 
+    @Override
+    public void autoContinuous() {
+    }
 
-    @Override 
-    public void output(){
+    @Override
+    public void teleopContinuous() {
+    }
 
-    } // output
+    @Override
+    public void run(RobotState state) {
+        state = input.getState();
+        // if (state == RobotState.AUTO){
+        // climberLeftSpeed = 0;
+        // climberRightSpeed = 0;
+        // leftRatchetPos = 0.5;
+        // rightRatchetPos = 0.5;
+        // }
+        if (state == RobotState.TELEOP) {
+            // climberLeftSpeed = input.getClimberLeft();
+            // climberRightSpeed = input.getClimberRight();
+            climbStatus = input.getClimberStatus();
+            if (!input.getManualClimb()){
+                switch (climbStatus) {
+                    case -1: // retract climber
+                        climberLeftSpeed = 0.3;
+                        climberRightSpeed = -0.3;
+                        leftRatchetPos = 0;
+                        rightRatchetPos = 0.5;
+                        break;
+                    case 0: // do nothing
+                        climberLeftSpeed = 0;
+                        climberRightSpeed = 0;
+                        break;
+                    case 1: // extend climber
+                        if (notStarted) {
+                            leftRatchetPos = 0.75;
+                            rightRatchetPos = -0.75;
+                            notStarted = false;
+                            inReverse = true;
+                            startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                            System.out.println("startingclimb");
+                        } // unlocking ratchets
+                        else if (inReverse) {
+                            if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
+                                climberLeftSpeed = 0.1;
+                                climberRightSpeed = -0.1;
+                            } else {
+                                inReverse = false;
+                            }
+                            System.out.println("inreverse");
+                        } // bringing climb back
+                        else {
+                            climberLeftSpeed = -0.3;
+                            climberRightSpeed = 0.3;
+                            System.out.println("extending");
+                        } // climbing
+                } // climb status switch
+            }
+            else {
+                switch(input.sideClimb()){
+                    case -1:
+                        climberLeftSpeed = -0.3;
+                        climberRightSpeed = 0;
+                        break;
+                    case 0:
+                        climberLeftSpeed = 0;
+                        climberRightSpeed = 0;
+                        break;
+                    case 1:
+                        climberLeftSpeed = 0;
+                        climberRightSpeed = 0.3;
+                }
+            }
+            
+        } // if in teleop
+        output();
+    }
 
-    // ============= continuous =============
-    @Override 
-    public void disabledContinuous(){}
+    public static void resetClimb() {
+        notStarted = true;
+        inReverse = false;
+    }
 
-    @Override 
-    public void autoContinuous(){}
+    @Override
+    protected void output() {
+        climberLeft.set(climberLeftSpeed);
+        climberRight.set(climberRightSpeed);
+        leftRatchet.set(leftRatchetPos);
+        rightRatchet.set(rightRatchetPos);
+    }
 
-    @Override 
-    public void teleopContinuous(){}
-
-    // ============ others ==========
-
-    @Override 
-    public void smartDashboard(){
-
-    } // display all this to smart dashboard
+    @Override
+    public void smartDashboard() {}
 
     public static Climber getInstance(){
         if (instance == null){
-            synchronized(Climber.class){
+            synchronized(DriveBase.class){
                 if (instance == null)
                     instance = new Climber();
             }
         }
         return instance;
     } // getInstance
-
-} // Climber 
+}
