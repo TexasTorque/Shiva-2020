@@ -116,7 +116,7 @@ public void smartDashboard(){
 } // stuff to put in smart dashboard
 
 public static Feedback getInstance() {
-    if (instance == null){
+    if (instance == null){ 
         synchronized (Feedback.class){
             if (instance == null)
                 instance = new Feedback();
