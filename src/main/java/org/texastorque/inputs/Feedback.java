@@ -3,14 +3,20 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import org.texastorque.constants.*;
 import org.texastorque.util.TCS34725ColorSensor;
 import org.texastorque.util.TCS34725_I2C;
-import edu.wpi.first.wpilibj.DigitalInput;
+
+import edu.wpi.first.wpilibj.DriverStation;
+
+
 public class Feedback {
 
 private static volatile Feedback instance;
+
+private String sentColor;
 
 TCS34725_I2C colorSensor;
 // TCS34725ColorSensor colorSensor = new TCS34725ColorSensor();
@@ -26,11 +32,12 @@ private Feedback(){
     try{
         colorSensor.enable();
     } catch (Exception e) {}
-} // constructor
+  } // constructor
 
 public void update(){
     colorSensorUpdate();
-    colorCompare();
+    shouldGateRun();
+    shouldRunToColor();
 } // update 
  
 public void colorSensorUpdate(){    
@@ -73,8 +80,37 @@ public void colorSensorUpdate(){
           catch(Exception e){}
     }
 
-public void colorCompare(){
-  // while()
+public boolean shouldRunToColor(){
+  sentColor = DriverStation.getInstance().getGameSpecificMessage();
+  if(sentColor.length() > 0)
+  {
+    switch (sentColor.charAt(0))
+    {
+      case 'B' :
+        if(!sentColor.equals(colSeq.get(colSeq.size()-1))){
+          return true;
+        }
+        break;
+      case 'G' :
+        if(!sentColor.equals(colSeq.get(colSeq.size()-1))){
+          return true;
+        }
+        break;
+      case 'R' :
+        if(!sentColor.equals(colSeq.get(colSeq.size()-1))){
+          return true;
+        }
+        break;
+      case 'Y' :
+        if(!sentColor.equals(colSeq.get(colSeq.size()-1))){
+          return true;
+        }
+        break;
+      default :
+        return false;
+    }
+  }
+  return false;
 }
 
 public boolean shouldGateRun(){
@@ -89,30 +125,9 @@ public boolean shouldGateRun(){
   return false;
 }
 
-public boolean shouldRunToColor() {
-  if(!targetColorString.equals(colSeq.get(colSeq.size()-1))){
-    return true;
-  }else{
-    return false;
-  }
-}
-
-
 public void smartDashboard(){
-  SmartDashboard.putNumber("Target Color", 0);
-  double targetColor = SmartDashboard.getNumber("targetColor", 0.0);
-  if (targetColor == 0.0) {
-    targetColorString = "R";
-  } else if (targetColor == 0.1) {
-    targetColorString = "B";
-  } else if (targetColor == 0.2) {
-    targetColorString = "G";
-  } else if (targetColor == 0.3) {
-    targetColorString = "Y";
-  } else {
-    targetColorString = "none";
-  }
-  SmartDashboard.putString("Chosen_TargetColor", targetColorString);
+  SmartDashboard.putNumber("NumOfColorCount", numOfColorCount);
+  SmartDashboard.putString("SentColor", sentColor);
 } // stuff to put in smart dashboard
 
 public static Feedback getInstance() {

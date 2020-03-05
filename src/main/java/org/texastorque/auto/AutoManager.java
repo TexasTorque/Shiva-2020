@@ -4,8 +4,11 @@ import org.texastorque.auto.sequences.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class AutoManager {
     private static AutoManager instance;
@@ -15,6 +18,9 @@ public class AutoManager {
 
     private Sequence currentSequence;
     private boolean sequenceEnded;
+
+    private NetworkTableInstance NT_instance;
+    private NetworkTableEntry NT_offsetEntry;
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
