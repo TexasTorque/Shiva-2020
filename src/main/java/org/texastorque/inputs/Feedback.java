@@ -135,12 +135,12 @@ public class Feedback {
 
     // =============Shooter (Hood and Flywheel)=================
     // variable list shooter
-    private double shooterVelocity;
+    private static double shooterVelocity;
     private double hoodPosition;
 
     // set methods shooter
-    public void setShooterVelocity(double shooterVelocity) {
-        this.shooterVelocity = shooterVelocity;
+    public void setShooterVelocity(double shooterVelocity1) {
+        shooterVelocity = shooterVelocity1;
     }
 
     public void setHoodPosition(double hoodPosition) {
@@ -148,8 +148,8 @@ public class Feedback {
     }
 
     // accessor methods shooter
-    public double getShooterVelocity() {
-        return shooterVelocity;
+    public static double getShooterVelocity() {
+        return shooterVelocity * 1.5;
     }
 
     public double getHoodPosition() {
@@ -210,13 +210,13 @@ public class Feedback {
         vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     }
 
-    public static void setLimelightOn(boolean on){
-        // if (on){
-        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
-        // } // force on
-        // else {
-        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
-        // } // force off 
+    public static void setLimelightOn(boolean on){ // TESTING TODO
+        if (on){
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        } // force on
+        else {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
+        } // force off 
     }
 
     public static double getXOffset(){
@@ -228,7 +228,9 @@ public class Feedback {
     }
 
     public static double getDistanceAway(){
-        return Math.abs(7.56*vOffset + 56.866);
+        // return Math.abs(7.56*vOffset + 56.866);
+        return 75.25/(Math.tan(Math.toRadians(vOffset + 23)));
+        
     }
 
     // ========== Gyro ==========

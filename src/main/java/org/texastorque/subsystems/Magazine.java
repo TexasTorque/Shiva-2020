@@ -47,8 +47,6 @@ public class Magazine extends Subsystem{
 
     // =================== methods ==================
     public Magazine(){
-        // beltGate.setAlternateEncoder();
-        // beltHigh.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -64,8 +62,6 @@ public class Magazine extends Subsystem{
 
     //updating feedback
     public void update(){
-        // feedback.setShooterVelocity(beltGate.getAlternateVelocity());
-        // feedback.setShooterVelocity(beltHigh.getAlternateVelocity());
     }
     
     // ============= actually doing stuff ===========
@@ -175,12 +171,21 @@ public class Magazine extends Subsystem{
                 beltSpeed_low = 0;
                 System.out.println("in gate only");
             }
+            else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - (startTime + 0.5) < 0.25){
+                beltSpeed_gate = -1;    
+                // beltSpeed_high = 0.5;
+                // beltSpeed_low = -0.6;
+                // beltSpeed_high = 0.8;
+                beltSpeed_low = 0;
+                beltSpeed_high = 1;
+            }
             else {
                 beltSpeed_gate = -1;    
                 // beltSpeed_high = 0.5;
                 // beltSpeed_low = -0.6;
-                beltSpeed_high = 0.8;
-                beltSpeed_low = input.getBen();
+                // beltSpeed_high = 0.8;
+                beltSpeed_low = input.getMagLow();
+                beltSpeed_high = 1;
                 System.out.println("in normal");
                 System.out.println("ben" + beltSpeed_low);
             }

@@ -5,6 +5,7 @@ public class Ports {
     // talon CAN id
     public static final int FLYWHEEL_LEAD = 1; // right 
     public static final int FLYWHEEL_FOLLOW = 0; // left 
+    public static final int FLYWHEEL = 14;
 
     // neo CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
     public static final int DB_LEFT_1 = 1; // done

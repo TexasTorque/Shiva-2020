@@ -78,8 +78,8 @@ public class Climber extends Subsystem {
             if (!input.getManualClimb()){
                 switch (climbStatus) {
                     case -1: // retract climber
-                        climberLeftSpeed = 0.3;
-                        climberRightSpeed = -0.3;
+                        climberLeftSpeed = 1;
+                        climberRightSpeed = -1;
                         leftRatchetPos = 0;
                         rightRatchetPos = 0.5;
                         break;
@@ -106,8 +106,8 @@ public class Climber extends Subsystem {
                             System.out.println("inreverse");
                         } // bringing climb back
                         else {
-                            climberLeftSpeed = -0.3;
-                            climberRightSpeed = 0.3;
+                            climberLeftSpeed = -1;
+                            climberRightSpeed = 1;
                             System.out.println("extending");
                         } // climbing
                 } // climb status switch
@@ -115,7 +115,7 @@ public class Climber extends Subsystem {
             else {
                 switch(input.sideClimb()){
                     case -1:
-                        climberLeftSpeed = -0.3;
+                        climberLeftSpeed = -1;
                         climberRightSpeed = 0;
                         break;
                     case 0:
@@ -124,7 +124,7 @@ public class Climber extends Subsystem {
                         break;
                     case 1:
                         climberLeftSpeed = 0;
-                        climberRightSpeed = 0.3;
+                        climberRightSpeed = 1;
                 }
             }
             

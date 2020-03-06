@@ -47,10 +47,10 @@ public class Robot extends TorqueIterative {
   public void initSubsystems(){
     subsystems = new ArrayList<Subsystem>();
     subsystems.add(driveBase);
-    subsystems.add(shooter);
+    // subsystems.add(shooter);
     subsystems.add(climber);
-    subsystems.add(intake);
-    subsystems.add(magazine);
+    // subsystems.add(intake);
+    // subsystems.add(magazine);
     autoManager = AutoManager.getInstance();
     // subsystems.add(testMotors);
   } // initialize subsystems 

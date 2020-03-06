@@ -85,8 +85,12 @@ public class TorqueSparkMax extends TorqueMotor {
 
     @Override
     public double getVelocity() {
-        return sparkMaxEncoder.getVelocity()* sparkMaxEncoder.getVelocityConversionFactor();
+        return sparkMaxEncoder.getVelocity();
     } // returns velocity of motor 
+
+    public double getVelocityConverted(){
+        return sparkMaxEncoder.getVelocity()* sparkMaxEncoder.getVelocityConversionFactor();
+    }
 
     public void tareEncoder(){
         encoderZero = sparkMaxEncoder.getPosition();

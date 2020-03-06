@@ -25,9 +25,9 @@ public class Shooter extends Subsystem {
 
     // ======== variables ==========
     private ArrayList<KPID> pidValues = new ArrayList<>();
-    private ScheduledPID shooterPID;
+    // private ScheduledPID shooterPID;
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
-    KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
+    KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -1, 1); // tuned for 6000 rpm 
     KPID hoodkPID = new KPID( 0.1, 0, 0, 0, -1, 1); //Hood PID for all positions
 
     private double flywheelSpeed;
@@ -36,15 +36,17 @@ public class Shooter extends Subsystem {
     private double hoodSetpoint;
     
     // =========== motors ============
-    private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
+    // private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
     private TorqueSparkMax hood = new TorqueSparkMax(Ports.SHOOTER_HOOD);
+    private TorqueSparkMax flywheel = new TorqueSparkMax(Ports.FLYWHEEL);
 
     // =========================================== methods ==============================================
     private Shooter() {
         //Configuring Motors
-        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        flywheel.invertFollower();
+        // flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        // flywheel.invertFollower();
         hood.configurePID(hoodkPID);
+        flywheel.configurePID(kPIDHigh); // INSERT FOR SHOOTER PID
         hood.tareEncoder();
         // pidValues.add(kPIDLow);
         // pidValues.add(kPIDHigh);
@@ -52,12 +54,13 @@ public class Shooter extends Subsystem {
 
         //Bulding shooter PID (this is for when the encoder is put into the spark max!)
         //Use integrated PID when encoder is put onto talon
-        shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.028)
-            .setIGains(0.0008)
-            .setDGains(0)
-            .setFGains(.00385)
-            .build();
+
+        // shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
+        //     .setPGains(0.028)
+        //     .setIGains(0.0008)
+        //     .setDGains(0)
+        //     .setFGains(.00385)
+        //     .build();
     } // constructor
 
     // ============= initialization ==========
@@ -77,13 +80,18 @@ public class Shooter extends Subsystem {
     public void update(){
         //setting flywheel velocity is in magazine because the encoder is attached to magazine SparkMax
         feedback.setHoodPosition(hood.getPosition());
+        feedback.setShooterVelocity(flywheel.getVelocityConverted());
+        SmartDashboard.putNumber("converted velocity", flywheel.getVelocityConverted());
     }
     // ============ actually doing stuff ==========
 
-    //conversion from RPM to encoders arbitrary units (1/32)
+    //conversion from RPM to encoders arbitrary units (1/32) (NEED TO GET FOR SPARK MAX)
     private double tempConversionSpark = -.03125;
+
     @Override
     public void run(RobotState state) {
+        update();
+        input.setFlywheelOutputType(true);
         // if (state == RobotState.AUTO){
         //     flywheelPercent = input.getFlywheelPercent();
         //     hoodSetpoint = input.getHoodSetpoint();
@@ -104,9 +112,10 @@ public class Shooter extends Subsystem {
         // } // if in teleop
         flywheelPercent = input.getFlywheelPercent();
         hoodSetpoint = input.getHoodSetpoint();
-        flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-        shooterPID.changeSetpoint(flywheelSpeed);
-        pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        flywheelSpeed = input.getFlywheelSpeed();
+        // flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+        // shooterPID.changeSetpoint(flywheelSpeed);
+        // pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         output();
     } // run at all times
 
@@ -114,7 +123,8 @@ public class Shooter extends Subsystem {
     public void output() {
         hood.set(hoodSetpoint, ControlType.kPosition);
         SmartDashboard.putNumber("hood output", hood.getCurrent());
-        // flywheel.set(flywheelPercent);
+        SmartDashboard.putNumber("flywheel percent output", flywheelPercent);
+        SmartDashboard.putNumber("flywheel output current", flywheel.getCurrent());
         if (input.getFlywheelPercentMode()){
             flywheel.set(flywheelPercent);
         }
@@ -123,7 +133,7 @@ public class Shooter extends Subsystem {
                 flywheel.set(0);
             } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
             else{
-                flywheel.set(-pidOutput);
+                flywheel.set(flywheelSpeed, ControlType.kVelocity);
             }
         }
     } // output
@@ -144,7 +154,6 @@ public class Shooter extends Subsystem {
         SmartDashboard.putNumber("flywheel put speed", input.getFlywheelSpeed());
         SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
         SmartDashboard.putBoolean("Spun Up", Math.abs(feedback.getShooterVelocity() - flywheelSpeed) < 15); 
-        // SmartDashboard.putBoolean("Spun Up", (Math.abs(Math.abs(flywheelSpeed) - Math.abs(input.getFlywheelSpeed())) < 50));
         SmartDashboard.putNumber("flywheel velocity", feedback.getShooterVelocity());
         SmartDashboard.putNumber("pidOutput", pidOutput);
         SmartDashboard.putNumber("Hood Position", hood.getPosition());

@@ -7,6 +7,8 @@ import org.texastorque.inputs.State.RobotState;
 import org.texastorque.subsystems.Climber;
 import org.texastorque.torquelib.util.GenericController;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Input {
     private static volatile Input instance;
 
@@ -201,7 +203,7 @@ public class Input {
         if (operator.getRightTrigger()){ // low mag - balls in 
             magLow = 1;
             magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
-            magAutoBenTest = -0.4;
+            magAutoBenTest = -1;
         }
         else if (operator.getRightBumper()){ // low mag - balls out
             magLow = -1;
@@ -371,7 +373,8 @@ public class Input {
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
     // private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
-    private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
+    // private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
+    private volatile double[] hoodSetpoints = {0, 8, 15, 50, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
@@ -379,17 +382,13 @@ public class Input {
     private volatile double distanceAway = 0;
 
     public void updateShooter(){
-        hoodSetpoint = hoodSetpoints[0];
-        flywheelSpeed = 0;
-        flywheelPercent = 0;
-
+        operator.setRumble(true);
         hoodFine += -operator.getRightYAxis() * 10;
         shooterFine += -operator.getLeftYAxis() * 100;
 
         if (operator.getYButton()){ // layup shot 
-            Feedback.setLimelightOn(false);
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelPercent = .7;
+            flywheelPercent = -.3;
             flywheelSpeed = 3500 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[1] + hoodFine;
@@ -399,11 +398,18 @@ public class Input {
             }
         } 
         else if (operator.getBButton()){ // trench shot 
+            SmartDashboard.putNumber("flywheel spark velocity", Feedback.getShooterVelocity());
+            if (Feedback.getShooterVelocity() > -4000) {
+                flywheelPercent = -.8;
+            }
+            else {
+                flywheelPercent = -1;
+            }
             Feedback.setLimelightOn(false);
             flywheelSpeed = 5500 + shooterFine;
             // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();
-            flywheelPercent = 0.72;
-            if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
+            // flywheelPercent = -.9;
+            if (!(hoodSetpoint > 65) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
             }
             else {
@@ -420,9 +426,9 @@ public class Input {
             else {
                 hoodSetpoint = hoodSetpoints[3];
             }
+            flywheelPercent = -0.9;
         }
-
-        if (operator.getXButton()){ // limelight mode 
+        else if (operator.getXButton()){ // limelight mode 
             Feedback.setLimelightOn(true);
             distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
@@ -437,10 +443,16 @@ public class Input {
                 hoodSetpoint = hoodSetpoints[3];
             // }
         }
+        else {
+            hoodSetpoint = hoodSetpoints[0];
+            flywheelSpeed = 0;
+            flywheelPercent = 0;
+        }
 
     } // update Shooter 
 
     public double getFlywheelPercent(){
+        System.out.println(flywheelPercent);
         return flywheelPercent;
     }
 

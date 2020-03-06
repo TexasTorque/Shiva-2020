@@ -34,9 +34,10 @@ public class DrivePath extends Command {
          * Max Acceleration (ft/s/s) 
          * Max Jerk (ft/s/s/s)
          */
-            Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_FAST, 1.0/80, Constants.DB_MAX_SPEED, Constants.DB_MAX_ACCEL, Constants.DB_MAX_JERK);
+            
             
             try{
+                Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, Trajectory.Config.SAMPLES_FAST, 1.0/80, Constants.DB_MAX_SPEED, Constants.DB_MAX_ACCEL, Constants.DB_MAX_JERK);
                 Trajectory path = Pathfinder.generate(points, config);
                 TankModifier modifier = new TankModifier(path);
                 modifier.modify(Constants.DB_WIDTH); // DriveBase width (ft)
