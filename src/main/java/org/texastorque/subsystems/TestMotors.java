@@ -14,11 +14,13 @@ public class TestMotors extends Subsystem{
     private static volatile TestMotors instance;
 
     // ============ variables =============
-    private double speed = 0;
+    private double speed1 = 0;
+    private double speed2 = 0;
     private double position = 0; 
 
     // ============ motors ==============
-   // private TorqueSparkMax testSparkMax = new TorqueSparkMax(Ports.SPARKMAX_PORT_2);
+    private TorqueSparkMax testSparkMax1 = new TorqueSparkMax(Ports.SPARKMAX_PORT_1);
+    private TorqueSparkMax testSparkMax2 = new TorqueSparkMax(Ports.SPARKMAX_PORT_2);
 
     // =================== methods ==================
     private TestMotors(){
@@ -40,7 +42,8 @@ public class TestMotors extends Subsystem{
     public void run(RobotState state){
         if (state == RobotState.TELEOP){
             // speed = input.getMag();
-            // speed = -input.getTest();
+            speed1 = -input.getTest1();
+            speed2 = input.getTest2() ;
         }
         output();
     } // run at all times 
@@ -48,9 +51,8 @@ public class TestMotors extends Subsystem{
     @Override 
     public void output(){
         // testTalon.set(speed);
-      //  testSparkMax.set(speed);
-        SmartDashboard.putNumber("speed", speed);
-        // SmartDashboard.putNumber("velocity", testSparkMax.getVelocity());
+        testSparkMax1.set(speed1);
+        testSparkMax2.set(speed2);
     } // output
 
     // ============= continuous =============
@@ -67,8 +69,6 @@ public class TestMotors extends Subsystem{
 
     @Override 
     public void smartDashboard(){
-        SmartDashboard.putNumber("speed", speed);
-        // SmartDashboard.putNumber("velocity", testSparkMax.getVelocity());
     } // display all this to smart dashboard
 
     public static TestMotors getInstance(){

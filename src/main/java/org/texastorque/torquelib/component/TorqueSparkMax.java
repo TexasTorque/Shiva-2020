@@ -123,5 +123,9 @@ public class TorqueSparkMax extends TorqueMotor {
         return alternateEncoder.getVelocity();
     }
 
+    public double getAlternatePosition(){
+        return alternateEncoder.getPosition();
+    }
+
     
 }

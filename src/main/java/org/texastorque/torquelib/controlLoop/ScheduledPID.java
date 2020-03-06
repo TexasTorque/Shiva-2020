@@ -4,9 +4,12 @@ import java.util.Arrays;
 
 import org.texastorque.util.ArrayUtils;
 import org.texastorque.util.Integrator;
+import org.texastorque.util.KPID;
 import org.texastorque.util.MathUtils;
 import org.texastorque.util.TorqueTimer;
 import org.texastorque.util.interfaces.Stopwatch;
+
+import edu.wpi.first.wpilibj.Timer;
 
 public class ScheduledPID {
 
@@ -16,6 +19,7 @@ public class ScheduledPID {
 	private final double[] pGains;
 	private final double[] iGains;
 	private final double[] dGains;
+	private final double[] fGains;
 	
 	private final double minOutput;
 	private final double maxOutput;
@@ -23,6 +27,8 @@ public class ScheduledPID {
 	private double setpoint;
 	private int currentGainIndex;
 	private double lastError;
+
+	private boolean firstCycle;
 
 	private final Integrator integrator;
 	private Stopwatch timer;
@@ -35,6 +41,7 @@ public class ScheduledPID {
 		this.pGains = new double[count];
 		this.iGains = new double[count];
 		this.dGains = new double[count];
+		this.fGains = new double[count];
 		
 		this.setpoint = setpoint;
 		this.minOutput = minOutput;
@@ -44,8 +51,28 @@ public class ScheduledPID {
 		this.timer = new TorqueTimer();
 	}
 
+	private ScheduledPID(KPID kPID){
+		this.gainDivisions = new double[0];
+		this.pGains = new double[1];
+		this.pGains[0] = kPID.p();
+		this.iGains = new double[1];
+		this.iGains[0] = kPID.p();
+		this.dGains = new double[1];
+		this.dGains[0] = kPID.p();
+		this.fGains = new double[1];
+		this.fGains[0] = kPID.p();
+		
+		this.setpoint = 0;
+		this.minOutput = kPID.min();
+		this.maxOutput = kPID.max();
+
+		this.integrator = new Integrator();
+		this.timer = new TorqueTimer();
+	}
+
 	private ScheduledPID(double setpoint, double maxOutput, int count) {
 		this(setpoint, -maxOutput, maxOutput, count);
+		firstCycle = true;
 	}
 
 	private ScheduledPID(double setpoint, double maxOutput) {
@@ -79,6 +106,13 @@ public class ScheduledPID {
 		
 		return gain * (de/dt);
 	}
+
+	//feedforward term. Multiplies fTerm by setpoint to add to PIDOutput 
+	//Use when output is needed to maintain positions
+	private double feedForwardTerm(double setPoint){
+		double gain = this.fGains[this.currentGainIndex];
+		return gain*setPoint;
+	}
 	
 	private boolean isSafeToOutput() {
 		return (this.safetyCheck == null || safetyCheck.isSafe());
@@ -95,9 +129,17 @@ public class ScheduledPID {
 		return error;
 	}
 	
-	private void finishUpdate(double error) {
+	public void finishUpdate(double error) {
 		this.lastError = error;
 		timer.startLap();  // Measure dt from the end of the last update.
+	}
+
+	public void setLastError(double error){
+		this.lastError = error;
+	}
+
+	public double getLastError(){
+		return this.lastError;
 	}
 	
 	/** Calculates the index for the current gain values.
@@ -146,6 +188,13 @@ public class ScheduledPID {
 	// == Public API ==
 	
 	public double calculate(double processVar) {
+
+		if (firstCycle) {
+			lastError = 0; 
+			timer.reset();
+			firstCycle = false;
+		}
+		
 		if (!isSafeToOutput()) {
 			timer.reset();
 			integrator.reset();
@@ -157,13 +206,19 @@ public class ScheduledPID {
 			return safetyCheck.getSafetyModeOutput(this.setpoint, processVar);
 		}
 
+		if(firstCycle){
+			lastError = 0;
+			firstCycle = false;
+		}
+
 		startTimerIfNeeded();
 		
 		double error = startUpdate(processVar);
 		double pTerm = proportionalTerm(error);
 		double iTerm = integralTerm(error);
 		double dTerm = derivativeTerm(error);
-		double output = pTerm + iTerm + dTerm;  // Ideal PID form.
+		double fTerm = feedForwardTerm(setpoint);
+		double output = pTerm + iTerm + dTerm + fTerm;  // Ideal PID form.
 		
 		finishUpdate(error);
 		
@@ -172,7 +227,9 @@ public class ScheduledPID {
 	
 	public void reset() {
 		integrator.reset();
+		firstCycle = true;
 		timer.reset();
+		lastError = 0;
 	}
 	
 	public void changeSetpoint(double newSetpoint) {
@@ -240,6 +297,11 @@ public class ScheduledPID {
 		
 		public Builder setDGains(double... dGains) {
 			ArrayUtils.bufferAndFill(dGains, pid.dGains);
+			return this;
+		}
+
+		public Builder setFGains(double... fGains){
+			ArrayUtils.bufferAndFill(fGains, pid.fGains);
 			return this;
 		}
 		
