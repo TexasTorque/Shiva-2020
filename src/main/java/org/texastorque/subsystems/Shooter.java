@@ -29,6 +29,9 @@ public class Shooter extends Subsystem {
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
     KPID hoodkPID = new KPID( 0.1, 0, 0, 0, -1, 1); //Hood PID for all positions
+    KPID shooterKPID = new KPID(0.23, 0.0004, 0.009, 0.025, 0, 1); // i term
+    
+    // KPID shooterKPID = new KPID()
 
     private double flywheelSpeed;
     private double flywheelPercent;
@@ -50,14 +53,16 @@ public class Shooter extends Subsystem {
         // pidValues.add(kPIDHigh);
         // flywheel.configurePID(pidValues.get(0));
 
+        flywheel.configurePID(shooterKPID);
+
         //Bulding shooter PID (this is for when the encoder is put into the spark max!)
         //Use integrated PID when encoder is put onto talon
-        shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
-            .setPGains(0.028)
-            .setIGains(0.0008)
-            .setDGains(0)
-            .setFGains(.00385)
-            .build();
+        // shooterPID = new ScheduledPID.Builder(0, -1, 1, 1)
+        //     .setPGains(0.028)
+        //     .setIGains(0.0008)
+        //     .setDGains(0)
+        //     .setFGains(.00385)
+        //     .build();
     } // constructor
 
     // ============= initialization ==========
@@ -81,10 +86,11 @@ public class Shooter extends Subsystem {
     // ============ actually doing stuff ==========
 
     //conversion from RPM to encoders arbitrary units (1/32)
-    private double tempConversionSpark = -.03125;
+    private double tempConversionSpark = 0.0625; // -0.03125
+    private double tempConversionTalon = 6.8;
     @Override
     public void run(RobotState state) {
-        input.setFlywheelOutputType(true);
+        input.setFlywheelOutputType(false);
         // if (state == RobotState.AUTO){
         //     flywheelPercent = input.getFlywheelPercent();
         //     hoodSetpoint = input.getHoodSetpoint();
@@ -105,34 +111,32 @@ public class Shooter extends Subsystem {
         // } // if in teleop
         flywheelPercent = input.getFlywheelPercent();
         hoodSetpoint = input.getHoodSetpoint();
-        flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-        shooterPID.changeSetpoint(flywheelSpeed);
-        pidOutput = shooterPID.calculate(Feedback.getShooterVelocity());
+        flywheelSpeed = input.getFlywheelSpeed()*tempConversionTalon;
+        // shooterPID.changeSetpoint(flywheelSpeed);
+        // pidOutput = shooterPID.calculate(Feedback.getShooterVelocity());
         output();
     } // run at all times
-
+// tach encoder , 1702 11628 , 3314 22635 , 445 3027
+// 6.83  6.83 6.8 
     @Override
     public void output() {
-        hood.set(hoodSetpoint, ControlType.kPosition);
+        // hood.set(hoodSetpoint, ControlType.kPosition);
         SmartDashboard.putNumber("hood output", hood.getCurrent());
-        flywheel.set(flywheelPercent);
-        // if (input.getFlywheelPercentMode()){
-        //     flywheel.set(flywheelPercent);
-        // }
-        // else {
-        //     if(pidOutput > 0){
-        //         flywheel.set(0);
-        //     } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
-        //     else{
-        //         flywheel.set(-pidOutput);
-        //     }
-        // }
+        // flywheel.set(flywheelPercent);
+        if (input.getFlywheelPercentMode()){
+            flywheel.set(flywheelPercent);
+        }
+        else {
+            flywheel.set((flywheelSpeed),ControlMode.Velocity);
+        }
         // if (Math.abs(Feedback.getShooterVelocity() - flywheelSpeed) < 15) {
         //     input.setOperatorRumbleOn(true);
         // } else{
         //     input.setOperatorRumbleOn(false);
         // }
-        SmartDashboard.putNumber("talonshooter", flywheel.getVelocity());
+        SmartDashboard.putNumber("talonshooter put number", flywheelSpeed);
+        SmartDashboard.putNumber("talonshooter put rpm", flywheelSpeed / tempConversionTalon);
+        SmartDashboard.putNumber("talonshooterencoder converted", flywheel.getVelocity() / tempConversionTalon); /// tempConversionTalon);// / tempConversionTalon * 60 * 8)
     } // output
 
     // =========== continuous ==========

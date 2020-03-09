@@ -26,9 +26,9 @@ public class Testing extends Sequence {
 
         // addBlock(block1);
 
-        // ArrayList<Command> block1 = new ArrayList<>();
-        // block1.add(new DriveTurn(0, 150));
+        ArrayList<Command> block1 = new ArrayList<>();
+        block1.add(new DriveDistance(0, 150));
 
-        // addBlock(block1);
+        addBlock(block1);
     }
 }

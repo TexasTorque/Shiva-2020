@@ -326,17 +326,26 @@ public class Input {
                 climbStarted_DT = true;
             }
             climberStatus = 1;
-            System.out.println("climber status" + climberStatus);
         }
         else if (driver.getDPADDown()){ // retract climber (climb)
             climberStatus = -1;
         }
         else if (driver.getDPADLeft()){
+            if (!climbStarted){
+                Climber.resetClimb();
+                climbStarted = true;
+                climbStarted_DT = true;
+            }
             manualClimb = true;
             sideToExtend = -1;
             // extend left climber 
         }
         else if (driver.getDPADRight()) {
+            if (!climbStarted){
+                Climber.resetClimb();
+                climbStarted = true;
+                climbStarted_DT = true;
+            }
             manualClimb = true;
             sideToExtend = 1;
             // extend right climber
@@ -378,7 +387,7 @@ public class Input {
     // min ---- mid ----- max 
     // private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
     // private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
-    private volatile double[] hoodSetpoints = {0, 8, 15, 50, 34};
+    private volatile double[] hoodSetpoints = {0, 8, 15, 35, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
@@ -387,19 +396,14 @@ public class Input {
 
     public void updateShooter(){
         // operator.setRumble(true);
-        hoodFine += -operator.getRightYAxis() * 10;
-        shooterFine += -operator.getLeftYAxis() * 100;
+        hoodFine += -operator.getRightYAxis() * 0.5;
+        shooterFine += -operator.getLeftYAxis() * 0.001;
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
-            flywheelPercent = -.3;
-            flywheelSpeed = 3500 + shooterFine;
-            if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[1] + hoodFine;
-            }
-            else {
-                hoodSetpoint = hoodSetpoints[1];
-            }
+            flywheelPercent = .3 + shooterFine;
+            flywheelSpeed = 3000 + shooterFine;
+            hoodSetpoint = hoodSetpoints[1] + hoodFine;
         } 
         else if (operator.getBButton()){ // trench shot 
             SmartDashboard.putNumber("flywheel spark velocity", Feedback.getShooterVelocity());
@@ -409,32 +413,19 @@ public class Input {
             // else {
             //     flywheelPercent = -1;
             // }
-            flywheelPercent = 1;
-            Feedback.setLimelightOn(false);
+            flywheelPercent = 1 + shooterFine;
             flywheelSpeed = 5500 + shooterFine;
             // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();
             // flywheelPercent = -.9;
-            if (!(hoodSetpoint > 65) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[3] + hoodFine;
-            }
-            else {
-                hoodSetpoint = hoodSetpoints[3];
-            }
+            hoodSetpoint = hoodSetpoints[3] + hoodFine;
             
         }
-        else if (operator.getAButton()){ // longshot™
-            Feedback.setLimelightOn(false);
-            flywheelSpeed = 8000 + shooterFine;
-            if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
-                hoodSetpoint = hoodSetpoints[3] + hoodFine;
-            }
-            else {
-                hoodSetpoint = hoodSetpoints[3];
-            }
-            flywheelPercent = -0.9;
+        else if (operator.getAButton()){ // trench shot  // longshot™
+            flywheelSpeed = 1000 + shooterFine;
+            hoodSetpoint = hoodSetpoints[3] + hoodFine;
+            flywheelPercent = 0.8 + shooterFine;
         }
         else if (operator.getXButton()){ // limelight mode 
-            Feedback.setLimelightOn(true);
             distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
             // flywheelSpeed = 5565.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
@@ -457,7 +448,6 @@ public class Input {
     } // update Shooter 
 
     public double getFlywheelPercent(){
-        System.out.println(flywheelPercent);
         return flywheelPercent;
     }
 

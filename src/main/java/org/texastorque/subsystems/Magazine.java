@@ -25,7 +25,7 @@ public class Magazine extends Subsystem{
     private double beltSpeed_gate = 0;
     private boolean autoMag = true;
 
-    private int robotMultiplier = -1; // if longshot = -1, if bravo = 1
+    private int robotMultiplier = 1; // if longshot = -1, if bravo = 1
 
     private int lowMagFlo = 0;
     private int highMagFlo = 0;

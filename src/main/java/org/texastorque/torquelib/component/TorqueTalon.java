@@ -43,6 +43,7 @@ public class TorqueTalon extends TorqueMotor {
     public void set(double output, ControlMode modeTalon){
         talon.set(modeTalon, output);
         for(TalonSRX talonSRX : talonFollowers){
+            talonSRX.setInverted(invert);
             talonSRX.set(ControlMode.Follower, port);
         } // takes care of followers 
     } // set with ControlMode for talon 

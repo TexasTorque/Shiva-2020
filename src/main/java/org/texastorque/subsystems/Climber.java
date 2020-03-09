@@ -82,27 +82,26 @@ public class Climber extends Subsystem {
         if (state == RobotState.TELEOP) {
             // climberLeftSpeed = input.getClimberLeft();
             // climberRightSpeed = input.getClimberRight();
+            leftRatchetPos = 0.38;
+            rightRatchetPos = 0.5;
             climbStatus = input.getClimberStatus();
             if (!input.getManualClimb()){
                 switch (climbStatus) {
                     case -1: // retract climber
-                        climberLeftSpeed = 1;
-                        climberRightSpeed = -1;
-                        leftRatchetPos = 0;
-                        rightRatchetPos = 0.5;
+                        climberLeftSpeed = .6;
+                        climberRightSpeed = -0.6;
                         break;
                     case 0: // do nothing
                         climberLeftSpeed = 0;
                         climberRightSpeed = 0;
                         break;
                     case 1: // extend climber
+                        leftRatchetPos = 0.5;
+                        rightRatchetPos = 0.38;
                         if (notStarted) {
-                            leftRatchetPos = 0.75;
-                            rightRatchetPos = -0.75;
                             notStarted = false;
                             inReverse = true;
                             startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
-                            System.out.println("startingclimb");
                         } // unlocking ratchets
                         else if (inReverse) {
                             if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
@@ -111,18 +110,22 @@ public class Climber extends Subsystem {
                             } else {
                                 inReverse = false;
                             }
-                            System.out.println("inreverse");
                         } // bringing climb back
                         else {
-                            if (climberLeftPos > -61.144){
-                                climberLeftSpeed = -0.3; // -1    
+                            if (climberLeftPos > -133){
+                                climberLeftSpeed = -1; // -1    
                             }
-                            if (climberRightPos < 56.429){
-                                climberRightSpeed = 0.3; // 1
+                            else {
+                                climberLeftSpeed = 0;
+                            }
+                            if (climberRightPos < 133){
+                                climberRightSpeed = 1; // 1
+                            }
+                            else {
+                                climberRightSpeed = 0;
                             }
                             // climberLeftSpeed = -1;
                             // climberRightSpeed = 1;
-                            System.out.println("extending");
                         } // climbing
                 } // climb status switch
             } 
@@ -131,21 +134,53 @@ public class Climber extends Subsystem {
             else {
                 switch(input.sideClimb()){
                     case -1:
-                        climberLeftSpeed = -1;
-                        climberRightSpeed = 0;
+                        leftRatchetPos = 0.5;
+                        if (notStarted) {
+                            notStarted = false;
+                            inReverse = true;
+                            startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                        } // unlocking ratchets
+                        else if (inReverse) {
+                            if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
+                                climberLeftSpeed = 0.1;
+                            } else {
+                                inReverse = false;
+                            }
+                        } // bringing climb back
+                        else {
+                                climberLeftSpeed = -0.3; // -1    
+                        } // climbing
+                        // climberLeftSpeed = -1;
+                        // climberRightSpeed = 0;
                         break;
                     case 0:
                         climberLeftSpeed = 0;
                         climberRightSpeed = 0;
                         break;
                     case 1:
-                        climberLeftSpeed = 0;
-                        climberRightSpeed = 1;
+                        rightRatchetPos = 0.38;
+                        if (notStarted) {
+                            notStarted = false;
+                            inReverse = true;
+                            startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                        } // unlocking ratchets
+                        else if (inReverse) {
+                            if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
+                                climberRightSpeed = -0.1;
+                            } else {
+                                inReverse = false;
+                            }
+                        } // bringing climb back
+                        else {
+                                climberRightSpeed = 0.3; // 1
+                        } // climbing
+                        // climberLeftSpeed = 0;
+                        // climberRightSpeed = 1;
                 }
             }
             
         } // if in teleop
-        // output();
+        output();
     }
 
     public static void resetClimb() {
@@ -157,8 +192,8 @@ public class Climber extends Subsystem {
     protected void output() {
         climberLeft.set(climberLeftSpeed);
         climberRight.set(climberRightSpeed);
-        leftRatchet.set(0); // TODO
-        rightRatchet.set(0); // TODO
+        leftRatchet.set(leftRatchetPos); // TODO
+        rightRatchet.set(rightRatchetPos); // TODO
         SmartDashboard.putNumber("left climb pos", climberLeftPos);
         SmartDashboard.putNumber("right climb pos", climberRightPos);
     }
