@@ -26,11 +26,11 @@ public class AutoManager {
 
     private AutoManager(){
         autoSequences = new ArrayList<Sequence>();
-        // autoSequenceNames = new String[] {"Mode 0", "Baseline", "Mode 2", "Mode 3", "Mode 4", "Testing"};
         autoSequences.add(new VinayMode()); // Mode 0
         autoSequences.add(new Baseline()); // Baseline 
         autoSequences.add(new ShootButWorse()); // Deadshot 
         autoSequences.add(new ShootButNotAsBad()); // Liveshot
+        autoSequences.add(new FiveBall()); // 5 Ball
         autoSequences.add(new Testing()); // Testing 
 
         // SmartDashboard.putStringArray("AutoList", autoSequenceNames);
@@ -39,6 +39,7 @@ public class AutoManager {
         autoSelector.addOption("Baseline", "Baseline"); // baseline
         autoSelector.addOption("Deadshot", "Deadshot"); // shoot but worse
         autoSelector.addOption("Liveshot", "Liveshot"); // shoot but not as bad 
+        autoSelector.addOption("5 Ball", "5 Ball"); // 5 ball trench auto
         autoSelector.addOption("Testing", "Testing"); // testing 
 
         SmartDashboard.putData("autos", autoSelector);
@@ -71,8 +72,11 @@ public class AutoManager {
             case "Liveshot": // shoot but not as bad 
                 currentSequence = autoSequences.get(3);
                 break;
-            case "Testing": // testing 
+            case "5 Ball": // 5 ball (trench)
                 currentSequence = autoSequences.get(4);
+                break;
+            case "Testing": // testing 
+                currentSequence = autoSequences.get(5);
                 break;
             default: // just change the value in here to test
                 currentSequence = autoSequences.get(0);
