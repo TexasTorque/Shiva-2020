@@ -63,9 +63,9 @@ public class Feedback {
 
     // ==============Drive Train===============
     // list of variables DriveTrain
-    private double leftTare = 0;
+    private static double leftTare = 0;
     private double rightTare = 0;
-    private double leftPositionDT;
+    private static double leftPositionDT;
     private double rightPositionDT;
     private double leftVelocityDT;
     private double rightVelocityDT;
@@ -87,10 +87,9 @@ public class Feedback {
         this.rightVelocityDT = rightVelocityDT;
     }
 
-
     // accessor methods DriveTrain
-    public double getDBLeftDistance() {
-        return -leftPositionDT + leftTare; 
+    public static double getDBLeftDistance() {
+        return -leftPositionDT + leftTare;
     }
 
     public double getDBRightDistance() {
@@ -139,7 +138,7 @@ public class Feedback {
     private double hoodPosition;
 
     // set methods shooter
-    public void setShooterVelocity(double shooterVelocity1) {
+    public static void setShooterVelocity(double shooterVelocity1) {
         shooterVelocity = shooterVelocity1;
     }
 
@@ -211,12 +210,13 @@ public class Feedback {
     }
 
     public static void setLimelightOn(boolean on){ // TESTING TODO
-        if (on){
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
-        } // force on
-        else {
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
-        } // force off 
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        // if (on){
+        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        // } // force on
+        // else {
+        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
+        // } // force off 
     }
 
     public static double getXOffset(){
@@ -273,6 +273,9 @@ public class Feedback {
         SmartDashboard.putNumber("rotaryRight_position", rotaryPosition_right);
         SmartDashboard.putBoolean("magcheckHigh", magHighCheck.get());
         SmartDashboard.putBoolean("magcheckLow", magLowCheck.get());
+        SmartDashboard.putNumber("yaw", getYaw());
+        SmartDashboard.putNumber("pitch", getPitch());
+        SmartDashboard.putNumber("roll", getRoll());
     } // stuff to put in smart dashboard
 
     public static Feedback getInstance() {

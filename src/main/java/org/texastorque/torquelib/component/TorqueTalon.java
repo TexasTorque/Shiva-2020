@@ -27,7 +27,6 @@ public class TorqueTalon extends TorqueMotor {
 
     public void addFollower(int port, boolean invert) {
         talonFollowers.add(new TalonSRX(port));
-        
     } // add follower 
 
     // ====================== set methods ==========================
@@ -70,6 +69,7 @@ public class TorqueTalon extends TorqueMotor {
 
     @Override
     public double getVelocity() {
+        // return talon.getSelectedSensorVelocity();
         try{
             return talon.getSelectedSensorVelocity();
         } catch (Exception e){

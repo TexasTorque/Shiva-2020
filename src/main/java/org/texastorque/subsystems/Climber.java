@@ -1,6 +1,7 @@
 package org.texastorque.subsystems;
 
 import org.texastorque.constants.Ports;
+import org.texastorque.inputs.Feedback;
 import org.texastorque.inputs.State.RobotState;
 import org.texastorque.torquelib.component.TorqueSparkMax;
 
@@ -26,6 +27,8 @@ public class Climber extends Subsystem {
 
     private double climberLeftSpeed = 0;
     private double climberRightSpeed = 0;
+    private double climberLeftPos = 0;
+    private double climberRightPos = 0;
 
     // private double leftRatchetPos = 1;
     // private double rightRatchetPos = 0.5;
@@ -62,9 +65,14 @@ public class Climber extends Subsystem {
     public void teleopContinuous() {
     }
 
+    public void update(){
+    }
+
     @Override
     public void run(RobotState state) {
         state = input.getState();
+        climberLeftPos = climberLeft.getPosition();
+        climberRightPos = climberRight.getPosition();
         // if (state == RobotState.AUTO){
         // climberLeftSpeed = 0;
         // climberRightSpeed = 0;
@@ -106,12 +114,20 @@ public class Climber extends Subsystem {
                             System.out.println("inreverse");
                         } // bringing climb back
                         else {
-                            climberLeftSpeed = -1;
-                            climberRightSpeed = 1;
+                            if (climberLeftPos > -61.144){
+                                climberLeftSpeed = -0.3; // -1    
+                            }
+                            if (climberRightPos < 56.429){
+                                climberRightSpeed = 0.3; // 1
+                            }
+                            // climberLeftSpeed = -1;
+                            // climberRightSpeed = 1;
                             System.out.println("extending");
                         } // climbing
                 } // climb status switch
-            }
+            } 
+            // 19.625 - right side up inches 56.429 right side up spark max 
+            // 21.063 - left side up inches -61.144 left side up spark max 
             else {
                 switch(input.sideClimb()){
                     case -1:
@@ -129,7 +145,7 @@ public class Climber extends Subsystem {
             }
             
         } // if in teleop
-        output();
+        // output();
     }
 
     public static void resetClimb() {
@@ -141,8 +157,10 @@ public class Climber extends Subsystem {
     protected void output() {
         climberLeft.set(climberLeftSpeed);
         climberRight.set(climberRightSpeed);
-        leftRatchet.set(leftRatchetPos);
-        rightRatchet.set(rightRatchetPos);
+        leftRatchet.set(0); // TODO
+        rightRatchet.set(0); // TODO
+        SmartDashboard.putNumber("left climb pos", climberLeftPos);
+        SmartDashboard.putNumber("right climb pos", climberRightPos);
     }
 
     @Override

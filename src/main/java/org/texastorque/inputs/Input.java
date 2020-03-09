@@ -37,6 +37,10 @@ public class Input {
         } // update operator things 
     } // update controllers
 
+    public void setOperatorRumbleOn(boolean on){
+        operator.setRumble(on);
+    }
+
     public void resetAll(){
     } // reset all the things
 
@@ -382,7 +386,7 @@ public class Input {
     private volatile double distanceAway = 0;
 
     public void updateShooter(){
-        operator.setRumble(true);
+        // operator.setRumble(true);
         hoodFine += -operator.getRightYAxis() * 10;
         shooterFine += -operator.getLeftYAxis() * 100;
 
@@ -399,12 +403,13 @@ public class Input {
         } 
         else if (operator.getBButton()){ // trench shot 
             SmartDashboard.putNumber("flywheel spark velocity", Feedback.getShooterVelocity());
-            if (Feedback.getShooterVelocity() > -4000) {
-                flywheelPercent = -.8;
-            }
-            else {
-                flywheelPercent = -1;
-            }
+            // if (Feedback.getShooterVelocity() > -4000) {
+            //     flywheelPercent = -.8;
+            // }
+            // else {
+            //     flywheelPercent = -1;
+            // }
+            flywheelPercent = 1;
             Feedback.setLimelightOn(false);
             flywheelSpeed = 5500 + shooterFine;
             // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();

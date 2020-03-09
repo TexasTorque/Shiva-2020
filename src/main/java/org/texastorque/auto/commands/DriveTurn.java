@@ -1,6 +1,7 @@
 package org.texastorque.auto.commands;
 
 import org.texastorque.auto.Command;
+import org.texastorque.torquelib.controlLoop.LowPassFilter;
 import org.texastorque.torquelib.controlLoop.ScheduledPID;
 import jaci.pathfinder.Pathfinder;
 
@@ -9,7 +10,9 @@ public class DriveTurn extends Command {
     // not tested 
     
     private ScheduledPID turnPID;
+    private LowPassFilter lowPass;
     private double targetAngle;
+    private double position;
 
     private double currentYaw;
     private double speed;
@@ -17,9 +20,14 @@ public class DriveTurn extends Command {
     public DriveTurn(double delay, double targetAngle) {
         super(delay);
         this.targetAngle = Pathfinder.boundHalfDegrees(targetAngle);
-
-        turnPID = new ScheduledPID.Builder(targetAngle, 0.5)
-            .setPGains(0.023)
+        // turnPID = new ScheduledPID.Builder(0,0.5,1)
+        //     .setPGains(0.015)
+        //     .setIGains(0.0005)
+        //     .build();
+        // lowPass = new LowPassFilter(0.5);
+        turnPID = new ScheduledPID.Builder(targetAngle, 0.8)
+            .setPGains(0.005)
+            .setIGains(0.1)
             .build();
     }
 
@@ -39,9 +47,11 @@ public class DriveTurn extends Command {
         // double effectiveYaw = currentError < reverseError ? currentYaw : reverseYaw;
 
         // speed = turnPID.calculate(effectiveYaw);
+        // position = lowPass.filter(currentYaw);
+        // speed = turnPID.calculate(position);
         speed = turnPID.calculate(currentYaw);
 
-        input.setDBLeftSpeed(-speed);
+        input.setDBLeftSpeed(speed);
         input.setDBRightSpeed(speed);
     }
 
