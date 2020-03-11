@@ -106,6 +106,7 @@ public class Input {
     // start position ---- neutral position ----- down position
     // private double[] rotarySetpoints_left = {0, -10, -40.4}; // bravo
     // private double[] rotarySetpoints_right = {0, 10.1, 39.9}; // bravo
+    // all the way back, neutral, down
     private double[] rotarySetpoints_left = {0, -15.21, -42.21}; // charlie
     private double[] rotarySetpoints_right = {0, 14.21, 42.95}; // charlie
 
@@ -155,9 +156,10 @@ public class Input {
         return rollerSpeed;
     }
 
-    public void setRotaryPosition(int rotarySetIndex){
+    public void setRotaryPosition(int rotarySetIndex, int rotaryRollerCase){
         rotaryPosition_left = rotarySetpoints_left[rotarySetIndex];
         rotaryPosition_right = rotarySetpoints_right[rotarySetIndex];
+        rollerSpeed = 0.8 * rotaryRollerCase;
     } // ONLY TO BE USED IN AUTO 
 
     // ============ Magazine ============
