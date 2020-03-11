@@ -28,7 +28,7 @@ public class DriveDistance extends Command {
 
     @Override
     protected void init() {
-
+        feedback.resetDriveEncoders();
     }
 
     @Override

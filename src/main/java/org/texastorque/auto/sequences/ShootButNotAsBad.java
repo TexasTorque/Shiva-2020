@@ -19,11 +19,13 @@ public class ShootButNotAsBad extends Sequence {
 
         ArrayList<Command> block2 = new ArrayList<>();
         // block2.add(new VisionShoot(0, 5, 5250, 3));
-        block2.add(new ShooterSet(0, 5250, 4, 3));
+        // block2.add(new ShooterSet(0, 5250, 4, 3));
+        block2.add(new ShooterSet(0, 4700, 4, 3));
         block2.add(new MagazineSet(2, 0.25, true, 3, true, 3, true, 3.25));
 
         ArrayList<Command> block3 = new ArrayList<>();
         block3.add(new DriveTime(0, 0.3, 0.3));
+        block3.add(new DriveTime(0.3, 0.2, 0));
 
         ArrayList<Command> block4 = new ArrayList<>();
         block4.add(new DriveTime(0, 0.5, -0.3));

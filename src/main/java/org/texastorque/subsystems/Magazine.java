@@ -25,7 +25,7 @@ public class Magazine extends Subsystem{
     private double beltSpeed_gate = 0;
     private boolean autoMag = true;
 
-    private int robotMultiplier = 1; // if longshot = -1, if bravo = 1
+    private int robotMultiplier = -1; // if longshot = -1, if bravo = 1
 
     private int lowMagFlo = 0;
     private int highMagFlo = 0;
@@ -140,8 +140,8 @@ public class Magazine extends Subsystem{
                 else if (lowMagFlo == -1) {
                     beltSpeed_low = -magSpeed_low;
                 }// on the third ball, wait for a bit then stop running the low mag
-            }
-            else {
+            } // auto load mag 
+            else { // load mag 
                 beltSpeed_high = input.getMagHigh();
                 beltSpeed_low = input.getMagLow();
                 beltSpeed_gate = input.getMagGate();
@@ -171,7 +171,7 @@ public class Magazine extends Subsystem{
                 beltSpeed_low = 0;
                 System.out.println("in gate only");
             }
-            else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - (startTime + 0.5) < 0.25){
+            else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - (startTime + 0.25) < 0.25){
                 beltSpeed_gate = -1;    
                 // beltSpeed_high = 0.5;
                 // beltSpeed_low = -0.6;

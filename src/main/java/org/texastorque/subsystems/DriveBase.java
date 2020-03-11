@@ -67,11 +67,13 @@ public class DriveBase extends Subsystem{
         update();
         state = input.getState();
         if (state == RobotState.AUTO){
+            input.changeDriveLimelight(true);
             leftSpeed = input.getDBLeft();
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.TELEOP || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
             SmartDashboard.putBoolean("vision", false);
+            input.changeDriveLimelight(false);
             Feedback.setLimelightOn(false);
             state = input.getState();
             linePID.reset();
@@ -82,6 +84,7 @@ public class DriveBase extends Subsystem{
             rightSpeed = input.getDBRight();
         }
         else if (state == RobotState.VISION){
+            input.changeDriveLimelight(true);
             SmartDashboard.putBoolean("vision", true);
             Feedback.setLimelightOn(true);
             state = input.getState();

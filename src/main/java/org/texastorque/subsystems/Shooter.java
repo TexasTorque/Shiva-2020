@@ -29,7 +29,7 @@ public class Shooter extends Subsystem {
     KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
     KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
     KPID hoodkPID = new KPID( 0.1, 0, 0, 0, -1, 1); //Hood PID for all positions
-    KPID shooterKPID = new KPID(0.23, 0.0004, 0.009, 0.025, 0, 1); // i term
+    KPID shooterKPID = new KPID(0.23, 0, 0.0005, 0.02, 0, 1); // i term
     
     // KPID shooterKPID = new KPID()
 
@@ -120,15 +120,15 @@ public class Shooter extends Subsystem {
 // 6.83  6.83 6.8 
     @Override
     public void output() {
-        // hood.set(hoodSetpoint, ControlType.kPosition);
+        hood.set(hoodSetpoint, ControlType.kPosition);
         SmartDashboard.putNumber("hood output", hood.getCurrent());
         // flywheel.set(flywheelPercent);
-        if (input.getFlywheelPercentMode()){
-            flywheel.set(flywheelPercent);
-        }
-        else {
-            flywheel.set((flywheelSpeed),ControlMode.Velocity);
-        }
+        // if (input.getFlywheelPercentMode()){
+        //     flywheel.set(flywheelPercent);
+        // }
+        // else {
+        flywheel.set((flywheelSpeed),ControlMode.Velocity);
+        // }
         // if (Math.abs(Feedback.getShooterVelocity() - flywheelSpeed) < 15) {
         //     input.setOperatorRumbleOn(true);
         // } else{

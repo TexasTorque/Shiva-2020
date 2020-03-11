@@ -168,7 +168,6 @@ public class Feedback {
     public void updateMagazine(){
         highMag = !magHighCheck.get();
         lowMag = !magLowCheck.get();
-
         if (ballLast != lowMag){
             if (!lowMag){
                 count++;
@@ -207,16 +206,17 @@ public class Feedback {
         targetArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
         hOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
         vOffset = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        Input.getLimelight();
     }
 
     public static void setLimelightOn(boolean on){ // TESTING TODO
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
-        // if (on){
-        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
-        // } // force on
-        // else {
-        //     NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
-        // } // force off 
+        // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        if (on){
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+        } // force on
+        else {
+            NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
+        } // force off 
     }
 
     public static double getXOffset(){

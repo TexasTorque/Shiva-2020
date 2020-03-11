@@ -38,6 +38,6 @@ public class Ports {
 
     //Sensors\[]
     
-    public static final int MAG_SENSOR_HIGH = 1;
-    public static final int MAG_SENSOR_LOW = 0;
+    public static final int MAG_SENSOR_HIGH = 3;
+    public static final int MAG_SENSOR_LOW = 2;
 } // ports 

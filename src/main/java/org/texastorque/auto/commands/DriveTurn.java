@@ -57,7 +57,7 @@ public class DriveTurn extends Command {
 
     @Override
     protected boolean endCondition() {
-        return Math.abs(targetAngle - currentYaw) < 3.0 && Math.abs(feedback.getLeftVelocityDT()) < 0.5;
+        return Math.abs(targetAngle - currentYaw) < 7.0 && Math.abs(feedback.getLeftVelocityDT()) < 0.5;
     }
 
     @Override

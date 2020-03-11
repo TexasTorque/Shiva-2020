@@ -16,7 +16,11 @@ public class Input {
     private GenericController driver;
     private GenericController operator;
 
-    private Input(){
+    private boolean shooterLimelight = false;
+    private boolean driveLimelight = false;
+    private static boolean limelightStatus = false;
+
+    private Input() {
         state = State.getInstance();
         driver = new GenericController(0, 0.1);
         operator = new GenericController(1, 0.1);
@@ -24,21 +28,46 @@ public class Input {
 
     public void updateControllers() {
 
-        if(driver != null){
+        if (driver != null) {
             updateDrive();
             updateShooter();
             updateClimber();
             updateIntake();
             updateTest();
+            updateLimelight();
         } // update driver things
 
-        if (operator != null){
+        if (operator != null) {
             updateMagazine();
-        } // update operator things 
+        } // update operator things
     } // update controllers
 
-    public void setOperatorRumbleOn(boolean on){
+    public void setOperatorRumbleOn(boolean on) {
         operator.setRumble(on);
+    }
+
+    public void changeShooterLimelight(boolean shooter) {
+        shooterLimelight = shooter;
+        updateLimelight();
+    }
+
+    public void changeDriveLimelight(boolean drive) {
+        driveLimelight = drive;
+        updateLimelight();
+    }
+
+    // hood position = 57, setpoint = 58
+    // shooter rpm = 4978, setpoint = 4945
+    public void updateLimelight() {
+        if (driveLimelight || shooterLimelight) {
+            limelightStatus = true;
+        } else {
+            limelightStatus = false;
+        }
+    }
+
+    public static boolean getLimelight() {
+        return limelightStatus;
     }
 
     public void resetAll(){
@@ -167,8 +196,8 @@ public class Input {
     private double magVelocity_low = 0;
     private double magVelocity_high = 0;
     private double magVelocity_gate = 0;
-    private double magSpeed_low = .6; // keep this number positive
-    private double magSpeed_high = .5; // keep this number positive
+    private double magSpeed_low = 1; // keep this number positive
+    private double magSpeed_high = 1; // keep this number positive
     private double magSpeed_gate = 1;
 
     private int magLow; //0 = nothing, 1 = foreward, -1 = backward
@@ -381,15 +410,16 @@ public class Input {
         return climberServoLocked;
     }
 
+    // hood position = 57, setpoint = 58
+    // shooter rpm = 4978, setpoint = 4945
     // ============= Shooter ==============
     // operator controlled 
     private volatile boolean percentOutput = false;
     private volatile double flywheelPercent = 0; 
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
-    // private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
-    // private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
-    private volatile double[] hoodSetpoints = {0, 8, 15, 35, 34};
+    private volatile double[] hoodSetpoints = {0, 8, 15, 58, 34}; // charlie
+    // private volatile double[] hoodSetpoints = {0, 8, 15, 35, 34}; // bravo
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
@@ -399,15 +429,18 @@ public class Input {
     public void updateShooter(){
         // operator.setRumble(true);
         hoodFine += -operator.getRightYAxis() * 0.5;
-        shooterFine += -operator.getLeftYAxis() * 0.001;
+        shooterFine += -operator.getLeftYAxis();
 
         if (operator.getYButton()){ // layup shot 
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelPercent = .3 + shooterFine;
-            flywheelSpeed = 3000 + shooterFine;
+            flywheelSpeed = 4000 + shooterFine; // charlie
             hoodSetpoint = hoodSetpoints[1] + hoodFine;
+            changeShooterLimelight(false);
         } 
-        else if (operator.getBButton()){ // trench shot 
+        else if (operator.getBButton()){ // trench shot
+            changeShooterLimelight(true); 
+            distanceAway = Feedback.getDistanceAway();
             SmartDashboard.putNumber("flywheel spark velocity", Feedback.getShooterVelocity());
             // if (Feedback.getShooterVelocity() > -4000) {
             //     flywheelPercent = -.8;
@@ -415,25 +448,29 @@ public class Input {
             // else {
             //     flywheelPercent = -1;
             // }
-            flywheelPercent = 1 + shooterFine;
-            flywheelSpeed = 5500 + shooterFine;
+            // flywheelPercent = 1 + shooterFine;
+            // // flywheelSpeed = 4700 + shooterFine;
+            // flywheelSpeed = 4945 + shooterFine;
             // flywheelSpeed = 5163 - 8.69*Feedback.getDistanceAway();
             // flywheelPercent = -.9;
+            flywheelSpeed = 4453.812 + 3.517304*distanceAway - 0.01740226*Math.pow(distanceAway,2) + 0.00002727618*Math.pow(distanceAway,3);
             hoodSetpoint = hoodSetpoints[3] + hoodFine;
-            
         }
         else if (operator.getAButton()){ // trench shot  // longshot™
-            flywheelSpeed = 1000 + shooterFine;
+            // flywheelSpeed = 1000 + shooterFine;
+            flywheelSpeed = 4945 + shooterFine;
             hoodSetpoint = hoodSetpoints[3] + hoodFine;
             flywheelPercent = 0.8 + shooterFine;
         }
         else if (operator.getXButton()){ // limelight mode 
+            changeShooterLimelight(true);
             distanceAway = Feedback.getDistanceAway();
             // shoot everything = the whole sequence of events required in order to shoot 
             // flywheelSpeed = 5565.9 + 9.556*distanceAway - 0.735*Math.pow(distanceAway, 2) + 0.009*Math.pow(distanceAway, 3) - 0.00003*Math.pow(distanceAway, 4);
             // flywheelSpeed = -(-4863 + (-4405.726 + 4863.127)/Math.pow(1+(distanceAway/33.56476),8.755706)); // basic basic 
             // flywheelSpeed = -(-4800 + (-4405.726 + 4863.127)/Math.pow(1+(distanceAway/33.56476),8.755706)); // too high basic
-            flywheelSpeed = 4170.043 + 51.84663*distanceAway - 3.67*Math.pow(distanceAway,2) + 0.1085119*Math.pow(distanceAway,3) - 0.0009953746*Math.pow(distanceAway, 4);
+            // flywheelSpeed = 4170.043 + 51.84663*distanceAway - 3.67*Math.pow(distanceAway,2) + 0.1085119*Math.pow(distanceAway,3) - 0.0009953746*Math.pow(distanceAway, 4);
+            flywheelSpeed = -2.692982*distanceAway + 5301.947;
             // if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
             //     hoodSetpoint = hoodSetpoints[3] + hoodFine;
             // }

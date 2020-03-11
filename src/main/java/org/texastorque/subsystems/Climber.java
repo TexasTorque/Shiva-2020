@@ -112,13 +112,13 @@ public class Climber extends Subsystem {
                             }
                         } // bringing climb back
                         else {
-                            if (climberLeftPos > -133){
+                            if (climberLeftPos > -100){
                                 climberLeftSpeed = -1; // -1    
                             }
                             else {
                                 climberLeftSpeed = 0;
                             }
-                            if (climberRightPos < 133){
+                            if (climberRightPos < 100){
                                 climberRightSpeed = 1; // 1
                             }
                             else {

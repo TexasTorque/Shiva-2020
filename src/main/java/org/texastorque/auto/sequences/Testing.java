@@ -7,6 +7,8 @@ import org.texastorque.auto.Sequence;
 import org.texastorque.auto.commands.DriveDistance;
 import org.texastorque.auto.commands.DrivePath;
 import org.texastorque.auto.commands.DriveTurn;
+import org.texastorque.auto.commands.IntakeSet;
+import org.texastorque.auto.commands.MagAutoLoad;
 import org.texastorque.auto.commands.MagazineSet;
 import org.texastorque.auto.commands.ShooterSet;
 
@@ -27,7 +29,9 @@ public class Testing extends Sequence {
         // addBlock(block1);
 
         ArrayList<Command> block1 = new ArrayList<>();
-        block1.add(new DriveDistance(0, 150));
+        // block1.add(new DriveDistance(0, 150));
+        block1.add(new IntakeSet(0, 2, 0));
+        block1.add(new MagAutoLoad(0));
 
         addBlock(block1);
     }
