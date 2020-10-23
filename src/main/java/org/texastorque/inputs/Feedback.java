@@ -228,7 +228,8 @@ public class Feedback {
     }
 
     public static double getDistanceAway(){
-        return Math.abs(7.56*vOffset + 56.866);
+        // return Math.abs(7.56*vOffset + 56.866);
+        return Constants.DIFFERENCE_CENTERPORT_LIMELIGHT / Math.tan(Math.toRadians(vOffset + Constants.LIMELIGHT_ANGLE_OFFSET));
     }
 
     // ========== Gyro ==========

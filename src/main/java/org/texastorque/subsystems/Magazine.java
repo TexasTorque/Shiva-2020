@@ -167,13 +167,13 @@ public class Magazine extends Subsystem{
             if (!preShootStarted){
                 startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
                 preShootStarted = true;
-                System.out.println("in start");
+                // System.out.println("in start");
             }
             else if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < 0.25){
                 beltSpeed_gate = -1;    
                 beltSpeed_high = 0;
                 beltSpeed_low = 0;
-                System.out.println("in gate only");
+                // System.out.println("in gate only");
             }
             else {
                 beltSpeed_gate = -1;    
@@ -181,8 +181,8 @@ public class Magazine extends Subsystem{
                 // beltSpeed_low = -0.6;
                 beltSpeed_high = 0.8;
                 beltSpeed_low = input.getBen();
-                System.out.println("in normal");
-                System.out.println("ben" + beltSpeed_low);
+                // System.out.println("in normal");
+                // System.out.println("ben" + beltSpeed_low);
             }
             // beltSpeed_high = input.getMagHigh();
             // beltSpeed_low = input.getMagLow();

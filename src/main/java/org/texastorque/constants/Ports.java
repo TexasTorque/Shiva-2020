@@ -25,6 +25,7 @@ public class Ports {
     public static final int BELT_LOW = 11;
 
     public static final int SHOOTER_HOOD = 10; // done
+    public static final int SHOOTER_NEO = 14;
 
     // testing individual motors 
     public static final int TALON_PORT = 0;
@@ -39,4 +40,7 @@ public class Ports {
     
     public static final int MAG_SENSOR_HIGH = 1;
     public static final int MAG_SENSOR_LOW = 0;
+
+    //Control Panel
+    public static final int CP_MOTOR_PORT = 0;
 } // ports 

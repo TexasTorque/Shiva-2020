@@ -320,7 +320,7 @@ public class Input {
                 climbStarted_DT = true;
             }
             climberStatus = 1;
-            System.out.println("climber status" + climberStatus);
+            // System.out.println("climber status" + climberStatus);
         }
         else if (driver.getDPADDown()){ // retract climber (climb)
             climberStatus = -1;
@@ -362,6 +362,11 @@ public class Input {
 
     public boolean getServoLocked(){
         return climberServoLocked;
+    }
+
+    // ========== Control Panel ========
+    public boolean getControlPanelStart() {
+        return (operator.getDPADRight());
     }
 
     // ============= Shooter ==============
@@ -531,7 +536,7 @@ public class Input {
         //     lastState = RobotState.TELEOP;
         // }
         if (driver.getAButtonPressed()){
-            System.out.println("in vision");
+            // System.out.println("in vision");
             if(lastState != RobotState.VISION){
                 state.setRobotState(RobotState.VISION);
                 lastState = RobotState.VISION;

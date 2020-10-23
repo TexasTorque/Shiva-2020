@@ -47,7 +47,7 @@ public class DriveBase extends Subsystem{
             .setPGains(0.01)
             .setIGains(.0005)
             // .setIGains(0.0005)
-            // .setDGains(0.000005)
+            .setDGains(0.000005)
             .build();
         lowPass = new LowPassFilter(.5);
     }
@@ -87,6 +87,9 @@ public class DriveBase extends Subsystem{
             state = input.getState();
             SmartDashboard.putNumber("hOffset", Feedback.getXOffset());
             position = lowPass.filter(-Feedback.getXOffset());
+            System.out.println("notFiltered " + position);
+            SmartDashboard.putNumber("filteredOffsetVision", position);
+            System.out.println("filtered " + position);
             pidValue = - linePID.calculate(position);
             SmartDashboard.putNumber("pidValueVision", pidValue);
             leftSpeed = pidValue;

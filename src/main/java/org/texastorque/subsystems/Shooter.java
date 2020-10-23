@@ -26,9 +26,9 @@ public class Shooter extends Subsystem {
     // ======== variables ==========
     private ArrayList<KPID> pidValues = new ArrayList<>();
     private ScheduledPID shooterPID;
-    KPID kPIDLow = new KPID(0.08, 0, 8, 0.00902, -.5, .5); // tuned for 3000 rpm 
-    KPID kPIDHigh = new KPID(0.2401, 0, 5, 0.00902, -.5, .5); // tuned for 6000 rpm 
+
     KPID hoodkPID = new KPID( 0.1, 0, 0, 0, -1, 1); //Hood PID for all positions
+    KPID neoKPID = new KPID(0,0,0,0,0,1);
 
     private double flywheelSpeed;
     private double flywheelPercent;
@@ -36,14 +36,17 @@ public class Shooter extends Subsystem {
     private double hoodSetpoint;
     
     // =========== motors ============
-    private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
+    // private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
+    private TorqueSparkMax flywheel = new TorqueSparkMax(Ports.SHOOTER_NEO);
     private TorqueSparkMax hood = new TorqueSparkMax(Ports.SHOOTER_HOOD);
 
     // =========================================== methods ==============================================
     private Shooter() {
         //Configuring Motors
-        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        flywheel.invertFollower();
+        flywheel.configurePID(neoKPID);
+        //**for talon shooter
+        // flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        // flywheel.invertFollower();
         hood.configurePID(hoodkPID);
         hood.tareEncoder();
         // pidValues.add(kPIDLow);
@@ -102,30 +105,35 @@ public class Shooter extends Subsystem {
         //         pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         //     //================Hood==============
         // } // if in teleop
+            
+        //talon duo 775s
         flywheelPercent = input.getFlywheelPercent();
         hoodSetpoint = input.getHoodSetpoint();
-        flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-        shooterPID.changeSetpoint(flywheelSpeed);
-        pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        flywheelSpeed = input.getFlywheelSpeed(); //*Constants.RPM_NEO_SPARKMAX_CONVERSION;
+        // shooterPID.changeSetpoint(flywheelSpeed);
+        // pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+
         output();
     } // run at all times
 
     @Override
     public void output() {
-        hood.set(hoodSetpoint, ControlType.kPosition);
-        SmartDashboard.putNumber("hood output", hood.getCurrent());
-        // flywheel.set(flywheelPercent);
-        if (input.getFlywheelPercentMode()){
-            flywheel.set(flywheelPercent);
-        }
-        else {
-            if(pidOutput > 0){
-                flywheel.set(0);
-            } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
-            else{
-                flywheel.set(-pidOutput);
-            }
-        }
+        // hood.set(hoodSetpoint, ControlType.kPosition);
+        // SmartDashboard.putNumber("hood output", hood.getCurrent());
+        // // flywheel.set(flywheelPercent);
+        // if (input.getFlywheelPercentMode()){
+        //     flywheel.set(flywheelPercent);
+        // }
+        // else {
+        //     if(pidOutput > 0){
+        //         flywheel.set(0);
+        //     } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
+        //     else{
+        //         flywheel.set(-pidOutput);
+        //     }
+        // }
+        flywheel.set(flywheelSpeed, ControlType.kVelocity);
+
     } // output
 
     // =========== continuous ==========
@@ -143,10 +151,12 @@ public class Shooter extends Subsystem {
     public void smartDashboard() {
         SmartDashboard.putNumber("flywheel put speed", input.getFlywheelSpeed());
         SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
+        SmartDashboard.putNumber("flywheel raw speed", flywheel.getVelocity());
+        SmartDashboard.putNumber("flywheel maybe rpm", flywheel.getVelocity()*Constants.RPM_NEO_SPARKMAX_CONVERSION);
         SmartDashboard.putBoolean("Spun Up", Math.abs(feedback.getShooterVelocity() - flywheelSpeed) < 15); 
         // SmartDashboard.putBoolean("Spun Up", (Math.abs(Math.abs(flywheelSpeed) - Math.abs(input.getFlywheelSpeed())) < 50));
-        SmartDashboard.putNumber("flywheel velocity", feedback.getShooterVelocity());
-        SmartDashboard.putNumber("pidOutput", pidOutput);
+        // SmartDashboard.putNumber("flywheel velocity", feedback.getShooterVelocity());
+        // SmartDashboard.putNumber("pidOutput", pidOutput);
         SmartDashboard.putNumber("Hood Position", hood.getPosition());
         SmartDashboard.putNumber("Hood Setpoint", hoodSetpoint);
         SmartDashboard.putNumber("distance away", Feedback.getDistanceAway());
