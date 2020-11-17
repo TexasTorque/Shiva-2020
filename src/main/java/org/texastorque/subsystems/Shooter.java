@@ -36,8 +36,8 @@ public class Shooter extends Subsystem {
     private double hoodSetpoint;
     
     // =========== motors ============
-    // private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
-    private TorqueSparkMax flywheel = new TorqueSparkMax(Ports.SHOOTER_NEO);
+    private TorqueTalon flywheel = new TorqueTalon(Ports.FLYWHEEL_LEAD);
+    // private TorqueTalon flywheel = new TorqueTalon(Ports.SHOOTER_NEO);
     private TorqueSparkMax hood = new TorqueSparkMax(Ports.SHOOTER_HOOD);
 
     // =========================================== methods ==============================================
@@ -45,8 +45,8 @@ public class Shooter extends Subsystem {
         //Configuring Motors
         flywheel.configurePID(neoKPID);
         //**for talon shooter
-        // flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
-        // flywheel.invertFollower();
+        flywheel.addFollower(Ports.FLYWHEEL_FOLLOW);
+        flywheel.invertFollower();
         hood.configurePID(hoodkPID);
         hood.tareEncoder();
         // pidValues.add(kPIDLow);
@@ -94,15 +94,15 @@ public class Shooter extends Subsystem {
         //     shooterPID.changeSetpoint(flywheelSpeed);
         //     pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         // } // if in autonomous
-        // if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
+        if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
         //     //====================Flywheel====================
         //     //When Encoder is in Spark Max!
-        //         flywheelPercent = input.getFlywheelPercent();
-        //         hoodSetpoint = input.getHoodSetpoint();
-        //         pidOutput = input.getFlywheelSpeed();
-        //         flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
-        //         shooterPID.changeSetpoint(flywheelSpeed);
-        //         pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+                 flywheelPercent = input.getFlywheelPercent();
+                 hoodSetpoint = input.getHoodSetpoint();
+                 pidOutput = input.getFlywheelSpeed();
+                 flywheelSpeed = input.getFlywheelSpeed()*tempConversionSpark;
+                 shooterPID.changeSetpoint(flywheelSpeed);
+                 pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         //     //================Hood==============
         // } // if in teleop
             
@@ -111,28 +111,32 @@ public class Shooter extends Subsystem {
         hoodSetpoint = input.getHoodSetpoint();
         flywheelSpeed = input.getFlywheelSpeed(); //*Constants.RPM_NEO_SPARKMAX_CONVERSION;
         // shooterPID.changeSetpoint(flywheelSpeed);
-        // pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
+        pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
 
-        output();
+        output();}
     } // run at all times
 
     @Override
     public void output() {
-        // hood.set(hoodSetpoint, ControlType.kPosition);
-        // SmartDashboard.putNumber("hood output", hood.getCurrent());
-        // // flywheel.set(flywheelPercent);
-        // if (input.getFlywheelPercentMode()){
-        //     flywheel.set(flywheelPercent);
-        // }
-        // else {
-        //     if(pidOutput > 0){
-        //         flywheel.set(0);
-        //     } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
-        //     else{
-        //         flywheel.set(-pidOutput);
-        //     }
-        // }
-        flywheel.set(flywheelSpeed, ControlType.kVelocity);
+        hood.set(hoodSetpoint, ControlType.kPosition);
+        SmartDashboard.putNumber("hood output", hood.getCurrent());
+        
+        //flywheel.set(flywheelPercent); 
+        
+        if (input.getFlywheelPercentMode()){
+            flywheel.set(flywheelPercent);
+        }
+        else {
+            if(pidOutput > 0){
+                flywheel.set(0);
+            } // allows motor to coast rather than fighting motion when slowing down (for Spark configuration)
+            else{
+                flywheel.set(-pidOutput);
+            }
+        }
+        
+        // flywheel.set(flywheelSpeed, ControlType.kVelocity);
+        SmartDashboard.putNumber("shooter input 2", flywheelSpeed);
 
     } // output
 
@@ -149,6 +153,8 @@ public class Shooter extends Subsystem {
     // =========== others ===========
     @Override
     public void smartDashboard() {
+
+
         SmartDashboard.putNumber("flywheel put speed", input.getFlywheelSpeed());
         SmartDashboard.putNumber("flywheel setpoint", flywheelSpeed);
         SmartDashboard.putNumber("flywheel raw speed", flywheel.getVelocity());

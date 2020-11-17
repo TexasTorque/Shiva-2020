@@ -7,6 +7,8 @@ import org.texastorque.inputs.State.RobotState;
 import org.texastorque.subsystems.Climber;
 import org.texastorque.torquelib.util.GenericController;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Input {
     private static volatile Input instance;
 
@@ -209,7 +211,7 @@ public class Input {
         }
 
         if(operator.getDPADDown()){ // gate on its own 
-            magVelocity_gate = -magSpeed_gate;
+            magVelocity_gate = magSpeed_gate;
         }
         if(operator.getDPADLeft()){
             magVelocity_gate = magSpeed_gate;
@@ -369,19 +371,20 @@ public class Input {
         return (operator.getDPADRight());
     }
 
-    // ============= Shooter ==============
+    // ============= Shooter ==============\[]
     // operator controlled 
     private volatile boolean percentOutput = false;
     private volatile double flywheelPercent = 0; 
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
-    // private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
-    private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
+    private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
+    // private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;
     private volatile double shooterFine = 0;
     private volatile double flywheelEncoderSpeed = 0;
     private volatile double distanceAway = 0;
+    
 
     public void updateShooter(){
         hoodSetpoint = hoodSetpoints[0];
@@ -389,7 +392,9 @@ public class Input {
         flywheelPercent = 0;
 
         hoodFine += -operator.getRightYAxis() * 10;
+        SmartDashboard.putNumber("hood input", hoodFine);
         shooterFine += -operator.getLeftYAxis() * 100;
+        SmartDashboard.putNumber("shooter input", shooterFine);
 
         if (operator.getYButton()){ // layup shot 
             Feedback.setLimelightOn(false);
@@ -419,6 +424,7 @@ public class Input {
         else if (operator.getAButton()){ // longshot™
             Feedback.setLimelightOn(false);
             flywheelSpeed = 8000 + shooterFine;
+
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[3] + hoodFine;
             }
