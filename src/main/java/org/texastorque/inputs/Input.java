@@ -384,7 +384,8 @@ public class Input {
     private volatile double flywheelPercent = 0; 
     private volatile double flywheelSpeed = 0;
     // min ---- mid ----- max 
-    private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
+    //private volatile double[] hoodSetpoints = {0, 1, 15, 36, 34};
+    private volatile double[] hoodSetpoints = {0, 10, 40, 53, 51};
     // private volatile double[] hoodSetpoints = {0, 8, 15, 51, 34};
     private volatile double hoodSetpoint;
     private volatile double hoodFine = 0;

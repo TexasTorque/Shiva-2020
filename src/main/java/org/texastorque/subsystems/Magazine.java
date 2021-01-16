@@ -40,7 +40,8 @@ public class Magazine extends Subsystem{
     // private double magSpeed_low = -.6; // keep this number positive
     // private double magSpeed_high = .5; // keep this number positive
     private double magSpeed_low = -.2; // keep this number positive
-    private double magSpeed_high = .3; // keep this number positive
+    private double magSpeed_high = .4; // keep this number positive
+    private double magSpeed_gate = 0;
 
     // ============ motors ==============
     private TorqueSparkMax beltHigh = new TorqueSparkMax(Ports.BELT_HIGH);
@@ -140,7 +141,15 @@ public class Magazine extends Subsystem{
                         }
                     }
                 } */
-                
+                beltSpeed_high = magSpeed_high;
+                beltSpeed_low = magSpeed_low;
+                beltSpeed_gate = magSpeed_gate;
+                if (Feedback.magLowCheck.get()) {
+                    beltHigh.set(0);
+                }
+
+                //output();
+
 
 
 
