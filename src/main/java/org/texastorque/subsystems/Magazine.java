@@ -126,6 +126,7 @@ public class Magazine extends Subsystem{
 
             //beltSpeed_high = 0;
             //beltSpeed_low = 0;
+            /*
             if (input.getAutoMagTrue()){
                 
                 //start upper and lower mag
@@ -144,7 +145,7 @@ public class Magazine extends Subsystem{
                 beltSpeed_high = magSpeed_high;
                 beltSpeed_low = magSpeed_low;
                 beltSpeed_gate = magSpeed_gate;
-                if (Feedback.magLowCheck.get()) {
+                if (!(Feedback.magLowCheck.get())) { // cleanup
                     beltHigh.set(0);
                 }
 
@@ -172,6 +173,7 @@ public class Magazine extends Subsystem{
                 // else if (highMagFlo == -1){
                 //     beltSpeed_high = - magSpeed_high;   
                 // } // stops balls from going past high mag // not working code for delay to stop on top
+                /*
                 if (highMagFlo == 1 && Feedback.getHighMagPast()) {
 
                 }
@@ -212,7 +214,8 @@ public class Magazine extends Subsystem{
                 else if (lowMagFlo == -1) {
                     beltSpeed_low = -magSpeed_low;
                 }// on the third ball, wait for a bit then stop running the low mag
-            }
+            } */
+            
             else {
                 beltSpeed_high = input.getMagHigh();
                 beltSpeed_low = input.getMagLow();

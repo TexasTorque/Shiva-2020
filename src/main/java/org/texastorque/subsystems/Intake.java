@@ -6,11 +6,14 @@ import org.texastorque.inputs.*;
 import org.texastorque.constants.*;
 import org.texastorque.torquelib.component.TorqueMotor;
 import org.texastorque.torquelib.component.TorqueSparkMax;
+import org.texastorque.torquelib.component.TorqueTalon;
 import org.texastorque.torquelib.component.TorqueMotor.ControllerType;
 import org.texastorque.util.KPID;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.ControlType;
 
 import java.util.ArrayList;
@@ -30,15 +33,18 @@ public class Intake extends Subsystem{
     // =========== motors ===========
     private TorqueSparkMax rotary_left = new TorqueSparkMax(Ports.INTAKE_ROTARY_LEFT);
     private TorqueSparkMax rotary_right = new TorqueSparkMax(Ports.INTAKE_ROTARY_RIGHT);
-    private TorqueSparkMax rollers = new TorqueSparkMax(Ports.INTAKE_ROLLERS);
-
+    // Needed for Charlie
+    //private TorqueSparkMax rollers = new TorqueSparkMax(Ports.INTAKE_ROLLERS);
+    //Needed for Bravo
+    private VictorSPX rollers = new VictorSPX(Ports.INTAKE_ROLLERS);
     // =================== methods ==================
     private Intake(){
         rotary_left.configurePID(kPIDRotary_left);
         rotary_right.configurePID(kPIDRotary_right);
         rotary_left.tareEncoder();
         rotary_right.tareEncoder();
-        rollers.setAlternateEncoder();
+        //For Charlie
+        //rollers.setAlternateEncoder();
     } // constructor 
 
     @Override
@@ -82,7 +88,7 @@ public class Intake extends Subsystem{
     
     @Override 
     public void output(){
-        rollers.set(rollerSpeed);
+        rollers.set(ControlMode.PercentOutput, -rollerSpeed);
         SmartDashboard.putNumber("output_left_current", rotary_left.getCurrent());
         SmartDashboard.putNumber("output_right_current", rotary_right.getCurrent());
         rotary_left.set(rotaryPosition_left, ControlType.kPosition);

@@ -18,6 +18,7 @@ public class Ports {
     // neo 550 CAN id - DO NOT HAVE ID 0 IT DOES NOT WORK
     public static final int INTAKE_ROTARY_LEFT = 5; // left side spark max 
     public static final int INTAKE_ROTARY_RIGHT = 6; // right side spark max 
+    //For Charlie
     public static final int INTAKE_ROLLERS = 7; // rollers
     
     public static final int BELT_HIGH = 8; // done
