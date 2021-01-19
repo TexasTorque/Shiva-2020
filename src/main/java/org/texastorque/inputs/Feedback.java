@@ -28,6 +28,7 @@ public class Feedback {
 
     //mag infared sensors
     private static DigitalInput magHighCheck;
+    private static DigitalInput magMidCheck;
     private static DigitalInput magLowCheck;
 
     // Conversions
@@ -50,6 +51,7 @@ public class Feedback {
 
     private Feedback() {
         magHighCheck = new DigitalInput(Ports.MAG_SENSOR_HIGH);
+        magMidCheck = new DigitalInput(Ports.MAG_SENSOR_MID);
         magLowCheck = new DigitalInput(Ports.MAG_SENSOR_LOW);
         NX_gyro = new AHRS(SPI.Port.kMXP);
     } // constructor
@@ -162,12 +164,14 @@ public class Feedback {
 
     private static boolean highMag = false;
     private static boolean lowMag = false;
+    private static boolean midMag = false;
     private static boolean highMagPast = false;
 
     private boolean ballLast;
 
     public void updateMagazine(){
         highMag = !magHighCheck.get();
+        midMag = !magMidCheck.get();
         lowMag = !magLowCheck.get();
 
         if (ballLast != lowMag){
@@ -200,6 +204,10 @@ public class Feedback {
 
     public static boolean getMagLow(){ // returns true for seeing a ball
         return lowMag;
+    }
+
+    public static boolean getMagMid(){
+        return midMag;
     }
     // ======== limelight ========
 
@@ -269,6 +277,7 @@ public class Feedback {
         SmartDashboard.putNumber("hOffset", hOffset);
         SmartDashboard.putNumber("rotaryLeft_position", rotaryPosition_left);
         SmartDashboard.putNumber("rotaryRight_position", rotaryPosition_right);
+        SmartDashboard.putBoolean("magcheckMid", magMidCheck.get());
         SmartDashboard.putBoolean("magcheckHigh", magHighCheck.get());
         SmartDashboard.putBoolean("magcheckLow", magLowCheck.get());
     } // stuff to put in smart dashboard

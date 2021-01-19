@@ -32,6 +32,7 @@ public class AutoManager {
         autoSequences.add(new ShootButWorse()); // Deadshot 
         autoSequences.add(new ShootButNotAsBad()); // Liveshot
         autoSequences.add(new Testing()); // Testing 
+        autoSequences.add(new BarrelMode());
 
         // SmartDashboard.putStringArray("AutoList", autoSequenceNames);
         // System.out.println(working);
@@ -40,6 +41,7 @@ public class AutoManager {
         autoSelector.addOption("Deadshot", "Deadshot"); // shoot but worse
         autoSelector.addOption("Liveshot", "Liveshot"); // shoot but not as bad 
         autoSelector.addOption("Testing", "Testing"); // testing 
+        autoSelector.addOption("Barrel Racing Path", "Barrel Racing Path");
 
         SmartDashboard.putData("autos", autoSelector);
         System.out.println("All auto sequences loaded.");
@@ -73,6 +75,9 @@ public class AutoManager {
                 break;
             case "Testing": // testing 
                 currentSequence = autoSequences.get(4);
+                break;
+            case "Barrel Racing Path":
+                currentSequence = autoSequences.get(5);
                 break;
             default: // just change the value in here to test
                 currentSequence = autoSequences.get(2);

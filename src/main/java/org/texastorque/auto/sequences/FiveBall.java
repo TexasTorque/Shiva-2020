@@ -20,6 +20,11 @@ public class FiveBall extends Sequence{
         // ArrayList<Command> block2 = new ArrayList<>();
         // // block2.add(new DrivePath(delay, points, forward)
 
+        /*  I wonder what this was for
+        ArrayList<Command> messyPaths = new ArrayList<>();
+        messyPaths.add( new DrivePath(delay, points, forward))
+        */
+
         // ArrayList<Command> block3 = new ArrayList<>();
         // // intake magazine and intake intake at same time 
 

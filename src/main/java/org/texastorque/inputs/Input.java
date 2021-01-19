@@ -276,6 +276,7 @@ public class Input {
             magVelocity_low = 0;
         }
     } // set Low mag 
+
     
     // ============= Climber ==============
     // driver controlled 

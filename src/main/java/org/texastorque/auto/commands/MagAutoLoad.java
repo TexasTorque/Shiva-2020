@@ -9,6 +9,7 @@ public class MagAutoLoad extends Command {
     boolean ballLast;
     
     boolean lowMagBall;
+    boolean midMagBall;
     boolean highMagBall;
     
     boolean keepGoing;
@@ -17,6 +18,11 @@ public class MagAutoLoad extends Command {
     double delayTime;
 
     int count;
+    int midMagVal;
+    int lowMagVal;
+    int highMagVal;
+
+    int numCase;
 
     // make it so that shooting resets the count to zero rather than each time the button is pressed
 
@@ -29,6 +35,7 @@ public class MagAutoLoad extends Command {
         ballLast = true;
 
         lowMagBall = true;
+        midMagBall = true;
         highMagBall = true;
         
         keepGoing = false;
@@ -36,12 +43,38 @@ public class MagAutoLoad extends Command {
         delayTime = 0.1; // change this number based on what ends up working best 
 
         count = 0;
+
+        midMagVal = 0;
+        lowMagVal = 0;
+        highMagVal = 0;
+
+        numCase = 0;
     }
 
     @Override
     protected void continuous() {
+          
         lowMagBall = Feedback.getMagLow();
+        midMagBall = Feedback.getMagMid();
         highMagBall = Feedback.getMagHigh();
+        if(lowMagBall){
+            if(!midMagBall){
+                input.setLowMag(true);
+            }
+            if(midMagBall&&!highMagBall){
+                input.setHighMag(true);
+                input.setLowMag(true);
+            }
+        }
+        //recheck just in case
+        lowMagBall = Feedback.getMagLow();
+        midMagBall = Feedback.getMagMid();
+        highMagBall = Feedback.getMagHigh();
+        if(midMagBall){
+            if(!highMagBall){
+                input.setHighMag(true);
+            }
+        }
 
         if (state.getRobotState() == RobotState.MAGLOAD){
             keepGoing = true;
@@ -49,6 +82,7 @@ public class MagAutoLoad extends Command {
             keepGoing = false;
         }
 
+        /*
         if (ballLast != lowMagBall){
             if (!lowMagBall){
                 count++;
@@ -98,7 +132,7 @@ public class MagAutoLoad extends Command {
                 keepGoing = false;
             }
         } // ball 3
-
+        */
     } // continuous 
 
     @Override
