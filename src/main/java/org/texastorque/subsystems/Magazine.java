@@ -39,8 +39,8 @@ public class Magazine extends Subsystem{
 
     // private double magSpeed_low = -.6; // keep this number positive
     // private double magSpeed_high = .5; // keep this number positive
-    private double magSpeed_low = -.2; // keep this number positive
-    private double magSpeed_high = .4; // keep this number positive
+    private double magSpeed_low = -.5; // keep this number positive
+    private double magSpeed_high = .7; // keep this number positive
     private double magSpeed_gate = 0;
 
     // ============ motors ==============
@@ -124,6 +124,10 @@ public class Magazine extends Subsystem{
             highMagFlo = input.getMagHighFlow();
             beltSpeed_gate = input.getMagGate();
 
+
+            
+
+
             //beltSpeed_high = 0;
             //beltSpeed_low = 0;
             /*
@@ -142,13 +146,39 @@ public class Magazine extends Subsystem{
                         }
                     }
                 } */
+
                 beltSpeed_high = magSpeed_high;
                 beltSpeed_low = magSpeed_low;
                 beltSpeed_gate = magSpeed_gate;
-                if (!(Feedback.magLowCheck.get())) { // cleanup
-                    beltHigh.set(0);
+                if (input.getAutoMagTrue()) {
+                    if ((Feedback.magHighCheck.get()) && (Feedback.magLowCheck.get()) && Feedback.getCount() == 3) { // cleanup
+                        //beltHigh.set(0);
+                        beltSpeed_high = 0;
+                        beltSpeed_low = 0;
+                    }
+                    
+                    else if (Feedback.magHighCheck.get()) {
+                        beltHigh.set(0);
+                        beltSpeed_high = 0;
+                        beltLow.set(-.3);
+                        if (Feedback.magLowCheck.get()) {
+                            beltLow.set(0);
+                        }
+                    }
+                    
+                    else {
+                        beltSpeed_high = magSpeed_high;
+                        beltSpeed_low = magSpeed_low;
+                    }
                 }
-
+                else {
+                    input.updateMagazine();
+                }
+                /*else {
+                    beltHigh.set(input.getMagHigh());
+                    beltLow.set(input.getMagLow());
+                }*/
+               
                 //output();
 
 
@@ -216,11 +246,7 @@ public class Magazine extends Subsystem{
                 }// on the third ball, wait for a bit then stop running the low mag
             } */
             
-            else {
-                beltSpeed_high = input.getMagHigh();
-                beltSpeed_low = input.getMagLow();
-                beltSpeed_gate = input.getMagGate();
-            }
+            
             if (beltSpeed_gate != 0){
                 startHighMag = false;
                 feedback.resetCount();

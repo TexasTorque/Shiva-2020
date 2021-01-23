@@ -37,6 +37,7 @@ public class MagAutoLoad extends Command {
 
         count = 0;
     }
+    
 
     @Override
     protected void continuous() {

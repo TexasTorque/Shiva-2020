@@ -205,12 +205,12 @@ public class Input {
         }
         else if (operator.getLeftBumper()){ // high mag - balls out 
             magHigh = -1;
-            magVelocity_high = - magSpeed_high;
+            magVelocity_high = -magSpeed_high;
         }
         if (operator.getRightTrigger()){ // low mag - balls in 
             magLow = 1;
-            magVelocity_low = - operator.getRightZAxis() * magSpeed_low;
-            magAutoBenTest = -0.4;
+            magVelocity_low =  -operator.getRightZAxis() * magSpeed_low;
+            //magAutoBenTest = -0.4;
         }
         else if (operator.getRightBumper()){ // low mag - balls out
             magLow = -1;
