@@ -1,5 +1,17 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="autoMagHigh" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="347"/>
+	</widget>
+	<widget field="autoMagValLow" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="410"/>
+	</widget>
+	<widget field="lowMagOn" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="326"/>
+	</widget>
+	<widget field="Auto Selector" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="8"/>
+	</widget>
 	<widget field="talonshooterencoder converted" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="478" y="285"/>
 	</widget>

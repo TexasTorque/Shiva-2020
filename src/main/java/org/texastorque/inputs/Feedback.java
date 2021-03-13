@@ -69,10 +69,10 @@ public class Feedback {
 
     // ==============Drive Train===============
     // list of variables DriveTrain
-    private double leftTare = 0;
-    private double rightTare = 0;
-    private double leftPositionDT;
-    private double rightPositionDT;
+    private static double leftTare = 0;
+    private static double rightTare = 0;
+    private static double leftPositionDT;
+    private static double rightPositionDT;
     private double leftVelocityDT;
     private double rightVelocityDT;
 
@@ -93,13 +93,15 @@ public class Feedback {
         this.rightVelocityDT = rightVelocityDT;
     }
 
+    
+
 
     // accessor methods DriveTrain
-    public double getDBLeftDistance() {
+    public static double getDBLeftDistance() {
         return -leftPositionDT + leftTare; 
     }
 
-    public double getDBRightDistance() {
+    public static double getDBRightDistance() {
         return rightPositionDT - rightTare;
     }
 

@@ -32,6 +32,7 @@ public class AutoManager {
         autoSequences.add(new ShootButWorse()); // Deadshot 
         autoSequences.add(new ShootButNotAsBad()); // Liveshot
         autoSequences.add(new Testing()); // Testing 
+        autoSequences.add(new PowerPort());
 
         // SmartDashboard.putStringArray("AutoList", autoSequenceNames);
         // System.out.println(working);
@@ -40,6 +41,7 @@ public class AutoManager {
         autoSelector.addOption("Deadshot", "Deadshot"); // shoot but worse
         autoSelector.addOption("Liveshot", "Liveshot"); // shoot but not as bad 
         autoSelector.addOption("Testing", "Testing"); // testing 
+        autoSelector.addOption("PowerPort", "PowerPort");
 
         SmartDashboard.putData("autos", autoSelector);
         System.out.println("All auto sequences loaded.");
@@ -74,6 +76,8 @@ public class AutoManager {
             case "Testing": // testing 
                 currentSequence = autoSequences.get(4);
                 break;
+            case "PowerPort":
+                currentSequence = autoSequences.get(5);
             default: // just change the value in here to test
                 currentSequence = autoSequences.get(2);
                 break;

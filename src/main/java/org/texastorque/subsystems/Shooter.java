@@ -94,6 +94,9 @@ public class Shooter extends Subsystem {
         //     shooterPID.changeSetpoint(flywheelSpeed);
         //     pidOutput = shooterPID.calculate(feedback.getShooterVelocity());
         // } // if in autonomous
+        if (state == RobotState.AUTO) {
+            output();
+        }
         if (state == RobotState.TELEOP || state == RobotState.VISION || state == RobotState.SHOOTING || state == RobotState.MAGLOAD) {
         //     //====================Flywheel====================
         //     //When Encoder is in Spark Max!
@@ -118,13 +121,16 @@ public class Shooter extends Subsystem {
 
     @Override
     public void output() {
-        hood.set(hoodSetpoint, ControlType.kPosition);
+        //System.out.println("got to shooter");
+        hood.set(input.getHoodSetpoint(), ControlType.kPosition);
         SmartDashboard.putNumber("hood output", hood.getCurrent());
         
         //flywheel.set(flywheelPercent); 
         
         if (input.getFlywheelPercentMode()){
-            flywheel.set(flywheelPercent);
+            //System.out.println("got to shooter");
+            SmartDashboard.putNumber("got to shooter 2", input.getFlywheelPercent());
+            flywheel.set(input.getFlywheelPercent());
         }
         else {
             if(pidOutput > 0){

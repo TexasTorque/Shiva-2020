@@ -128,8 +128,33 @@ public class Magazine extends Subsystem{
             
 
 
-            //beltSpeed_high = 0;
-            //beltSpeed_low = 0;
+            beltSpeed_high = 0;
+            beltSpeed_low = 0;
+
+            // if (input.getAutoMagTrue()) {
+            //     beltSpeed_high = magSpeed_high;
+            //         beltSpeed_low = magSpeed_low;
+            //         beltSpeed_gate = magSpeed_gate;
+            //         if ((Feedback.magHighCheck.get()) && (Feedback.magLowCheck.get()) && Feedback.getCount() == 3) { // cleanup
+            //             //beltHigh.set(0);
+            //             beltSpeed_high = 0;
+            //             beltSpeed_low = 0;
+            //         }
+                    
+            //         else if (Feedback.magHighCheck.get()) {
+            //             beltHigh.set(0);
+            //             beltSpeed_high = 0;
+            //             beltLow.set(-.3);
+            //             if (Feedback.magLowCheck.get()) {
+            //                 beltLow.set(0);
+            //             }
+            //         }
+                    
+            //         else {
+            //             beltSpeed_high = magSpeed_high;
+            //             beltSpeed_low = magSpeed_low;
+            //         }
+            // }
             /*
             if (input.getAutoMagTrue()){
                 
@@ -147,10 +172,11 @@ public class Magazine extends Subsystem{
                     }
                 } */
 
-                beltSpeed_high = magSpeed_high;
-                beltSpeed_low = magSpeed_low;
-                beltSpeed_gate = magSpeed_gate;
+                
                 if (input.getAutoMagTrue()) {
+                    beltSpeed_high = magSpeed_high;
+                    beltSpeed_low = magSpeed_low;
+                    beltSpeed_gate = magSpeed_gate;
                     if ((Feedback.magHighCheck.get()) && (Feedback.magLowCheck.get()) && Feedback.getCount() == 3) { // cleanup
                         //beltHigh.set(0);
                         beltSpeed_high = 0;
@@ -171,8 +197,10 @@ public class Magazine extends Subsystem{
                         beltSpeed_low = magSpeed_low;
                     }
                 }
-                else {
-                    input.updateMagazine();
+                else { // load mag 
+                    beltSpeed_high = input.getMagHigh();
+                    beltSpeed_low = input.getMagLow();
+                    beltSpeed_gate = input.getMagGate();
                 }
                 /*else {
                     beltHigh.set(input.getMagHigh());
@@ -276,11 +304,12 @@ public class Magazine extends Subsystem{
                 beltSpeed_gate = -1;    
                 // beltSpeed_high = 0.5;
                 // beltSpeed_low = -0.6;
-                beltSpeed_high = 0.8;
-                beltSpeed_low = input.getBen();
+                beltSpeed_high = 1;
+                //beltSpeed_low = input.getBen();
+                beltSpeed_low = -1;
                 // System.out.println("in normal");
                 // System.out.println("ben" + beltSpeed_low);
-            }
+              }
             // beltSpeed_high = input.getMagHigh();
             // beltSpeed_low = input.getMagLow();
             // beltSpeed_gate = input.getMagGate();

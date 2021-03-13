@@ -14,11 +14,14 @@ public class IntakeSet extends Command{
 
     @Override
     protected void init() {
-        // input.setRotaryPosition(rotaryPos);
+        input.setRotaryPosition(rotaryPos);
+
     }
 
     @Override
-    protected void continuous() {}
+    protected void continuous() {
+        input.setRollerSpeed(.8);
+    }
 
     @Override
     protected boolean endCondition() {

@@ -14,6 +14,7 @@ public class Baseline extends Sequence{
     protected void init(){
         ArrayList<Command> block1 = new ArrayList<>();
         block1.add(new DriveTime(0, 0.7,-0.3));
+        //block1.add(new ShooterSet(0, .8, 1, 2));
         addBlock(block1);
     }
 } // cross line 

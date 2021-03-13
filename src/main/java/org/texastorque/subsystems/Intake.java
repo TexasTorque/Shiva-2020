@@ -53,7 +53,7 @@ public class Intake extends Subsystem{
     @Override
     public void teleopInit(){
         rotary_left.tareEncoder();
-        rotary_right.tareEncoder();
+        //rotary_right.tareEncoder();
     } // teleop init
 
     @Override 
@@ -88,11 +88,11 @@ public class Intake extends Subsystem{
     
     @Override 
     public void output(){
-        rollers.set(ControlMode.PercentOutput, -rollerSpeed);
+        rollers.set(ControlMode.PercentOutput, rollerSpeed);
         SmartDashboard.putNumber("output_left_current", rotary_left.getCurrent());
         SmartDashboard.putNumber("output_right_current", rotary_right.getCurrent());
         rotary_left.set(rotaryPosition_left, ControlType.kPosition);
-        rotary_right.set(rotaryPosition_right, ControlType.kPosition);
+        //rotary_right.set(rotaryPosition_right, ControlType.kPosition);
     } // output
 
     // ============= continuous =============

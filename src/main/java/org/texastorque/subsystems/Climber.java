@@ -29,8 +29,11 @@ public class Climber extends Subsystem {
 
     // private double leftRatchetPos = 1;
     // private double rightRatchetPos = 0.5;
-    private double leftRatchetPos = 0.75;
-    private double rightRatchetPos = -0.75;
+    //private double leftRatchetPos = .75;
+    //private double rightRatchetPos = -0.75;
+
+    private double leftRatchetPos = 0;
+    private double rightRatchetPos = 0;
 
     // =================== methods and important stuff ================
     public Climber() {
@@ -94,10 +97,11 @@ public class Climber extends Subsystem {
                             notStarted = false;
                             inReverse = true;
                             startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
+                            
                             System.out.println("startingclimb");
                         } // unlocking ratchets
                         else if (inReverse) {
-                            if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .1) {
+                            if (edu.wpi.first.wpilibj.Timer.getFPGATimestamp() - startTime < .250) {
                                 climberLeftSpeed = 0.1;
                                 climberRightSpeed = -0.1;
                             } else {

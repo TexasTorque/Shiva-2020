@@ -2,6 +2,8 @@ package org.texastorque.auto.commands;
 
 import org.texastorque.auto.Command;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class ShooterPercentSet extends Command {
 
     private double percent;
@@ -21,11 +23,14 @@ public class ShooterPercentSet extends Command {
         startTime = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
         input.setFlywheelOutputType(true);
         input.setHoodSetpoint(hoodSetpoint);
+        System.out.println(percent);
     }
 
     @Override
     protected void continuous() {
+        SmartDashboard.putNumber("got to shooter", percent);
         input.setFlywheelPercent(percent);
+
     }
 
     @Override

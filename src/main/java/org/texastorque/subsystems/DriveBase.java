@@ -19,6 +19,8 @@ public class DriveBase extends Subsystem{
     private double leftSpeed = 0.0;
     private double rightSpeed = 0.0;
 
+    private double speedMult = .575;
+
     private ScheduledPID linePID;
     private LowPassFilter lowPass;
 
@@ -78,8 +80,11 @@ public class DriveBase extends Subsystem{
             linePID.setLastError(0);
             SmartDashboard.putNumber("Last Error", linePID.getLastError());
             lowPass.clear();
-            leftSpeed = input.getDBLeft();
-            rightSpeed = input.getDBRight();
+            leftSpeed = input.getDBLeft() < 0 ? ((input.getDBLeft() * input.getDBLeft()) * (-1)) * speedMult : ((input.getDBLeft() * input.getDBLeft())) * speedMult;
+            
+            rightSpeed = input.getDBRight() < 0 ? ((input.getDBRight() * input.getDBRight()) * (-1)) * speedMult : ((input.getDBRight() * input.getDBRight())) * speedMult;
+            //leftSpeed = input.getDBLeft() * input.getDBLeft() * input.getDBLeft();
+            //rightSpeed = input.getDBRight() * input.getDBRight() * input.getDBRight();
         }
         else if (state == RobotState.VISION){
             SmartDashboard.putBoolean("vision", true);

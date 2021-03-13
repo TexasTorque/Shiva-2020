@@ -107,8 +107,8 @@ public class Input {
     // start position ---- neutral position ----- down position
     // private double[] rotarySetpoints_left = {0, -10, -40.4}; // bravo
     // private double[] rotarySetpoints_right = {0, 10.1, 39.9}; // bravo
-    private double[] rotarySetpoints_left = {0, -15.21, -42.21}; // charlie
-    private double[] rotarySetpoints_right = {0, 14.21, 42.95}; // charlie
+    private double[] rotarySetpoints_left = {0, -32.21, -42.21}; // charlie
+    private double[] rotarySetpoints_right = {0, 31.21, 42.95}; // charlie
 
     private int neutral = 1;
 
@@ -127,12 +127,12 @@ public class Input {
         if (driver.getRightTrigger()){
             rotaryPosition_left = rotarySetpoints_left[2];
             rotaryPosition_right = rotarySetpoints_right[2];
-            rollerSpeed = .8;
+            rollerSpeed = 1;
         }
         else if (driver.getLeftTrigger()){
             rotaryPosition_left = rotarySetpoints_left[2];
             rotaryPosition_right = rotarySetpoints_right[2];
-            rollerSpeed = -.8;
+            rollerSpeed = -1;
         }
         if (driver.getYButton()){
             rollerSpeed = 0.5;
@@ -151,10 +151,15 @@ public class Input {
     public double getRotaryPositionRight(){
         return rotaryPosition_right;
     }
+    public void setRollerSpeed(double speed) {
+        rollerSpeed = speed;
+    }
 
     public double getRollerSpeed(){
         return rollerSpeed;
     }
+
+    
 
     public void setRotaryPosition(int rotarySetIndex){
         rotaryPosition_left = rotarySetpoints_left[rotarySetIndex];
@@ -408,7 +413,7 @@ public class Input {
             Feedback.setLimelightOn(false);
             // flywheelSpeed = 1000*Constants.RPM_VICTORSPX_CONVERSION;
             flywheelPercent = .7;
-            flywheelSpeed = 3500 + shooterFine;
+            flywheelSpeed = 2500 + shooterFine;
             if (!(hoodSetpoint > 26) && !(hoodSetpoint < 10)){
                 hoodSetpoint = hoodSetpoints[1] + hoodFine;
             }
@@ -480,9 +485,12 @@ public class Input {
 
     public void setFlywheelOutputType(boolean percentOutput){
         this.percentOutput = percentOutput;
+        System.out.println(percentOutput);
+        
     }
 
     public void setFlywheelPercent(double percent){
+        SmartDashboard.putNumber("input shooter 9", percent);
         flywheelPercent = percent;
     }
 
